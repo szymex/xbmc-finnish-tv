@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="plugin.video.yleareena"
+       name="YLE Areena"
+       version="0.2.1"
+       provider-name="szymex">
+  <requires>
+    <import addon="xbmc.python" version="2.0"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="yleareena.py">
+        <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary>YLE Areena</summary>
+    <description>http://areena.yle.fi</description>
+    <platform>all</platform>
+  </extension>
+</addon>
