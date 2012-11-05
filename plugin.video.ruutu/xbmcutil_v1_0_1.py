@@ -54,10 +54,10 @@ class ViewAddonAbstract:
 		return link
 
 	def addViewLink(self, title, view, pg=1, params={}, contextMenu=[], infoLabels={}):
-		u=sys.argv[0] + "?view=" + str(view) + "&pg=" + str(pg)
+		u = sys.argv[0] + "?view=" + str(view)
 		for key in params.iterkeys():
-			u = u + "&" + key + "=" + urllib.quote_plus(params[key])
-		#print(u)	
+			u += "&" + key + "=" + urllib.quote_plus(str(params[key]))
+		u += "&pg=" + str(pg)
 		icon = "DefaultVideoPlaylists.png"
 	
 		liz=xbmcgui.ListItem(title, iconImage=icon, thumbnailImage='')
