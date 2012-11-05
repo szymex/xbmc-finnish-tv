@@ -2,18 +2,27 @@
 import os,subprocess
 import urllib,urllib2,re
 import xbmcplugin,xbmcgui,xbmcaddon
-import xbmcUtil
+xbmcUtil = __import__('xbmcutil_v1_0_1')
 import simplejson as json
-
+from datetime import date
+import time
+import datetime
 import os, sys, inspect
-cmd_subfolder = os.path.realpath(os.path.abspath(os.path.join(os.path.split(inspect.getfile( inspect.currentframe() ))[0],"win32")))
-if cmd_subfolder not in sys.path:
-     sys.path.insert(0, cmd_subfolder)
 
-#import yle-dl (version 2.0.1)
-yledl = __import__('lib.yle-dl', globals(), locals(), ['yle-dl'], -1)
+#for windows add Crypto module folder 
+if sys.platform == 'win32':
+	cmd_subfolder = os.path.realpath(os.path.abspath(os.path.join(os.path.split(inspect.getfile( inspect.currentframe() ))[0],"win32")))
+	if cmd_subfolder not in sys.path:
+		sys.path.insert(0, cmd_subfolder)
+	 
+try:
+	#import yle-dl (version 2.0.1)
+	yledl = __import__('lib.yle-dl', globals(), locals(), ['yle-dl'], -1)
+except ImportError as e:
+	xbmc.log(str(e), level=xbmc.LOGERROR )
+	xbmcUtil.notification('Error', str(e))
+	sys.exit();
 
-yledl.encode_url_utf8('')
 
 def scrapVideo(url):
 	
@@ -30,7 +39,6 @@ def scrapVideo(url):
 	return rtmpUrl
 
 def readJSON(url):
-	print url
 	req = urllib2.Request(url)
 	req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
 	try:	
@@ -44,7 +52,51 @@ def readJSON(url):
 		xbmcUtil.notification('Error', str(e))
 		return [];
 
+today = str(date.today())
+tomorrow = str(datetime.date.today() + datetime.timedelta(days=1))
+yesterday = str(datetime.date.today() + datetime.timedelta(days=-1))
+day_minus_2 = str(datetime.date.today() + datetime.timedelta(days=-2))
+day_minus_3 = str(datetime.date.today() + datetime.timedelta(days=-3))
+day_minus_4 = str(datetime.date.today() + datetime.timedelta(days=-4))
+day_minus_5 = str(datetime.date.today() + datetime.timedelta(days=-5))
+def relativeDay(day):
+	if day==tomorrow:
+		return u'Huomenna'
+	if day==today:
+		return u'Täänän'
+	if day==yesterday:
+		return u'Eilen'
+	if day==day_minus_2:
+		return getWeekday(datetime.date.today().weekday()-2) + ' (' + day + ')'
+	if day==day_minus_3:
+		return getWeekday(datetime.date.today().weekday()-3) + ' (' + day + ')'
+	if day==day_minus_4:
+		return getWeekday(datetime.date.today().weekday()-4) + ' (' + day + ')'
+	if day==day_minus_5:
+		return getWeekday(datetime.date.today().weekday()-5) + ' (' + day + ')'
+	
+	return day
+
+#w={0:'Maanantai',1:'Tiistai',2:'Keskiviikko',3:'Torstai',4:'Perjantai',5:'Lauantai',6:'Sunnuntai'}
+
+def getWeekday(weekday):
+	if weekday<0: weekday+=7
+	if weekday==0: return u'Maanantai'
+	if weekday==1: return u'Tiistai'
+	if weekday==2: return u'Keskiviikko'
+	if weekday==3: return u'Torstai'
+	if weekday==4: return u'Perjantai'
+	if weekday==5: return u'Lauantai'
+	if weekday==6: return u'Sunnuntai'
+	
 class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
+	GROUP = u'   [COLOR blue]%s[/COLOR]'
+	NEXT = '[COLOR blue]   ➔  NEXT  ➔[/COLOR]'
+	EXPIRES_HOURS = u'[COLOR red]%dh[/COLOR] %s'
+	EXPIRES_DAYS = u'[COLOR brown]%dpv[/COLOR] %s'
+	FAVOURITE = u'[COLOR yellow]★[/COLOR] %s'
+	REMOVE = u'[COLOR red]✖[/COLOR] %s'	
+	
 	def __init__(self):
 		self.setAddonId('plugin.video.yleareena')
 
@@ -64,24 +116,27 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
  		self.addHandler(None, self.handleMain)
 		self.addHandler('programs', self.handlePrograms)
 		self.addHandler('serie', self.handleSerie)
+		self.addHandler('live', self.handleLive)
 
 	def handleMain(self, pg, args):
-		self.addViewLink('Ohjelmat','programs',1, {'link':'http://areena.yle.fi/tv/kaikki.json?from=0&to=200&jarjestys=ao' } )
-		self.addViewLink('Sarjat ja elokuvat','serie', 1, {'link':'http://areena.yle.fi/tv/sarjat-ja-elokuvat/kaikki.json?from=0&to=24&jarjestys=uusin' } )
-		self.addViewLink('Viihde ja kulttuuri','serie', 1, {'link':'http://areena.yle.fi/tv/viihde-ja-kulttuuri/kaikki.json?from=0&to=24&jarjestys=uusin' } )
-		self.addViewLink('Dokumentit ja fakta','serie', 1, {'link':'http://areena.yle.fi/tv/dokumentit-ja-fakta/kaikki.json?from=0&to=24&jarjestys=uusin' } )
-		self.addViewLink('Uutiset','serie', 1, {'link':'http://areena.yle.fi/tv/uutiset/kaikki.json?from=0&to=24&jarjestys=uusin', 'forceDate':'True' } )
-		self.addViewLink('Urheilu','serie', 1, {'link':'http://areena.yle.fi/tv/urheilu/kaikki.json?from=0&to=24&jarjestys=uusin' } )
-		self.addViewLink('Lapset','serie', 1, {'link':'http://areena.yle.fi/tv/lapset/kaikki.json?from=24&to=48&jarjestys=uusin' } )
+		self.addViewLink('» Ohjelmat','programs',1, {'link':'http://areena.yle.fi/tv/kaikki.json?jarjestys=ao' } )
+		self.addViewLink('Uutiset','serie', 1, {'link':'http://areena.yle.fi/tv/uutiset/kaikki.json?jarjestys=uusin', 'grouping':True } )
+		self.addViewLink('Suora','live', 0, {'link':'http://areena.yle.fi/tv/suora.json?from=0&to=24' } )
+		self.addViewLink('Lapset','serie', 1, {'link':'http://areena.yle.fi/tv/lapset/kaikki.json?jarjestys=uusin', 'grouping':True } )
+		self.addViewLink('Sarjat ja elokuvat','serie', 1, {'link':'http://areena.yle.fi/tv/sarjat-ja-elokuvat/kaikki.json?jarjestys=uusin', 'grouping':True } )
+		self.addViewLink('Viihde ja kulttuuri','serie', 1, {'link':'http://areena.yle.fi/tv/viihde-ja-kulttuuri/kaikki.json?jarjestys=uusin', 'grouping':True } )
+		self.addViewLink('Dokumentit ja fakta','serie', 1, {'link':'http://areena.yle.fi/tv/dokumentit-ja-fakta/kaikki.json?jarjestys=uusin', 'grouping':True } )
+		self.addViewLink('Urheilu','serie', 1, {'link':'http://areena.yle.fi/tv/urheilu/kaikki.json?jarjestys=uusin', 'grouping':True } )
 		
 		for key in  self.favSeries.iterkeys():
-			self.addViewLink("[COLOR yellow]✶[/COLOR] " + key, 'serie', 1, 
+			self.addViewLink(self.FAVOURITE % key, 'serie', 1, 
 							{'link':self.favSeries[key] + '.json?from=0&to=24&sisalto=ohjelmat'},
-							[('[COLOR red]✖[/COLOR] Remove', 'RunScript(special://home/addons/plugin.video.yleareena/favourites.py,-remove,'+key+ ')')]  )
+							[(self.REMOVE % 'Remove', 'RunScript(special://home/addons/plugin.video.yleareena/favourites.py,-remove,'+key+ ')')]  )
 	
 	def handlePrograms(self, pg, args):
-		if 'link' in args:
-			items = readJSON(args['link'])
+		link = args['link']+self.getPageQuery(pg, 100) if 'link' in args else ''
+		if link != '':
+			items = readJSON(link)
 			for item in items['search']['results']:
 				if 'series' in item:
 					serie = item['series']
@@ -90,44 +145,108 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 					img = serie['images']['M']
 					link='http://areena.yle.fi/tv/' + serie['id'] + '.json?from=0&to=24&sisalto=ohjelmat'					
 					self.addViewLink(title,'serie',1, {'link':link }, infoLabels={'plot': serie['shortDesc']},
-									contextMenu=[('[COLOR yellow]✚[/COLOR] Mark as favourite', 'RunScript(special://home/addons/plugin.video.yleareena/favourites.py,-add,'+title+', http://areena.yle.fi/tv/' + serie['id']+ ')')])
+									contextMenu=[(self.FAVOURITE % 'Mark as favourite', 'RunScript(special://home/addons/plugin.video.yleareena/favourites.py,-add,'+title+', http://areena.yle.fi/tv/' + serie['id']+ ')')])
+			if len(items['search']['results']) == 100:
+					self.addViewLink(self.NEXT,'programs', pg+1, args )
+					
+	def handleLive(self, pg, args):
+		items = readJSON(args['link'])
 
-	def handleSerie(self, pg, args):
-		forceDate = False
-		if 'forceDate' in args:
-			forceDate = args['forceDate']
+		for i in range(0, len(items['current'])) :
+			item = items['current'][i]
+
+			startTime = item['start'][11:16]
+			img = item['pubContent']['images']['orig']
+			title = u"[COLOR red]◉[/COLOR] " + startTime + ' | ' + item['pubContent']['title'] 
+			plot = item['pubContent']['desc']
+			link = 'http://areena.yle.fi/tv/' + item['pubContent']['id']
 			
-		if 'link' in args:
-			items = readJSON(args['link'])
+			self.addVideoLink(title, link, img, infoLabels={'plot': plot })
+
+		if 'upcoming' in items:
+			for days in items['upcoming']:
+				day = relativeDay( days['day'][:10])
+				if day != u'Täänän': 
+					self.addVideoLink('   [COLOR blue]' + day + '[/COLOR]', '', None)
+				
+				for item in days['items']:
+					if datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%dT%H:%M:%S')[:13] == item['start'][:13]:
+						title = u"[COLOR orange]◉[/COLOR] "
+					else:
+						title = u"◉ "
+
+					startTime = item['start'][11:16]
+					img = item['pubContent']['images']['orig']
+					title +=  startTime + ' | ' + item['pubContent']['title'] 
+					plot = item['pubContent']['desc']
+					link = 'http://areena.yle.fi/tv/' + item['pubContent']['id']
+					
+					self.addVideoLink(title, link, img, infoLabels={'plot': plot })
+        
+	DEFAULT_PAGE_SIZE = 30
+	def getPageQuery(self, pg, pageSize=DEFAULT_PAGE_SIZE):
+		if pg>0:
+			pgFrom = (pg - 1) * pageSize
+			pgTo = pg * pageSize
+			return '&from=%s&to=%s' % (pgFrom, pgTo)
+		else:
+			return ''
+	
+	def handleSerie(self, pg, args):
+		grouping = args['grouping'] if 'grouping' in args else False
+		groupName = ''
+		link = args['link']+self.getPageQuery(pg) if 'link' in args else ''
+		print link
+		if link != '':
+			items = readJSON(link)
 			if 'search' in items:
 				for item in items['search']['results']:
 					title = item['title']
 					episodeNumber = ''
-					if not forceDate and 'episodeNumber' in item and int(item['episodeNumber'])<1000:				
+					if 'episodeNumber' in item and int(item['episodeNumber'])<1000:				
 						episodeNumber = str(item['episodeNumber'])
-						title += ' - [COLOR grey]' + episodeNumber  + '[/COLOR]'
-					elif 'published' in item:
-						title += ' - [COLOR grey]' + item['published'][:10] + '[/COLOR]'
+						title += ' #' + episodeNumber
+					#elif 'published' in item:
+					#	title += ' #' + item['published'][:10]
 					
-					duration = ''
-					if 'durationSec' in item:
-						duration = str(item['durationSec'])
+					duration = str(item['durationSec'])	if 'durationSec' in item else ''
+					plot = item['desc'] if 'desc' in item and item['desc'] != None else ''
+					plot += '\r\nPublished: ' + item['published'] if 'published' in item else ''
+					
+					expiresInHours = -1
+					if 'expires' in item and item['expires'] != None:
+						try:
+							expiresInHours = int((time.mktime(time.strptime(item['expires'], "%Y-%m-%dT%H:%M:%S")) - time.time())/(60*60))
+							plot += u"\n\rExpires: " + str(item['expires'])
+						except:
+							xbmc.log('Could not parse ' + item['expires'], level=xbmc.LOGWARNING )							
 						
-					plot = item['desc']
 					img = item['images']['M']
 					link='http://areena.yle.fi/tv/' + item['id']
 					if 'series' in item:
 						serieName = item['series']['name']
 						serieLink = 'http://areena.yle.fi/tv/' + item['series']['id']
-						contextMenu=[('[COLOR yellow]✚[/COLOR] Mark serie as favourite', 'RunScript(special://home/addons/plugin.video.yleareena/favourites.py,-add,'+serieName+', ' + serieLink+ ')')]
+						contextMenu=[(self.FAVOURITE % 'Mark serie as favourite', 'RunScript(special://home/addons/plugin.video.yleareena/favourites.py,-add,'+serieName+', ' + serieLink+ ')')]
 						if not item['title'].upper().startswith(serieName.upper()):
-							title = '[COLOR grey]' + serieName + '[/COLOR]: ' + title
+							title = serieName + ': ' + title
 					else:
 						contextMenu = []
-						
-					self.addVideoLink(title, link, img, infoLabels={'duration':duration, 'plot': item['desc'], 'episode': episodeNumber, 'date': item['published'] },
-									contextMenu=contextMenu)
-		
+					if grouping:						
+						if 'published' in item and groupName != relativeDay(item['published'][:10]):
+							groupName = relativeDay(item['published'][:10])
+							if groupName != u'Täänän':
+								self.addVideoLink(self.GROUP % groupName, '', None)
+					
+					if expiresInHours<24 and expiresInHours>=0:
+						title = self.EXPIRES_HOURS % (expiresInHours, title);
+					elif expiresInHours<120 and expiresInHours>=0:
+						title = self.EXPIRES_DAYS % (expiresInHours/24, title);
+					
+					self.addVideoLink(title, link, img, infoLabels={'duration':duration, 'plot': plot, 'episode': episodeNumber, 'date': item['published'] }, contextMenu=contextMenu)
+				
+				if len(items['search']['results']) == self.DEFAULT_PAGE_SIZE:
+					self.addViewLink(self.NEXT,'serie', pg+1, args )
+
 	def handleVideo(self, link):
 		videoLink = scrapVideo(link)
 		return videoLink
@@ -136,4 +255,3 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 
 yleAreenaAddon = YleAreenaAddon()
 yleAreenaAddon.handle()
-

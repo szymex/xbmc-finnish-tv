@@ -1,4 +1,8 @@
-# Utility functions for xbmc
+# -*- coding: utf-8 -*-
+"""
+ Utility functions for xbmc. Simplifies common operations on xbmc.
+ version 1.0.1
+"""
 
 import sys,urllib,os
 import xbmcplugin,xbmcgui, xbmc,xbmcaddon
@@ -50,10 +54,10 @@ class ViewAddonAbstract:
 		return link
 
 	def addViewLink(self, title, view, pg=1, params={}, contextMenu=[], infoLabels={}):
-		u=sys.argv[0] + "?view=" + str(view) + "&pg=" + str(pg)
+		u = sys.argv[0] + "?view=" + str(view)
 		for key in params.iterkeys():
-			u = u + "&" + key + "=" + urllib.quote_plus(params[key])
-		#print(u)	
+			u += "&" + key + "=" + urllib.quote_plus(str(params[key]))
+		u += "&pg=" + str(pg)
 		icon = "DefaultVideoPlaylists.png"
 	
 		liz=xbmcgui.ListItem(title, iconImage=icon, thumbnailImage='')
@@ -166,6 +170,4 @@ def notification(header="", message="", sleep=5000 ):
 	    in addition you can set the length of time it displays in milliseconds and a icon image. 
 	"""
 	xbmc.executebuiltin( "XBMC.Notification(%s,%s,%i)" % ( header, message, sleep ) )
-
-
 
