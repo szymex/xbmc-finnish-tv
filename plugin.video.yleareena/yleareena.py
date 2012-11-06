@@ -167,7 +167,7 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 			for days in items['upcoming']:
 				day = relativeDay( days['day'][:10])
 				if day != u'Täänän': 
-					self.addVideoLink('   [COLOR blue]' + day + '[/COLOR]', '', None)
+					self.addVideoLink('   [COLOR blue]' + day + '[/COLOR]', '', '')
 				
 				for item in days['items']:
 					if datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%dT%H:%M:%S')[:13] == item['start'][:13]:
@@ -235,7 +235,7 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 						if 'published' in item and groupName != relativeDay(item['published'][:10]):
 							groupName = relativeDay(item['published'][:10])
 							if groupName != u'Täänän':
-								self.addVideoLink(self.GROUP % groupName, '', None)
+								self.addVideoLink(self.GROUP % groupName, '', '')
 					
 					if expiresInHours<24 and expiresInHours>=0:
 						title = self.EXPIRES_HOURS % (expiresInHours, title);

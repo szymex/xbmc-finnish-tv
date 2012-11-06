@@ -251,7 +251,7 @@ class RuutuAddon (xbmcUtil.ViewAddonAbstract):
 			for item in items:
 				if grouping and groupName != relativeDay(item['published'], True):
 					groupName = relativeDay(item['published'], True)
-					self.addVideoLink(self.GROUP_FORMAT % groupName, '', None)
+					self.addVideoLink(self.GROUP_FORMAT % groupName, '', '')
 
 				title = item['title']
 				if markFav and self.isFavourite(title):
