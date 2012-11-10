@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
  Utility functions for xbmc. Simplifies common operations on xbmc.
- version 1.1.0
+ version 1.1.1
 """
 
 import sys,urllib,os
@@ -16,7 +16,13 @@ class ViewAddonAbstract:
 	def __init__(self):
 		self.addon = xbmcaddon.Addon(id=self.ADDON_ID)
 		self.BASE_PATH = self.addon.getAddonInfo('path')
-		self.lang = self.addon.getLocalizedString
+		#self.lang = self.addon.getLocalizedString
+
+	def lang(self, id):
+		if id>=30000 and id<=30999:
+			return self.addon.getLocalizedString(id)
+		else: 
+			return xbmc.getLocalizedString(id)
 	
 	def addHandler(self, name, handler):
 		if (len(self.viewMap)==0):

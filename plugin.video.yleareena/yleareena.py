@@ -65,9 +65,9 @@ day_minus_4 = str(datetime.date.today() + datetime.timedelta(days=-4))
 day_minus_5 = str(datetime.date.today() + datetime.timedelta(days=-5))
 def relativeDay(day):
 	if day==tomorrow:
-		return lang(30019)
+		return lang(33007)
 	if day==today:
-		return lang(30011)
+		return lang(33006)
 	if day==yesterday:
 		return lang(30010)
 	if day==day_minus_2:
@@ -85,13 +85,13 @@ def relativeDay(day):
 
 def getWeekday(weekday):
 	if weekday<0: weekday+=7
-	if weekday==0: return lang(30012)
-	if weekday==1: return lang(30013)
-	if weekday==2: return lang(30014)
-	if weekday==3: return lang(30015)
-	if weekday==4: return lang(30016)
-	if weekday==5: return lang(30017)
-	if weekday==6: return lang(30018)
+	if weekday==0: return lang(11)
+	if weekday==1: return lang(12)
+	if weekday==2: return lang(13)
+	if weekday==3: return lang(14)
+	if weekday==4: return lang(15)
+	if weekday==5: return lang(16)
+	if weekday==6: return lang(17)
 	
 class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 	ADDON_ID = 'plugin.video.yleareena'
@@ -107,12 +107,12 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 		self.addHandler('live', self.handleLive)
 	
 	def initConst(self):
-		self.NEXT = '[COLOR blue]   ➔  %s  ➔[/COLOR]' % self.lang(30001)
+		self.NEXT = '[COLOR blue]   ➔  %s  ➔[/COLOR]' % self.lang(33078)
 		self.GROUP = u'   [COLOR blue]%s[/COLOR]'
 		self.EXPIRES_HOURS = u'[COLOR red]%d' + self.lang(30002) + '[/COLOR] %s'
 		self.EXPIRES_DAYS = u'[COLOR brown]%d' + self.lang(30003) + '[/COLOR] %s'
 		self.FAVOURITE = '[COLOR yellow]★[/COLOR] %s'
-		self.REMOVE = u'[COLOR red]✖[/COLOR] %s' % self.lang(30004)
+		self.REMOVE = u'[COLOR red]✖[/COLOR] %s' % self.lang(1210)
 		
 	def initFavourites(self):
 		fav = self.addon.getSetting("fav")
@@ -154,7 +154,7 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 						title = self.FAVOURITE % title
 						cxm = []
 					else:
-						cxm = [ (self.createContextMenuAction(self.FAVOURITE % self.lang(30005), 'addFav', {'name':title, 'link':link}) )  ]
+						cxm = [ (self.createContextMenuAction(self.FAVOURITE % self.lang(14076), 'addFav', {'name':title, 'link':link}) )  ]
 					self.addViewLink(title,'serie',1, {'link':link }, infoLabels={'plot': serie['shortDesc']},contextMenu=cxm )
 			if len(items['search']['results']) == 100:
 					self.addViewLink(self.NEXT,'programs', pg+1, args )
@@ -189,7 +189,7 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 		if 'upcoming' in items:
 			for days in items['upcoming']:
 				day = relativeDay( days['day'][:10])
-				if day != self.lang(30011): 
+				if day != self.lang(33006): 
 					self.addVideoLink('   [COLOR blue]' + day + '[/COLOR]', '', '')
 				
 				for item in days['items']:
@@ -248,7 +248,7 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 					if 'series' in item:
 						serieName = item['series']['name']
 						serieLink = 'http://areena.yle.fi/tv/' + item['series']['id']
-						contextMenu = [ (self.createContextMenuAction(self.FAVOURITE % self.lang(30005), 'addFav', {'name':serieName, 'link':serieLink}) )  ]
+						contextMenu = [ (self.createContextMenuAction(self.FAVOURITE % self.lang(14076), 'addFav', {'name':serieName, 'link':serieLink}) )  ]
 						if not item['title'].upper().startswith(serieName.upper()):
 							title = serieName + ': ' + title
 					else:
@@ -256,7 +256,7 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 					if grouping:						
 						if 'published' in item and groupName != relativeDay(item['published'][:10]):
 							groupName = relativeDay(item['published'][:10])
-							if groupName != self.lang(30011):
+							if groupName != self.lang(33006):
 								self.addVideoLink(self.GROUP % groupName, '', '')
 					
 					if expiresInHours<24 and expiresInHours>=0:

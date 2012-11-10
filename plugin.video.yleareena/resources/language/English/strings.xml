@@ -1,26 +1,12 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
-    <string id="30001">NEXT</string> 	<!-- next page -->
     <string id="30002">h</string>		<!-- hours abr-->
     <string id="30003">d</string>		<!-- days abr -->
-    <string id="30004">Remove</string>
-    <string id="30005">Mark as favourite</string>
     <string id="30006">Added</string>
     <string id="30007">Removed</string>
     <string id="30008">Published</string>
     <string id="30009">Expires</string>
-	
-	<!-- days -->
     <string id="30010">Yesterday</string>
-    <string id="30011">Today</string>
-    <string id="30012">Monday</string>
-    <string id="30013">Tuesday</string>
-    <string id="30014">Wednesday</string>
-    <string id="30015">Thursday</string>
-    <string id="30016">Friday</string>
-    <string id="30017">Saturday</string>
-    <string id="30018">Sunday</string>
-    <string id="30019">Tomorrow</string>
 	
 	<!-- categories -->
     <string id="30020">Programs</string>
