@@ -2,20 +2,20 @@
 import urllib,urllib2,re,xbmcplugin,xbmcgui
 import os,subprocess, json
 import CommonFunctions
-xbmcUtil = __import__('xbmcutil_v1_0_1')
+import xbmcutil as xbmcUtil
 import inspect
 import time
 import datetime
 from datetime import date
-
-#cmd_subfolder = os.path.realpath(os.path.abspath(os.path.join(os.path.split(inspect.getfile( inspect.currentframe() ))[0],"bs5")))
-#if cmd_subfolder not in sys.path:
-#	sys.path.insert(0, cmd_subfolder)
-
 from bs4 import BeautifulSoup
+import sys
 
 common = CommonFunctions
 common.plugin = "plugin.video.ruutu"
+
+#sets default encoding to utf-8
+reload(sys) 
+sys.setdefaultencoding('utf8')
 
 def scrapRSS(url):
 	req = urllib2.Request(url)
@@ -23,7 +23,6 @@ def scrapRSS(url):
 	response = urllib2.urlopen(req)
 	content=response.read()
 	response.close()
-
 	match=re.compile("<item>.*?<title>(.*?)</title>.*?<link>(.*?)</link>.*?<description>.*?src='(.*?)'.*?br/&gt;(.*?)</description>.*?<pubDate>(.*?)</pubDate>.*?</item>", re.DOTALL).findall(content)
 	#title, link, img, description, date
 	return match
@@ -189,7 +188,7 @@ class RuutuAddon (xbmcUtil.ViewAddonAbstract):
 	NEXT = '[COLOR blue]   ➔  NEXT  ➔[/COLOR]'
 	EXPIRES_HOURS = u'[COLOR red]%dh[/COLOR] %s'
 	EXPIRES_DAYS = u'[COLOR brown]%dpv[/COLOR] %s'
-	FAVOURITE = u'[COLOR yellow]★[/COLOR] %s'
+	FAVOURITE = '[COLOR yellow]★[/COLOR] %s'
 	REMOVE = u'[COLOR red]✖[/COLOR] %s'
 	
 	def __init__(self):
@@ -211,18 +210,20 @@ class RuutuAddon (xbmcUtil.ViewAddonAbstract):
 		self.addViewLink('Lapset','category',1, {'link':'http://www.ruutu.fi/views_cacheable_pager/videos/block_3?page=0%2C','grouping':True, 'pg-size':5 } )
 		self.addViewLink('Ruoka','category',1, {'link':'http://www.ruutu.fi/views_cacheable_pager/theme_liftups/block_8/Ruoka?page=0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C','grouping':'True' } )
 		for title, link in self.favourites.items():
-			self.addViewLink(self.FAVOURITE % title,'serie',1, {'link':link, 'pg-size':10}, [(self.REMOVE % 'Remove', 'RunScript(special://home/addons/plugin.video.ruutu/favourites.py,-remove,'+title+ ')')] )
+			t = title
+			
+			cm = [ (self.createContextMenuAction(self.REMOVE % 'Remove', 'removeFav', {'name':t} ) ) ]
+			self.addViewLink(self.FAVOURITE % t,'serie',1, {'link':link, 'pg-size':10}, cm )
 	
 	def initFavourites(self):
-		try:
-			strCat = open(os.path.join(self.BASE_PATH,'favourites.txt')).read().split('\n')
-			for cat in strCat:
-				if not cat.startswith('#'):
-					splCat = cat.split("|")
-					if (len(splCat)==2):
-						self.favourites[splCat[0].strip()] = splCat[1].strip()
-		except:
-			xbmc.log("Could not read favourites from file: " + self.BASE_PATH + "favourites.txt", level=xbmc.LOGWARNING )
+		fav = self.addon.getSetting("fav")
+		if fav:
+			try:
+				favList = eval(fav)
+				for title, link in favList.items():
+					self.favourites[title] = link
+			except:
+				pass
 	
 	
 	def isFavourite(self, title):
@@ -288,16 +289,29 @@ class RuutuAddon (xbmcUtil.ViewAddonAbstract):
 		serieList = scrapPrograms()
 		for serie in serieList:
 			try:				
-				title = serie['name']
-				menu = [(self.FAVOURITE % 'Mark as favourite', 'RunScript(special://home/addons/plugin.video.ruutu/favourites.py,-add,'+serie['name']+', ' +serie['link']+ ')')]
+				title = serie['name'].encode('utf-8')
+				menu = [ (self.createContextMenuAction(self.FAVOURITE % 'Mark as favourite', 'addFav', {'name':serie['name'], 'link':serie['link']} ) ) ]
 				if self.isFavourite(title):
 					title = self.FAVOURITE % title
-					menu = [(self.REMOVE % 'Remove', 'RunScript(special://home/addons/plugin.video.ruutu/favourites.py,-remove,'+serie['name']+ ')')]
-				self.addViewLink(title , 'serie', 1, {'link':serie['link']}, menu)
+					menu = [ (self.createContextMenuAction(self.REMOVE % 'Remove', 'removeFav', {'name':serie['name']} ) ) ]
+				
+				self.addViewLink(title , 'serie', 1, {'link':serie['link'], 'pg-size':10}, menu)
 			except:
 				pass
-
-
+				
+	def handleAction(self, action, params):
+		if action=='addFav':
+			self.favourites[params['name'].encode("utf-8")] = params['link']
+			favStr = repr(self.favourites)
+			self.addon.setSetting('fav', favStr)
+			xbmcUtil.notification('Success', "Added: " + params['name'].encode("utf-8") )
+		elif action=='removeFav':
+			self.favourites.pop(params['name'])
+			favStr = repr(self.favourites)
+			self.addon.setSetting('fav', favStr)
+			xbmcUtil.notification('Removed', unicode(params['name'], "utf-8").encode("utf-8") )
+		else:
+			super(ViewAddonAbstract, self).handleAction(self, action, params)
 		
 	def handleVideo(self, link):
 		videoLink = scrapVideoLink(link)

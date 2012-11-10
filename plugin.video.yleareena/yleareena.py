@@ -2,12 +2,16 @@
 import os,subprocess
 import urllib,urllib2,re
 import xbmcplugin,xbmcgui,xbmcaddon
-xbmcUtil = __import__('xbmcutil_v1_0_1')
+import xbmcutil as xbmcUtil
 import simplejson as json
 from datetime import date
 import time
 import datetime
 import os, sys, inspect
+
+#sets default encoding to utf-8
+reload(sys) 
+sys.setdefaultencoding('utf8')
 
 #for windows add Crypto module folder 
 if sys.platform == 'win32':
@@ -101,23 +105,22 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 		self.setAddonId('plugin.video.yleareena')
 
 		self.favSeries = {}
-		try:
-			strCat = open(os.path.join(self.BASE_PATH,'favourites.txt')).read().split('\n')
-			for cat in strCat:
-				splCat = cat.split("|")				
-				if (len(splCat)==2):
-					name = splCat[0].strip()
-					link = splCat[1].strip()
-					self.favSeries[name]=link
-					xbmc.log(name + ' - ' + link, level=xbmc.LOGDEBUG)
-		except:
-			xbmc.log("Could not read categories from file: 'favourites.txt'", level=xbmc.LOGWARNING )
-
+		self.initFavourites()
  		self.addHandler(None, self.handleMain)
 		self.addHandler('programs', self.handlePrograms)
 		self.addHandler('serie', self.handleSerie)
 		self.addHandler('live', self.handleLive)
-
+	
+	def initFavourites(self):
+		fav = self.addon.getSetting("fav")
+		if fav:
+			try:
+				favList = eval(fav)
+				for title, link in favList.items():
+					self.favSeries[title] = link
+			except:
+				pass
+		
 	def handleMain(self, pg, args):
 		self.addViewLink('» Ohjelmat','programs',1, {'link':'http://areena.yle.fi/tv/kaikki.json?jarjestys=ao' } )
 		self.addViewLink('Uutiset','serie', 1, {'link':'http://areena.yle.fi/tv/uutiset/kaikki.json?jarjestys=uusin', 'grouping':True } )
@@ -131,7 +134,7 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 		for key in  self.favSeries.iterkeys():
 			self.addViewLink(self.FAVOURITE % key, 'serie', 1, 
 							{'link':self.favSeries[key] + '.json?from=0&to=24&sisalto=ohjelmat'},
-							[(self.REMOVE % 'Remove', 'RunScript(special://home/addons/plugin.video.yleareena/favourites.py,-remove,'+key+ ')')]  )
+							[(self.createContextMenuAction(self.REMOVE % 'Remove', 'removeFav', {'name':key}) )] )
 	
 	def handlePrograms(self, pg, args):
 		link = args['link']+self.getPageQuery(pg, 100) if 'link' in args else ''
@@ -143,12 +146,30 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 					title = serie['name']
 					
 					img = serie['images']['M']
-					link='http://areena.yle.fi/tv/' + serie['id'] + '.json?from=0&to=24&sisalto=ohjelmat'					
-					self.addViewLink(title,'serie',1, {'link':link }, infoLabels={'plot': serie['shortDesc']},
-									contextMenu=[(self.FAVOURITE % 'Mark as favourite', 'RunScript(special://home/addons/plugin.video.yleareena/favourites.py,-add,'+title+', http://areena.yle.fi/tv/' + serie['id']+ ')')])
+					link='http://areena.yle.fi/tv/' + serie['id'] + '.json?from=0&to=24&sisalto=ohjelmat'	
+					if title in self.favSeries:
+						title = self.FAVOURITE % title
+						cxm = []
+					else:
+						cxm = [ (self.createContextMenuAction(self.FAVOURITE % 'Mark as favourite', 'addFav', {'name':title, 'link':link}) )  ]
+					self.addViewLink(title,'serie',1, {'link':link }, infoLabels={'plot': serie['shortDesc']},contextMenu=cxm )
 			if len(items['search']['results']) == 100:
 					self.addViewLink(self.NEXT,'programs', pg+1, args )
-					
+	
+	def handleAction(self, action, params):
+		if action=='addFav':
+			self.favSeries[params['name'].encode("utf-8")] = params['link']
+			favStr = repr(self.favSeries)
+			self.addon.setSetting('fav', favStr)
+			xbmcUtil.notification('Success', "Added: " + params['name'].encode("utf-8") )
+		elif action=='removeFav':
+			self.favSeries.pop(params['name'])
+			favStr = repr(self.favSeries)
+			self.addon.setSetting('fav', favStr)
+			xbmcUtil.notification('Removed', unicode(params['name'], "utf-8").encode("utf-8") )
+		else:
+			super(ViewAddonAbstract, self).handleAction(self, action, params)
+		
 	def handleLive(self, pg, args):
 		items = readJSON(args['link'])
 
@@ -162,7 +183,6 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 			link = 'http://areena.yle.fi/tv/' + item['pubContent']['id']
 			
 			self.addVideoLink(title, link, img, infoLabels={'plot': plot })
-
 		if 'upcoming' in items:
 			for days in items['upcoming']:
 				day = relativeDay( days['day'][:10])
@@ -174,7 +194,6 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 						title = u"[COLOR orange]◉[/COLOR] "
 					else:
 						title = u"◉ "
-
 					startTime = item['start'][11:16]
 					img = item['pubContent']['images']['orig']
 					title +=  startTime + ' | ' + item['pubContent']['title'] 
@@ -226,7 +245,7 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 					if 'series' in item:
 						serieName = item['series']['name']
 						serieLink = 'http://areena.yle.fi/tv/' + item['series']['id']
-						contextMenu=[(self.FAVOURITE % 'Mark serie as favourite', 'RunScript(special://home/addons/plugin.video.yleareena/favourites.py,-add,'+serieName+', ' + serieLink+ ')')]
+						contextMenu = [ (self.createContextMenuAction(self.FAVOURITE % 'Mark as favourite', 'addFav', {'name':serieName, 'link':serieLink}) )  ]
 						if not item['title'].upper().startswith(serieName.upper()):
 							title = serieName + ': ' + title
 					else:

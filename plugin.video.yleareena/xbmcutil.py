@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
  Utility functions for xbmc. Simplifies common operations on xbmc.
- version 1.0.1
+ version 1.0.3
 """
 
 import sys,urllib,os
@@ -20,6 +20,10 @@ class ViewAddonAbstract:
 	def setVideoHandler(self, handler):
 		videoHandler = handler
    
+	def createContextMenuAction(self,title, action, params={}):
+		strParams = urllib.quote_plus(repr(params))
+		return (title, 'XBMC.RunPlugin(%s?action=%s&actionParams=%s)' % (sys.argv[0], action, strParams ))
+
 	def handle(self):
 		params = getParams()
 		view = getParam(params, "view")
@@ -36,10 +40,16 @@ class ViewAddonAbstract:
 			hdlFunc = self.viewMap[view]
 		except:
 			notification('Error', 'Could not open view: ' + view)
-		
+		if 'action' in params:			
+			actParams = eval(urllib.unquote_plus(params['actionParams']))
+			self.handleAction(params['action'], actParams )
+			
 		hdlFunc(int(pg), params)
 		endOfDir()
-
+	
+	def handleAction(self, action, params):
+		notification('Unhandled action:', action)
+	
 	def playVideo(self, link):
 		resolvedVideoLink =	self.handleVideo(link)
 		if (resolvedVideoLink!=None):
@@ -64,7 +74,8 @@ class ViewAddonAbstract:
 		liz.setProperty("IsPlayable", "false")		
 		infoLabels['Title'] = title
 		liz.setInfo( type="Video", infoLabels=infoLabels )
-		liz.addContextMenuItems(contextMenu)
+		if len(contextMenu)>0: 
+			liz.addContextMenuItems(contextMenu, True)
 		xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=u,listitem=liz, isFolder=True)
 	
 	def addVideoLink(self, title, link, img, infoLabels={}, contextMenu=[]):
@@ -75,7 +86,7 @@ class ViewAddonAbstract:
 		liz.setProperty("IsPlayable", "true")
 		infoLabels['Title'] = title
 		liz.setInfo( type="Video", infoLabels=infoLabels )
-		liz.addContextMenuItems(contextMenu)
+		liz.addContextMenuItems(contextMenu, True)
 		xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=u,listitem=liz, isFolder=False)
 
 	def addDirectVideoLink(self, name, link, img):
@@ -87,8 +98,8 @@ class ViewAddonAbstract:
 		xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=u,listitem=liz, isFolder=False)
 	
 	def setAddonId(self, addonId):
-		self.addonInst = xbmcaddon.Addon(addonId)
-		self.BASE_PATH = self.addonInst.getAddonInfo('path')
+		self.addon = xbmcaddon.Addon(id=addonId)
+		self.BASE_PATH = self.addon.getAddonInfo('path')
 	
 
 def addDir(name, page, autoplay, isPlayable = True):
