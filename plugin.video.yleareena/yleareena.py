@@ -65,11 +65,11 @@ day_minus_4 = str(datetime.date.today() + datetime.timedelta(days=-4))
 day_minus_5 = str(datetime.date.today() + datetime.timedelta(days=-5))
 def relativeDay(day):
 	if day==tomorrow:
-		return u'Huomenna'
+		return lang(30019)
 	if day==today:
-		return u'Täänän'
+		return lang(30011)
 	if day==yesterday:
-		return u'Eilen'
+		return lang(30010)
 	if day==day_minus_2:
 		return getWeekday(datetime.date.today().weekday()-2) + ' (' + day + ')'
 	if day==day_minus_3:
@@ -85,25 +85,20 @@ def relativeDay(day):
 
 def getWeekday(weekday):
 	if weekday<0: weekday+=7
-	if weekday==0: return u'Maanantai'
-	if weekday==1: return u'Tiistai'
-	if weekday==2: return u'Keskiviikko'
-	if weekday==3: return u'Torstai'
-	if weekday==4: return u'Perjantai'
-	if weekday==5: return u'Lauantai'
-	if weekday==6: return u'Sunnuntai'
+	if weekday==0: return lang(30012)
+	if weekday==1: return lang(30013)
+	if weekday==2: return lang(30014)
+	if weekday==3: return lang(30015)
+	if weekday==4: return lang(30016)
+	if weekday==5: return lang(30017)
+	if weekday==6: return lang(30018)
 	
 class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
-	GROUP = u'   [COLOR blue]%s[/COLOR]'
-	NEXT = '[COLOR blue]   ➔  NEXT  ➔[/COLOR]'
-	EXPIRES_HOURS = u'[COLOR red]%dh[/COLOR] %s'
-	EXPIRES_DAYS = u'[COLOR brown]%dpv[/COLOR] %s'
-	FAVOURITE = u'[COLOR yellow]★[/COLOR] %s'
-	REMOVE = u'[COLOR red]✖[/COLOR] %s'	
+	ADDON_ID = 'plugin.video.yleareena'
 	
 	def __init__(self):
-		self.setAddonId('plugin.video.yleareena')
-
+		xbmcUtil.ViewAddonAbstract.__init__(self)
+		self.initConst()
 		self.favSeries = {}
 		self.initFavourites()
  		self.addHandler(None, self.handleMain)
@@ -111,6 +106,14 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 		self.addHandler('serie', self.handleSerie)
 		self.addHandler('live', self.handleLive)
 	
+	def initConst(self):
+		self.NEXT = '[COLOR blue]   ➔  %s  ➔[/COLOR]' % self.lang(30001)
+		self.GROUP = u'   [COLOR blue]%s[/COLOR]'
+		self.EXPIRES_HOURS = u'[COLOR red]%d' + self.lang(30002) + '[/COLOR] %s'
+		self.EXPIRES_DAYS = u'[COLOR brown]%d' + self.lang(30003) + '[/COLOR] %s'
+		self.FAVOURITE = '[COLOR yellow]★[/COLOR] %s'
+		self.REMOVE = u'[COLOR red]✖[/COLOR] %s' % self.lang(30004)
+		
 	def initFavourites(self):
 		fav = self.addon.getSetting("fav")
 		if fav:
@@ -122,19 +125,19 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 				pass
 		
 	def handleMain(self, pg, args):
-		self.addViewLink('» Ohjelmat','programs',1, {'link':'http://areena.yle.fi/tv/kaikki.json?jarjestys=ao' } )
-		self.addViewLink('Uutiset','serie', 1, {'link':'http://areena.yle.fi/tv/uutiset/kaikki.json?jarjestys=uusin', 'grouping':True } )
-		self.addViewLink('Suora','live', 0, {'link':'http://areena.yle.fi/tv/suora.json?from=0&to=24' } )
-		self.addViewLink('Lapset','serie', 1, {'link':'http://areena.yle.fi/tv/lapset/kaikki.json?jarjestys=uusin', 'grouping':True } )
-		self.addViewLink('Sarjat ja elokuvat','serie', 1, {'link':'http://areena.yle.fi/tv/sarjat-ja-elokuvat/kaikki.json?jarjestys=uusin', 'grouping':True } )
-		self.addViewLink('Viihde ja kulttuuri','serie', 1, {'link':'http://areena.yle.fi/tv/viihde-ja-kulttuuri/kaikki.json?jarjestys=uusin', 'grouping':True } )
-		self.addViewLink('Dokumentit ja fakta','serie', 1, {'link':'http://areena.yle.fi/tv/dokumentit-ja-fakta/kaikki.json?jarjestys=uusin', 'grouping':True } )
-		self.addViewLink('Urheilu','serie', 1, {'link':'http://areena.yle.fi/tv/urheilu/kaikki.json?jarjestys=uusin', 'grouping':True } )
+		self.addViewLink('» ' + self.lang(30020),'programs',1, {'link':'http://areena.yle.fi/tv/kaikki.json?jarjestys=ao' } )
+		self.addViewLink(self.lang(30021),'serie', 1, {'link':'http://areena.yle.fi/tv/uutiset/kaikki.json?jarjestys=uusin', 'grouping':True } )
+		self.addViewLink(self.lang(30022),'live', 0, {'link':'http://areena.yle.fi/tv/suora.json?from=0&to=24' } )
+		self.addViewLink(self.lang(30023),'serie', 1, {'link':'http://areena.yle.fi/tv/lapset/kaikki.json?jarjestys=uusin', 'grouping':True } )
+		self.addViewLink(self.lang(30024),'serie', 1, {'link':'http://areena.yle.fi/tv/sarjat-ja-elokuvat/kaikki.json?jarjestys=uusin', 'grouping':True } )
+		self.addViewLink(self.lang(30025),'serie', 1, {'link':'http://areena.yle.fi/tv/viihde-ja-kulttuuri/kaikki.json?jarjestys=uusin', 'grouping':True } )
+		self.addViewLink(self.lang(30026),'serie', 1, {'link':'http://areena.yle.fi/tv/dokumentit-ja-fakta/kaikki.json?jarjestys=uusin', 'grouping':True } )
+		self.addViewLink(self.lang(30027),'serie', 1, {'link':'http://areena.yle.fi/tv/urheilu/kaikki.json?jarjestys=uusin', 'grouping':True } )
 		
 		for key in  self.favSeries.iterkeys():
 			self.addViewLink(self.FAVOURITE % key, 'serie', 1, 
 							{'link':self.favSeries[key] + '.json?from=0&to=24&sisalto=ohjelmat'},
-							[(self.createContextMenuAction(self.REMOVE % 'Remove', 'removeFav', {'name':key}) )] )
+							[(self.createContextMenuAction(self.REMOVE, 'removeFav', {'name':key}) )] )
 	
 	def handlePrograms(self, pg, args):
 		link = args['link']+self.getPageQuery(pg, 100) if 'link' in args else ''
@@ -151,7 +154,7 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 						title = self.FAVOURITE % title
 						cxm = []
 					else:
-						cxm = [ (self.createContextMenuAction(self.FAVOURITE % 'Mark as favourite', 'addFav', {'name':title, 'link':link}) )  ]
+						cxm = [ (self.createContextMenuAction(self.FAVOURITE % self.lang(30005), 'addFav', {'name':title, 'link':link}) )  ]
 					self.addViewLink(title,'serie',1, {'link':link }, infoLabels={'plot': serie['shortDesc']},contextMenu=cxm )
 			if len(items['search']['results']) == 100:
 					self.addViewLink(self.NEXT,'programs', pg+1, args )
@@ -161,12 +164,12 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 			self.favSeries[params['name'].encode("utf-8")] = params['link']
 			favStr = repr(self.favSeries)
 			self.addon.setSetting('fav', favStr)
-			xbmcUtil.notification('Success', "Added: " + params['name'].encode("utf-8") )
+			xbmcUtil.notification(self.lang(30006), params['name'].encode("utf-8") )
 		elif action=='removeFav':
 			self.favSeries.pop(params['name'])
 			favStr = repr(self.favSeries)
 			self.addon.setSetting('fav', favStr)
-			xbmcUtil.notification('Removed', unicode(params['name'], "utf-8").encode("utf-8") )
+			xbmcUtil.notification(self.lang(30007), unicode(params['name'], "utf-8").encode("utf-8") )
 		else:
 			super(ViewAddonAbstract, self).handleAction(self, action, params)
 		
@@ -186,7 +189,7 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 		if 'upcoming' in items:
 			for days in items['upcoming']:
 				day = relativeDay( days['day'][:10])
-				if day != u'Täänän': 
+				if day != self.lang(30011): 
 					self.addVideoLink('   [COLOR blue]' + day + '[/COLOR]', '', '')
 				
 				for item in days['items']:
@@ -230,13 +233,13 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 					
 					duration = str(item['durationSec'])	if 'durationSec' in item else ''
 					plot = item['desc'] if 'desc' in item and item['desc'] != None else ''
-					plot += '\r\nPublished: ' + item['published'] if 'published' in item else ''
+					plot += '\r\n%s: %s' % (self.lang(30008),item['published']) if 'published' in item else ''
 					
 					expiresInHours = -1
 					if 'expires' in item and item['expires'] != None:
 						try:
 							expiresInHours = int((time.mktime(time.strptime(item['expires'], "%Y-%m-%dT%H:%M:%S")) - time.time())/(60*60))
-							plot += u"\n\rExpires: " + str(item['expires'])
+							plot += u"\n\r%s: %s" % (self.lang(30009), str(item['expires']) )
 						except:
 							xbmc.log('Could not parse ' + item['expires'], level=xbmc.LOGWARNING )							
 						
@@ -245,7 +248,7 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 					if 'series' in item:
 						serieName = item['series']['name']
 						serieLink = 'http://areena.yle.fi/tv/' + item['series']['id']
-						contextMenu = [ (self.createContextMenuAction(self.FAVOURITE % 'Mark as favourite', 'addFav', {'name':serieName, 'link':serieLink}) )  ]
+						contextMenu = [ (self.createContextMenuAction(self.FAVOURITE % self.lang(30005), 'addFav', {'name':serieName, 'link':serieLink}) )  ]
 						if not item['title'].upper().startswith(serieName.upper()):
 							title = serieName + ': ' + title
 					else:
@@ -253,7 +256,7 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 					if grouping:						
 						if 'published' in item and groupName != relativeDay(item['published'][:10]):
 							groupName = relativeDay(item['published'][:10])
-							if groupName != u'Täänän':
+							if groupName != self.lang(30011):
 								self.addVideoLink(self.GROUP % groupName, '', '')
 					
 					if expiresInHours<24 and expiresInHours>=0:
@@ -273,4 +276,5 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 #-----------------------------------
 
 yleAreenaAddon = YleAreenaAddon()
+lang = yleAreenaAddon.lang
 yleAreenaAddon.handle()

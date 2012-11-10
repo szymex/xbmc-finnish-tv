@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
  Utility functions for xbmc. Simplifies common operations on xbmc.
- version 1.0.3
+ version 1.1.0
 """
 
 import sys,urllib,os
@@ -11,7 +11,13 @@ import xbmcplugin,xbmcgui, xbmc,xbmcaddon
 class ViewAddonAbstract:
 	viewMap = {}
 	BASE_PATH=""
-
+	ADDON_ID=None
+	
+	def __init__(self):
+		self.addon = xbmcaddon.Addon(id=self.ADDON_ID)
+		self.BASE_PATH = self.addon.getAddonInfo('path')
+		self.lang = self.addon.getLocalizedString
+	
 	def addHandler(self, name, handler):
 		if (len(self.viewMap)==0):
 			self.viewMap[None] = handler
@@ -96,11 +102,7 @@ class ViewAddonAbstract:
 		liz.setProperty("IsPlayable", "true")
 		liz.setInfo( type="Video", infoLabels={ "Title": name } )
 		xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=u,listitem=liz, isFolder=False)
-	
-	def setAddonId(self, addonId):
-		self.addon = xbmcaddon.Addon(id=addonId)
-		self.BASE_PATH = self.addon.getAddonInfo('path')
-	
+		
 
 def addDir(name, page, autoplay, isPlayable = True):
 	u=sys.argv[0] + "?page=" + str(page)

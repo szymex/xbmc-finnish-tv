@@ -158,9 +158,9 @@ day_minus_4 = (datetime.date.today() + datetime.timedelta(days=-4)).strftime("%d
 day_minus_5 = (datetime.date.today() + datetime.timedelta(days=-5)).strftime("%d.%m.%Y").lstrip('0')
 def relativeDay(day, emptyToday=False):
 	if day==today:
-		return u'Täänän' if not emptyToday else ''
+		return lang(30011) if not emptyToday else '' #today
 	if day==yesterday:
-		return u'Eilen'
+		return lang(30010) #yesterday
 	if day==day_minus_2:
 		return getWeekday(datetime.date.today().weekday()-2) + ' (' + day + ')'
 	if day==day_minus_3:
@@ -174,45 +174,48 @@ def relativeDay(day, emptyToday=False):
 
 def getWeekday(weekday):
 	if weekday<0: weekday+=7
-	if weekday==0: return u'Maanantai'
-	if weekday==1: return u'Tiistai'
-	if weekday==2: return u'Keskiviikko'
-	if weekday==3: return u'Torstai'
-	if weekday==4: return u'Perjantai'
-	if weekday==5: return u'Lauantai'
-	if weekday==6: return u'Sunnuntai'
+	if weekday==0: return lang(30012)
+	if weekday==1: return lang(30013)
+	if weekday==2: return lang(30014)
+	if weekday==3: return lang(30015)
+	if weekday==4: return lang(30016)
+	if weekday==5: return lang(30017)
+	if weekday==6: return lang(30018)
 
 	
 class RuutuAddon (xbmcUtil.ViewAddonAbstract):
-	GROUP_FORMAT = u'   [COLOR blue]%s[/COLOR]'
-	NEXT = '[COLOR blue]   ➔  NEXT  ➔[/COLOR]'
-	EXPIRES_HOURS = u'[COLOR red]%dh[/COLOR] %s'
-	EXPIRES_DAYS = u'[COLOR brown]%dpv[/COLOR] %s'
-	FAVOURITE = '[COLOR yellow]★[/COLOR] %s'
-	REMOVE = u'[COLOR red]✖[/COLOR] %s'
+	ADDON_ID = 'plugin.video.ruutu'
 	
 	def __init__(self):
-		self.setAddonId('plugin.video.ruutu')
-		
+		xbmcUtil.ViewAddonAbstract.__init__(self)
+		self.initConst()
 		self.addHandler(None, self.handleMain)
 		self.addHandler('category', self.handleCategory)
 		self.addHandler('serie', self.handleSeries)
 		self.addHandler('programs', self.handlePrograms)
 		self.favourites = {}
 		self.initFavourites()
+		
+	def initConst(self):
+		self.NEXT = '[COLOR blue]   ➔  %s  ➔[/COLOR]' % self.lang(30001)
+		self.GROUP_FORMAT = u'   [COLOR blue]%s[/COLOR]'
+		self.EXPIRES_HOURS = u'[COLOR red]%d' + self.lang(30002) + '[/COLOR] %s'
+		self.EXPIRES_DAYS = u'[COLOR brown]%d' + self.lang(30003) + '[/COLOR] %s'
+		self.FAVOURITE = '[COLOR yellow]★[/COLOR] %s'
+		self.REMOVE = u'[COLOR red]✖[/COLOR] %s' % self.lang(30004)
+	
 
 	def handleMain(self, pg, args):
-		self.addViewLink('›› Ohjelmat','programs',1 )
-		self.addViewLink('Uusimmat','category',1, {'link':'http://www.ruutu.fi/views_cacheable_pager/videos/block_1?page=0%2C','grouping':True, 'pg-size':10 } )
-		self.addViewLink('Katsotuimmat','category',1, {'link':'http://www.ruutu.fi/views_cacheable_pager/videos/block_6?page=0%2C0%2C0%2C0%2C', 'pg-size':10 } ) #yhden viikon ajalta
-		self.addViewLink('Uutiset','category',1, {'link':'http://www.ruutu.fi/views_cacheable_pager/videos_by_series/episodes_1/164876?page=0%2C','grouping':True, 'pg-size':10 } )
-		self.addViewLink('Urheilu','category',1, {'link':'http://www.ruutu.fi/views_cacheable_pager/videos/block_2?page=0%2C','grouping':True, 'pg-size':10 } )
-		self.addViewLink('Lapset','category',1, {'link':'http://www.ruutu.fi/views_cacheable_pager/videos/block_3?page=0%2C','grouping':True, 'pg-size':5 } )
-		self.addViewLink('Ruoka','category',1, {'link':'http://www.ruutu.fi/views_cacheable_pager/theme_liftups/block_8/Ruoka?page=0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C','grouping':'True' } )
+		self.addViewLink('›› ' + self.lang(30020),'programs',1 )
+		self.addViewLink(self.lang(30028),'category',1, {'link':'http://www.ruutu.fi/views_cacheable_pager/videos/block_1?page=0%2C','grouping':True, 'pg-size':10 } )
+		self.addViewLink(self.lang(30029),'category',1, {'link':'http://www.ruutu.fi/views_cacheable_pager/videos/block_6?page=0%2C0%2C0%2C0%2C', 'pg-size':10 } ) #yhden viikon ajalta
+		self.addViewLink(self.lang(30021),'category',1, {'link':'http://www.ruutu.fi/views_cacheable_pager/videos_by_series/episodes_1/164876?page=0%2C','grouping':True, 'pg-size':10 } )
+		self.addViewLink(self.lang(30027),'category',1, {'link':'http://www.ruutu.fi/views_cacheable_pager/videos/block_2?page=0%2C','grouping':True, 'pg-size':10 } )
+		self.addViewLink(self.lang(30023),'category',1, {'link':'http://www.ruutu.fi/views_cacheable_pager/videos/block_3?page=0%2C','grouping':True, 'pg-size':5 } )
+		self.addViewLink(self.lang(30029),'category',1, {'link':'http://www.ruutu.fi/views_cacheable_pager/theme_liftups/block_8/Ruoka?page=0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C','grouping':'True' } )
 		for title, link in self.favourites.items():
-			t = title
-			
-			cm = [ (self.createContextMenuAction(self.REMOVE % 'Remove', 'removeFav', {'name':t} ) ) ]
+			t = title			
+			cm = [ (self.createContextMenuAction(self.REMOVE, 'removeFav', {'name':t} ) ) ]
 			self.addViewLink(self.FAVOURITE % t,'serie',1, {'link':link, 'pg-size':10}, cm )
 	
 	def initFavourites(self):
@@ -251,7 +254,7 @@ class RuutuAddon (xbmcUtil.ViewAddonAbstract):
 		if items != None:			
 			for item in items:
 				if grouping and groupName != relativeDay(item['published'], True):
-					groupName = relativeDay(item['published'], True)
+					groupName = relativeDay(item['published'], len(groupName)==0)
 					self.addVideoLink(self.GROUP_FORMAT % groupName, '', '')
 
 				title = item['title']
@@ -290,10 +293,10 @@ class RuutuAddon (xbmcUtil.ViewAddonAbstract):
 		for serie in serieList:
 			try:				
 				title = serie['name'].encode('utf-8')
-				menu = [ (self.createContextMenuAction(self.FAVOURITE % 'Mark as favourite', 'addFav', {'name':serie['name'], 'link':serie['link']} ) ) ]
+				menu = [ (self.createContextMenuAction(self.FAVOURITE % self.lang(30005), 'addFav', {'name':serie['name'], 'link':serie['link']} ) ) ]
 				if self.isFavourite(title):
 					title = self.FAVOURITE % title
-					menu = [ (self.createContextMenuAction(self.REMOVE % 'Remove', 'removeFav', {'name':serie['name']} ) ) ]
+					menu = [ (self.createContextMenuAction(self.REMOVE, 'removeFav', {'name':serie['name']} ) ) ]
 				
 				self.addViewLink(title , 'serie', 1, {'link':serie['link'], 'pg-size':10}, menu)
 			except:
@@ -304,12 +307,12 @@ class RuutuAddon (xbmcUtil.ViewAddonAbstract):
 			self.favourites[params['name'].encode("utf-8")] = params['link']
 			favStr = repr(self.favourites)
 			self.addon.setSetting('fav', favStr)
-			xbmcUtil.notification('Success', "Added: " + params['name'].encode("utf-8") )
+			xbmcUtil.notification(self.lang(30006), params['name'].encode("utf-8") )
 		elif action=='removeFav':
 			self.favourites.pop(params['name'])
 			favStr = repr(self.favourites)
 			self.addon.setSetting('fav', favStr)
-			xbmcUtil.notification('Removed', unicode(params['name'], "utf-8").encode("utf-8") )
+			xbmcUtil.notification(self.lang(30007), params['name'].encode("utf-8") )
 		else:
 			super(ViewAddonAbstract, self).handleAction(self, action, params)
 		
@@ -319,4 +322,5 @@ class RuutuAddon (xbmcUtil.ViewAddonAbstract):
 #-----------------------------------
 
 ruutu = RuutuAddon()
+lang = ruutu.lang
 ruutu.handle()
