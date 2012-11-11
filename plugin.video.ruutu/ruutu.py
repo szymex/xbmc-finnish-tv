@@ -108,7 +108,7 @@ def scrapPager(url):
 			
 			selAvailabilityText = it.select('.availability-text')
 			availabilityText = selAvailabilityText[0].string.strip() if len(selAvailabilityText)>0 else ''
-			desc += '\n\r' + availabilityText
+			#desc += '\n\r' + availabilityText
 			
 			selDetails = it.select('.details .field-type-text')
 			details = selDetails[0].string.strip() if len(selDetails)>0 and selDetails[0].string!=None else ''
@@ -118,7 +118,7 @@ def scrapPager(url):
 				published = str
 
 			retList.append( {'title':title, 'episodeNum':episodeNum, 'link':"http://www.ruutu.fi" + link, 'image':image, 'duration': duration, 
-							'published':published, 'available': available, 'desc':desc, 'details':details });
+							'published':published,'available-text':availabilityText, 'available': available, 'desc':desc, 'details':details });
 	except urllib2.HTTPError:
 		retList=[];	
 
@@ -271,13 +271,20 @@ class RuutuAddon (xbmcUtil.ViewAddonAbstract):
 				av = item['available']
 				expiresInHours = int((int(av) - time.time())/(60*60))
 				
+				availableText = item['available-text']
 				if expiresInHours<24 and expiresInHours>=0:
 					title = self.EXPIRES_HOURS % (expiresInHours, title)
+					availableText = '[COLOR red]%s[/COLOR]' % availableText
 				elif expiresInHours<=120 and expiresInHours>=0:
 					title = self.EXPIRES_DAYS % (expiresInHours/24, title)
-				plot = '[B]%s[/B]\n\r%s\n\r%s' % (item['details'], item['episodeNum'], item['desc'])
-				#episodeNum = int(item['episodeNum']) if 'episodeNum' in item else None
+					availableText = '[COLOR red]%s[/COLOR]' % availableText
+				
+				plot = '[B]%s[/B]\n\r%s\n\r%s\n\r%s' % (item['details'], item['episodeNum'], item['desc'], availableText)
+
 				episodeNum = None
+				if 'episodeNum' in item:
+					episodeMatch = re.compile("Jakso ([0-9]*)", re.DOTALL).findall(item['episodeNum'])
+					episodeNum = int(episodeMatch[0]) if len(episodeMatch)>0 else None
 
 				self.addVideoLink(title , item['link'], item['image'], infoLabels={'plot':plot, 'episode': episodeNum,'aired': item['published'] , 'duration':item['duration']})
 			if len(items)>0 and len(items)>=pgSize:

@@ -240,10 +240,12 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 					plot += '\r\n%s: %s' % (self.lang(30008),published) if published != '' else ''
 					
 					expiresInHours = -1
+					expiresText = None
 					if 'expires' in item and item['expires'] != None:
 						try:
 							expiresInHours = int((time.mktime(time.strptime(item['expires'], "%Y-%m-%dT%H:%M:%S")) - time.time())/(60*60))
-							plot += u"\n\r%s: %s" % (self.lang(30009), str(item['expires']) )
+							#plot += u"\n\r%s: %s" % (self.lang(30009), str(item['expires']) )
+							expiresText = item['expires'].replace('T', ' ')
 						except:
 							xbmc.log('Could not parse ' + item['expires'], level=xbmc.LOGWARNING )							
 						
@@ -265,8 +267,13 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 					
 					if expiresInHours<24 and expiresInHours>=0:
 						title = self.EXPIRES_HOURS % (expiresInHours, title);
+						expiresText = '[COLOR red]%s[/COLOR]' % expiresText
 					elif expiresInHours<120 and expiresInHours>=0:
 						title = self.EXPIRES_DAYS % (expiresInHours/24, title);
+						expiresText = '[COLOR red]%s[/COLOR]' % expiresText
+						
+					plot = plot + u"\n\r%s: %s" % (self.lang(30009), expiresText) if expiresText != None else plot
+
 					self.addVideoLink(title, link, img, infoLabels={'duration':duration, 'plot': plot, 'episode': episodeNumber,'aired': published, 'date': published }, contextMenu=contextMenu)
 				
 				if len(items['search']['results']) == self.DEFAULT_PAGE_SIZE:
