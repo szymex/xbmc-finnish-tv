@@ -143,6 +143,7 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 		link = args['link']+self.getPageQuery(pg, 100) if 'link' in args else ''
 		if link != '':
 			items = readJSON(link)
+			xbmcplugin.setContent(int(sys.argv[1]), 'tvshows')
 			for item in items['search']['results']:
 				if 'series' in item:
 					serie = item['series']
@@ -176,6 +177,7 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 	def handleLive(self, pg, args):
 		items = readJSON(args['link'])
 
+		xbmcplugin.setContent(int(sys.argv[1]), 'episodes')
 		for i in range(0, len(items['current'])) :
 			item = items['current'][i]
 
@@ -222,18 +224,20 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 		if link != '':
 			items = readJSON(link)
 			if 'search' in items:
+				xbmcplugin.setContent(int(sys.argv[1]), 'episodes')
 				for item in items['search']['results']:
 					title = item['title']
 					episodeNumber = ''
 					if 'episodeNumber' in item and int(item['episodeNumber'])<1000:				
-						episodeNumber = str(item['episodeNumber'])
-						title += ' #' + episodeNumber
+						episodeNumber = int(item['episodeNumber'])
+						title += ' #' + str(episodeNumber)
 					#elif 'published' in item:
 					#	title += ' #' + item['published'][:10]
 					
+					published = item['published'].replace('T', ' ') if 'published' in item else ''
 					duration = str(item['durationSec'])	if 'durationSec' in item else ''
 					plot = item['desc'] if 'desc' in item and item['desc'] != None else ''
-					plot += '\r\n%s: %s' % (self.lang(30008),item['published']) if 'published' in item else ''
+					plot += '\r\n%s: %s' % (self.lang(30008),published) if published != '' else ''
 					
 					expiresInHours = -1
 					if 'expires' in item and item['expires'] != None:
@@ -263,8 +267,7 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 						title = self.EXPIRES_HOURS % (expiresInHours, title);
 					elif expiresInHours<120 and expiresInHours>=0:
 						title = self.EXPIRES_DAYS % (expiresInHours/24, title);
-					
-					self.addVideoLink(title, link, img, infoLabels={'duration':duration, 'plot': plot, 'episode': episodeNumber, 'date': item['published'] }, contextMenu=contextMenu)
+					self.addVideoLink(title, link, img, infoLabels={'duration':duration, 'plot': plot, 'episode': episodeNumber,'aired': published, 'date': published }, contextMenu=contextMenu)
 				
 				if len(items['search']['results']) == self.DEFAULT_PAGE_SIZE:
 					self.addViewLink(self.NEXT,'serie', pg+1, args )

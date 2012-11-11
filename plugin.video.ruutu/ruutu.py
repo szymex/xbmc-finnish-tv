@@ -251,7 +251,8 @@ class RuutuAddon (xbmcUtil.ViewAddonAbstract):
 		grouping = args['grouping'] if 'grouping' in args else False
 		pgSize = int(args['pg-size']) if 'pg-size' in args else -1
 		groupName = ''
-		if items != None:			
+		if items != None:		
+			xbmcplugin.setContent(int(sys.argv[1]), 'episodes')		
 			for item in items:
 				if grouping and groupName != relativeDay(item['published'], True):
 					groupName = relativeDay(item['published'], len(groupName)==0)
@@ -275,8 +276,10 @@ class RuutuAddon (xbmcUtil.ViewAddonAbstract):
 				elif expiresInHours<=120 and expiresInHours>=0:
 					title = self.EXPIRES_DAYS % (expiresInHours/24, title)
 				plot = '[B]%s[/B]\n\r%s\n\r%s' % (item['details'], item['episodeNum'], item['desc'])
+				#episodeNum = int(item['episodeNum']) if 'episodeNum' in item else None
+				episodeNum = None
 
-				self.addVideoLink(title , item['link'], item['image'], infoLabels={'plot':plot, 'duration':item['duration']})
+				self.addVideoLink(title , item['link'], item['image'], infoLabels={'plot':plot, 'episode': episodeNum,'aired': item['published'] , 'duration':item['duration']})
 			if len(items)>0 and len(items)>=pgSize:
 				self.addViewLink(self.NEXT,handler, pg+1, args )
 			
