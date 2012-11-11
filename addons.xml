@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addons>
+<addon id="plugin.video.ruutu"
+       name="Ruutu.fi"
+       version="1.1.0"
+       provider-name="szymex">
+  <requires>
+    <import addon="xbmc.python" version="2.0"/>
+    <import addon="script.module.parsedom" version="0.9.1"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="ruutu.py">
+        <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary>Ruutu.fi</summary>
+    <description>Finnish tv programs from channels: Nelonen, Liv, Jim</description>
+    <platform>all</platform>
+  </extension>
+</addon>
+
+<addon id="plugin.video.yleareena"
+       name="YLE Areena"
+       version="1.1.0"
+       provider-name="szymex">
+  <requires>
+    <import addon="xbmc.python" version="2.0"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="yleareena.py">
+        <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary>YLE Areena</summary>
+    <description>http://areena.yle.fi</description>
+    <platform>all</platform>
+  </extension>
+</addon>
+
+<addon id="repository.finnish-tv" name="Finnish TV" version="1.0.0" provider-name="szymex">
+	<extension point="xbmc.addon.repository" name="Finnish TV">
+		<info compressed="false">https://raw.github.com/szymex/xbmc-finnish-tv/master/addons.xml</info>
+		<checksum>https://raw.github.com/szymex/xbmc-finnish-tv/master/addons.xml.md5</checksum>
+		<datadir zip="false">https://raw.github.com/szymex/xbmc-finnish-tv/master/</datadir>
+	</extension>
+	<extension point="xbmc.addon.metadata">
+		<summary>Add-ons for finnish tv</summary>
+		<platform>all</platform>
+	</extension>
+</addon>
+</addons>
