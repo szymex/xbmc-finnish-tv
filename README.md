@@ -15,12 +15,12 @@ Download: [repository.finnish-tv-1.0.0.zip](https://github.com/downloads/szymex/
 
 ### YLE Areena
 
-Download: [plugin.video.yleareena-1.1.0.zip](https://github.com/downloads/szymex/xbmc-finnish-tv/plugin.video.yleareena-v1.1.0.zip)
+Download: [plugin.video.yleareena-1.2.0.zip](https://github.com/downloads/szymex/xbmc-finnish-tv/plugin.video.yleareena-v1.2.0.zip)
 
 *Credit goes to Antti Ajanki for developing [yle-dl](https://github.com/aajanki/yle-dl) library.*
 
 ### Ruutu.fi
-Download: [plugin.video.ruutu-v1.1.0.zip](https://github.com/downloads/szymex/xbmc-finnish-tv/plugin.video.ruutu-1.1.0.zip)
+Download: [plugin.video.ruutu-v1.2.0.zip](https://github.com/downloads/szymex/xbmc-finnish-tv/plugin.video.ruutu-1.2.0.zip)
 
 ## LICENSE
 This software is released under the [GPL 3.0 license](http://www.gnu.org/licenses/gpl-3.0.html).
