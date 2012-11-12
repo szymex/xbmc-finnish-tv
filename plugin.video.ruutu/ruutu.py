@@ -99,7 +99,8 @@ def scrapPager(url):
 			if len(episodeNum)>0: episodeNum = episodeNum[1:]
 			selDuration = it.select('.field-name-field-duration')
 			duration = selDuration[0].string.strip() if len(selDuration)>0 else ''
-			
+			duration = duration.replace(' min','')
+
 			selAvailability = it.select('.availability-timestamp')
 			available = selAvailability[0].string.strip() if len(selAvailability)>0 else '0'
 			
@@ -282,11 +283,14 @@ class RuutuAddon (xbmcUtil.ViewAddonAbstract):
 				plot = '[B]%s[/B]\n\r%s\n\r%s\n\r%s' % (item['details'], item['episodeNum'], item['desc'], availableText)
 
 				episodeNum = None
+				seasonNum = None
 				if 'episodeNum' in item:
 					episodeMatch = re.compile("Jakso ([0-9]*)", re.DOTALL).findall(item['episodeNum'])
 					episodeNum = int(episodeMatch[0]) if len(episodeMatch)>0 else None
+					seasonMatch = re.compile("Kausi ([0-9]*)", re.DOTALL).findall(item['episodeNum'])
+					seasonNum = int(seasonMatch[0]) if len(seasonMatch)>0 else None
 
-				self.addVideoLink(title , item['link'], item['image'], infoLabels={'plot':plot, 'episode': episodeNum,'aired': item['published'] , 'duration':item['duration']})
+				self.addVideoLink(title , item['link'], item['image'], infoLabels={'plot':plot,'season':seasonNum, 'episode': episodeNum,'aired': item['published'] , 'duration':item['duration']})
 			if len(items)>0 and len(items)>=pgSize:
 				self.addViewLink(self.NEXT,handler, pg+1, args )
 			
