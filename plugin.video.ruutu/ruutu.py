@@ -209,7 +209,7 @@ class RuutuAddon (xbmcUtil.ViewAddonAbstract):
 	def handleMain(self, pg, args):
 		self.addViewLink('›› ' + self.lang(30020),'programs',1 )
 		self.addViewLink(self.lang(30028),'category',1, {'link':'http://www.ruutu.fi/views_cacheable_pager/videos/block_1?page=0%2C','grouping':True, 'pg-size':10 } )
-		self.addViewLink(self.lang(30029),'category',1, {'link':'http://www.ruutu.fi/views_cacheable_pager/videos/block_6?page=0%2C0%2C0%2C0%2C', 'pg-size':10 } ) #yhden viikon ajalta
+		self.addViewLink(self.lang(30030),'category',1, {'link':'http://www.ruutu.fi/views_cacheable_pager/videos/block_6?page=0%2C0%2C0%2C0%2C', 'pg-size':10 } ) #yhden viikon ajalta
 		self.addViewLink(self.lang(30021),'category',1, {'link':'http://www.ruutu.fi/views_cacheable_pager/videos_by_series/episodes_1/164876?page=0%2C','grouping':True, 'pg-size':10 } )
 		self.addViewLink(self.lang(30027),'category',1, {'link':'http://www.ruutu.fi/views_cacheable_pager/videos/block_2?page=0%2C','grouping':True, 'pg-size':10 } )
 		self.addViewLink(self.lang(30023),'category',1, {'link':'http://www.ruutu.fi/views_cacheable_pager/videos/block_3?page=0%2C','grouping':True, 'pg-size':5 } )
