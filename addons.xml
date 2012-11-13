@@ -2,7 +2,7 @@
 <addons>
 <addon id="plugin.video.ruutu"
        name="Ruutu.fi"
-       version="1.2.1"
+       version="1.2.2"
        provider-name="szymex">
   <requires>
     <import addon="xbmc.python" version="2.0"/>
@@ -13,14 +13,16 @@
   </extension>
   <extension point="xbmc.addon.metadata">
     <summary>Ruutu.fi</summary>
+	<language>fi en</language>
     <description>Finnish tv programs from channels: Nelonen, Liv, Jim</description>
     <platform>all</platform>
+	<nofanart>true</nofanart>
   </extension>
 </addon>
 
 <addon id="plugin.video.yleareena"
        name="YLE Areena"
-       version="1.2.0"
+       version="1.2.1"
        provider-name="szymex">
   <requires>
     <import addon="xbmc.python" version="2.0"/>
@@ -30,8 +32,10 @@
   </extension>
   <extension point="xbmc.addon.metadata">
     <summary>YLE Areena</summary>
+	<language>fi en</language>
     <description>http://areena.yle.fi</description>
     <platform>all</platform>
+	<nofanart>true</nofanart>
   </extension>
 </addon>
 
