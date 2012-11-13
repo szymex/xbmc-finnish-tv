@@ -11,7 +11,9 @@
   </extension>
   <extension point="xbmc.addon.metadata">
     <summary>YLE Areena</summary>
+	<language>fi en</language>
     <description>http://areena.yle.fi</description>
     <platform>all</platform>
+	<nofanart>true</nofanart>
   </extension>
 </addon>
