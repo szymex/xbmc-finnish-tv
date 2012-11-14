@@ -20,7 +20,7 @@ Download: [plugin.video.yleareena-1.2.1.zip](https://github.com/downloads/szymex
 *Credit goes to Antti Ajanki for developing [yle-dl](https://github.com/aajanki/yle-dl) library.*
 
 ### Ruutu.fi
-Download: [plugin.video.ruutu-v1.2.2.zip](https://github.com/downloads/szymex/xbmc-finnish-tv/plugin.video.ruutu-1.2.2.zip)
+Download: [plugin.video.ruutu-v1.2.3.zip](https://github.com/downloads/szymex/xbmc-finnish-tv/plugin.video.ruutu-1.2.3.zip)
 
 ## LICENSE
 This software is released under the [GPL 3.0 license](http://www.gnu.org/licenses/gpl-3.0.html).
