@@ -43,9 +43,9 @@ def scrapVideoLink(url):
 	req = urllib2.Request(url)
 	req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
 	response = urllib2.urlopen(req)
-	matchVideoId=re.compile('ruutuplayer.*?"http://(.*?)"').findall(response.read())
+	matchVideoId=re.compile("providerURL', '(http.*?)'").findall(response.read())
 	response.close()
-	videoUrl = urllib2.unquote( 'http://' + matchVideoId[0])
+	videoUrl = urllib2.unquote( matchVideoId[0])
 	
 	req = urllib2.Request(videoUrl)
 	req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
