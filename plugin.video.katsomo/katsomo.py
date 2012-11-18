@@ -13,24 +13,48 @@ sys.setdefaultencoding('utf8')
 class KatsomoAddon (xbmcUtil.ViewAddonAbstract):
 	ADDON_ID = 'plugin.video.katsomo'
 	GROUP = u'   [COLOR blue]%s[/COLOR]'
-	
+	REMOVE = u'[COLOR red]✖[/COLOR] %s' % 'Remove'
+	FAVOURITE = '[COLOR yellow]★[/COLOR] %s'
+
 	def __init__(self):
 		xbmcUtil.ViewAddonAbstract.__init__(self)
 		self.addHandler(None, self.handleMain)
 		self.addHandler('serie', self.handleSerie)
 		self.addHandler('programs', self.handlePrograms)
 		self.scrapper = KatsomoScrapper()
+		self.favourites = {}
+		self.initFavourites()
 
 	def handleMain(self, pg, args):
 		self.addViewLink('›› Ohjelmat','programs',1 )
+		self.addViewLink('Uusimat','serie',1, {'link':'http://m.katsomo.fi/katsomo', 'useGroups': True} )
 		self.addViewLink('Uutiset','serie',1, {'link':'http://m.katsomo.fi/katsomo/?treeId=33001', 'useGroups': True} )
 		self.addViewLink('Urheilu','serie',1, {'link':'http://m.katsomo.fi/katsomo/?treeId=33002', 'useGroups': True} )
 		self.addViewLink('Lapset','serie',1, {'link':'http://m.katsomo.fi/katsomo/?treeId=33003', 'useGroups': True} )
+		for title, link in self.favourites.items():
+			t = title			
+			cm = [ (self.createContextMenuAction(self.REMOVE, 'removeFav', {'name':t} ) ) ]
+			self.addViewLink(self.FAVOURITE % t,'serie',1, {'link':link, 'pg-size':10}, cm )
 		
+	def initFavourites(self):
+		fav = self.addon.getSetting("fav")
+		if fav:
+			try:
+				favList = eval(fav)
+				for title, link in favList.items():
+					self.favourites[title] = link
+			except:
+				pass
+
 	def handlePrograms(self, pg, args):
 		programs = self.scrapper.scrapPrograms()
 		for p in programs:
-			self.addViewLink(p['title'] ,'serie',1,{'link': p['link']})
+			title = p['title']
+			menu = [ (self.createContextMenuAction(self.FAVOURITE % 'Mark as favourite', 'addFav', {'name':p['title'], 'link':p['link']} ) ) ]
+			if p['title'] in self.favourites:
+				title = self.FAVOURITE % title
+				menu = [ (self.createContextMenuAction(self.REMOVE, 'removeFav', {'name':p['title']} ) ) ]
+			self.addViewLink(title ,'serie',1,{'link': p['link']}, menu)
 
 	def handleSerie(self, pg, args):
 		link = args['link']
@@ -48,6 +72,21 @@ class KatsomoAddon (xbmcUtil.ViewAddonAbstract):
 		
 	def handleVideo(self, link):
 		return self.scrapper.scrapVideoLink(link)
+
+	def handleAction(self, action, params):
+		if action=='addFav':
+			self.favourites[params['name'].encode("utf-8")] = params['link']
+			favStr = repr(self.favourites)
+			self.addon.setSetting('fav', favStr)
+			xbmcUtil.notification('Added', params['name'].encode("utf-8") )
+		elif action=='removeFav':
+			self.favourites.pop(params['name'])
+			favStr = repr(self.favourites)
+			self.addon.setSetting('fav', favStr)
+			xbmcUtil.notification('Removed', params['name'].encode("utf-8") )
+		else:
+			super(ViewAddonAbstract, self).handleAction(self, action, params)
+
 #-----------------------------------
 
 def formatDate(dt):

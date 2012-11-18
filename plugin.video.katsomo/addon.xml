@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="plugin.video.katsomo"
        name="Katsomo"
-       version="0.1"
+       version="1.0"
        provider-name="szymex">
   <requires>
     <import addon="xbmc.python" version="2.0"/>
@@ -12,8 +12,8 @@
   </extension>
   <extension point="xbmc.addon.metadata">
     <summary>Katsomo</summary>
-	<language>fi en</language>
-    <description></description>
+	<language>fi</language>
+    <description>TV Videos from Katsomo.fi (mtv3, sub, ava)</description>
     <platform>all</platform>
 	<nofanart>true</nofanart>
   </extension>

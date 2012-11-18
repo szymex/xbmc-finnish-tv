@@ -40,13 +40,13 @@ class KatsomoScrapper:
 			
 			timestamp = common.parseDOM(r, "p", {'class': 'timestamp'})[0]
 			ts = None
-			if not 'TULOSSA' in timestamp:
-				try:
-					ts = datetime.strptime(timestamp.replace('- ', ''), '%d.%m.%Y %H.%M')
-				except TypeError:
-					ts = datetime(*(time.strptime(timestamp.replace('- ', ''), '%d.%m.%Y %H.%M')[0:6]))				
-			else:
-				title = 'TULOSSA: ' + title
+			if 'TULOSSA' in timestamp:
+				continue;
+
+			try:
+				ts = datetime.strptime(timestamp.replace('- ', ''), '%d.%m.%Y %H.%M')
+			except TypeError:
+				ts = datetime(*(time.strptime(timestamp.replace('- ', ''), '%d.%m.%Y %H.%M')[0:6]))				
 			
 			l.append( {'link':link, 'title':title, 'img':img, 'published': timestamp, 'publ-ts': ts} )
 			
