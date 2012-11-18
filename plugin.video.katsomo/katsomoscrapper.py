@@ -33,6 +33,8 @@ class KatsomoScrapper:
 		for r in ret:
 			link = 'http://m.katsomo.fi' + common.parseDOM(r, "a", ret = "href")[0]
 			title = common.parseDOM(r, "p", {'class': 'program-name'})[0]
+			if 'class="star"' in title: continue
+				
 			title += ' ' + common.parseDOM(r, "p", {'class': 'program-abstract'})[0]
 			img = 'http://m.katsomo.fi' + common.parseDOM(r, "img", ret = "src")[0]
 			
