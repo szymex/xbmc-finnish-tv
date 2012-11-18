@@ -1,0 +1,5 @@
+1.0
+
+Initial version
+- Uses http://m.katsomo as source for videos.
+

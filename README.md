@@ -22,5 +22,9 @@ Download: [plugin.video.yleareena-1.2.1.zip](https://github.com/downloads/szymex
 ### Ruutu.fi
 Download: [plugin.video.ruutu-v1.2.3.zip](https://github.com/downloads/szymex/xbmc-finnish-tv/plugin.video.ruutu-1.2.3.zip)
 
+### Katsomo.fi
+Download: [plugin.video.katsomo-v1.0.zip](https://github.com/downloads/szymex/xbmc-finnish-tv/plugin.video.katsomo-1.0.zip)
+
+
 ## LICENSE
 This software is released under the [GPL 3.0 license](http://www.gnu.org/licenses/gpl-3.0.html).
