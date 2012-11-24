@@ -44,9 +44,30 @@ def scrapVideo(url):
 	rtmpparams = dl.get_rtmp_parameters(clip, url)
 	enc = sys.getfilesystemencoding()
 	rtmpUrl = dl.rtmp_parameters_to_url(rtmpparams).encode(enc, 'replace')
-	
-	xbmc.log(url + " -> " + rtmpUrl)
-	return rtmpUrl
+
+	media = clip.get('media', {})
+	subtitles = media.get('subtitles', [])
+	subtitlesFiles = []
+	if len(subtitles)>0:	
+		filename = url.split('/')[-1];
+		yleAreenaAddon.addon.setSetting("default-lang", 'fin')
+		download_path = os.path.join(yleAreenaAddon.addon.getSetting("downloadPath").decode("utf-8"), filename)
+		path = os.path.join(xbmc.translatePath(yleAreenaAddon.addon.getAddonInfo("profile") ).decode("utf-8"), filename)
+		
+		for sub in subtitles:
+			lang = sub.get('lang', '')
+			url = sub.get('url', None)
+			if url:
+				try:
+					subtitlefile = path + '.' + lang + '.srt'
+					enc = sys.getfilesystemencoding()
+					urllib.urlretrieve(url, subtitlefile.encode(enc, 'replace'))
+					xbmc.log('got subtitles! ' + subtitlefile)
+					subtitlesFiles.append(subtitlefile)
+				except IOError, exc:
+					xbmc.log(u'Failed to download subtitles')
+
+	return (rtmpUrl, subtitlesFiles)
 
 def readJSON(url):
 	req = urllib2.Request(url)
@@ -101,6 +122,7 @@ def getWeekday(weekday):
 	
 class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 	ADDON_ID = 'plugin.video.yleareena'
+	DEFAULT_LANG = 'fin'
 	
 	def __init__(self):
 		xbmcUtil.ViewAddonAbstract.__init__(self)
@@ -284,6 +306,31 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 				
 				if len(items['search']['results']) == self.DEFAULT_PAGE_SIZE:
 					self.addViewLink(self.NEXT,'serie', pg+1, args )
+
+	def playVideo(self, link):
+		resolvedVideoLink, subtitleFiles = scrapVideo(link)
+		if (resolvedVideoLink!=None):
+			liz=xbmcgui.ListItem(path=resolvedVideoLink)
+			xbmcplugin.setResolvedUrl(0, True, liz)
+			
+			if len(subtitleFiles)>0:
+				player = xbmc.Player()
+				i = 0				
+				while not player.isPlaying():
+					i += 1
+					time.sleep(1)
+					if i > 10:
+						break
+				defaultFound = False
+				for subfile in subtitleFiles:				
+					xbmc.Player().setSubtitles(subfile)
+					if self.DEFAULT_LANG in subfile: 
+						defaultFound = True
+				xbmc.Player().showSubtitles(defaultFound)
+
+		else:
+			print ("could not play " + link)
+			notification(header="Warning", message="Could not find video.")
 
 	def handleVideo(self, link):
 		videoLink = scrapVideo(link)
