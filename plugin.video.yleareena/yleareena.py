@@ -8,6 +8,8 @@ from datetime import date
 import time
 import datetime
 import os, sys, inspect
+import SimpleDownloader as downloader
+import string
 
 #sets default encoding to utf-8
 reload(sys) 
@@ -65,6 +67,23 @@ def scrapVideo(url):
 					xbmc.log(u'Failed to download subtitles from: ' + url)
 
 	return (rtmpUrl, subtitlesFiles)
+
+def downloadVideo(url, title):
+	valid_chars = "-_.() %s%s" % (string.ascii_letters, string.digits)
+	video_url, subtitles = scrapVideo(url)
+	params = {}
+	params["url"] = video_url
+	params["download_path"] = '/home/szymon'
+	downloadPath = yleAreenaAddon.addon.getSetting('download-path')
+	if downloadPath == None or downloadPath == '': 
+		downloadPath = '~/'
+
+	filename = "%s.mp4" % (''.join(c for c in title if c in valid_chars) )
+	#filename = 'test.mp4'
+	xbmc.log(filename + "  " + str(params))
+	dw = downloader.SimpleDownloader()
+	dw.download(filename, params)
+
 
 def readJSON(url):
 	req = urllib2.Request(url)
@@ -198,6 +217,8 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 			favStr = repr(self.favSeries)
 			self.addon.setSetting('fav', favStr)
 			xbmcUtil.notification(self.lang(30007), unicode(params['name'], "utf-8").encode("utf-8") )
+		elif action=='download':
+			downloadVideo(params['videoLink'], params['title'])
 		else:
 			super(ViewAddonAbstract, self).handleAction(self, action, params)
 		
@@ -286,6 +307,8 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 							title = serieName + ': ' + title
 					else:
 						contextMenu = []
+					contextMenu.append( (self.createContextMenuAction('Download', 'download', {'videoLink':link, 'title': title}) ) )
+
 					if grouping:						
 						if 'published' in item and groupName != relativeDay(item['published'][:10]):
 							groupName = relativeDay(item['published'][:10])
@@ -300,7 +323,7 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 						expiresText = '[COLOR red]%s[/COLOR]' % expiresText
 						
 					plot = plot + u"\n\r%s: %s" % (self.lang(30009), expiresText) if expiresText != None else plot
-
+					
 					self.addVideoLink(title, link, img, infoLabels={'duration':duration, 'plot': plot, 'episode': episodeNumber,'aired': published, 'date': published }, contextMenu=contextMenu)
 				
 				if len(items['search']['results']) == self.DEFAULT_PAGE_SIZE:
