@@ -49,10 +49,8 @@ def scrapVideo(url):
 	subtitles = media.get('subtitles', [])
 	subtitlesFiles = []
 	if len(subtitles)>0:	
-		filename = url.split('/')[-1];
-		yleAreenaAddon.addon.setSetting("default-lang", 'fin')
-		download_path = os.path.join(yleAreenaAddon.addon.getSetting("downloadPath").decode("utf-8"), filename)
-		path = os.path.join(xbmc.translatePath(yleAreenaAddon.addon.getAddonInfo("profile") ).decode("utf-8"), filename)
+		videoname = url.split('/')[-1];
+		path = os.path.join(xbmc.translatePath(yleAreenaAddon.addon.getAddonInfo("profile") ).decode("utf-8"), videoname)
 		
 		for sub in subtitles:
 			lang = sub.get('lang', '')
@@ -62,10 +60,9 @@ def scrapVideo(url):
 					subtitlefile = path + '.' + lang + '.srt'
 					enc = sys.getfilesystemencoding()
 					urllib.urlretrieve(url, subtitlefile.encode(enc, 'replace'))
-					xbmc.log('got subtitles! ' + subtitlefile)
 					subtitlesFiles.append(subtitlefile)
 				except IOError, exc:
-					xbmc.log(u'Failed to download subtitles')
+					xbmc.log(u'Failed to download subtitles from: ' + url)
 
 	return (rtmpUrl, subtitlesFiles)
 
@@ -151,6 +148,8 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 					self.favSeries[title] = link
 			except:
 				pass
+		else:
+			self.addon.setSetting("fav", repr(self.favSeries))
 		
 	def handleMain(self, pg, args):
 		self.addViewLink('» ' + self.lang(30020),'programs',1, {'link':'http://areena.yle.fi/tv/kaikki.json?jarjestys=ao' } )
@@ -316,17 +315,18 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 			if len(subtitleFiles)>0:
 				player = xbmc.Player()
 				i = 0				
-				while not player.isPlaying():
+				while not player.isPlaying() or (player.isPlaying() and resolvedVideoLink != player.getPlayingFile()):
 					i += 1
 					time.sleep(1)
 					if i > 10:
 						break
-				defaultFound = False
-				for subfile in subtitleFiles:				
-					xbmc.Player().setSubtitles(subfile)
-					if self.DEFAULT_LANG in subfile: 
-						defaultFound = True
-				xbmc.Player().showSubtitles(defaultFound)
+				if player.isPlaying() and resolvedVideoLink == player.getPlayingFile():
+					defaultFound = False
+					for subfile in subtitleFiles:				
+						xbmc.Player().setSubtitles(subfile)
+						if self.DEFAULT_LANG in subfile: 
+							defaultFound = True
+					xbmc.Player().showSubtitles(defaultFound)
 
 		else:
 			print ("could not play " + link)
