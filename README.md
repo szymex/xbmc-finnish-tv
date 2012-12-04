@@ -24,9 +24,9 @@ Download: [plugin.video.yleareena-1.3.0.zip](https://github.com/downloads/szymex
 Download: [plugin.video.ruutu-v1.2.3.zip](https://github.com/downloads/szymex/xbmc-finnish-tv/plugin.video.ruutu-1.2.3.zip)
 
 ### Katsomo.fi
-Download: [plugin.video.katsomo-v1.0.zip](https://github.com/downloads/szymex/xbmc-finnish-tv/plugin.video.katsomo-1.0.zip)
+Download: [plugin.video.katsomo-v1.0.1.zip](https://github.com/downloads/szymex/xbmc-finnish-tv/plugin.video.katsomo-1.0.1.zip)
 
-*Known issue: poor video quality*
+*Known issue: poor video quality for some videos*
 
 
 ## LICENSE
