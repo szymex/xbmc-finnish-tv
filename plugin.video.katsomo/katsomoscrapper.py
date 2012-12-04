@@ -15,6 +15,8 @@ class KatsomoScrapper:
 		xbmc.log( url )
 		req = urllib2.Request(url)
 		req.add_header('User-Agent', USER_AGENT)
+		req.add_header('Cookie', 'hq=1')
+
 		response = urllib2.urlopen(req)
 		ret = common.parseDOM(response.read(), "source", {'type': 'video/mp4'}, ret = "src")
 		if len(ret)>0:
