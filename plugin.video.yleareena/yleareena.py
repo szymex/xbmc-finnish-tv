@@ -262,7 +262,7 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 					#	title += ' #' + item['published'][:10]
 					
 					published = item['published'].replace('T', ' ') if 'published' in item else ''
-					duration = str(item['durationSec'])	if 'durationSec' in item else ''
+					duration = time.strftime('%H:%M:%S', time.gmtime(item['durationSec']) ) if 'durationSec' in item else ''
 					plot = item['desc'] if 'desc' in item and item['desc'] != None else ''
 					plot += '\r\n%s: %s' % (self.lang(30008),published) if published != '' else ''
 					
@@ -300,6 +300,10 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 						expiresText = '[COLOR red]%s[/COLOR]' % expiresText
 						
 					plot = plot + u"\n\r%s: %s" % (self.lang(30009), expiresText) if expiresText != None else plot
+					
+					isInternational = self.addon.getSetting("international")=='true'
+					if isInternational and 'international' in item and not item['international']:
+						continue
 
 					self.addVideoLink(title, link, img, infoLabels={'duration':duration, 'plot': plot, 'episode': episodeNumber,'aired': published, 'date': published }, contextMenu=contextMenu)
 				

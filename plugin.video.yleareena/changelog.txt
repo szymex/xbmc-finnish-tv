@@ -1,0 +1,13 @@
+1.3.1
+
+- Added setting to show only playable videos from outside Finland
+- Fixed duration format
+
+1.3.0
+
+- Added subtitles support
+
+1.2.1
+
+- Updated icon
+- Added pycrypto module for OSX
