@@ -43,8 +43,16 @@ def scrapVideoLink(url):
 	req = urllib2.Request(url)
 	req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
 	response = urllib2.urlopen(req)
-	matchVideoId=re.compile("providerURL', '(http.*?)'").findall(response.read())
+	content = response.read()
 	response.close()
+	
+	matchVideoId=re.compile('ruutuplayer\(.*"(http.*?)"').findall(content)
+	if len(matchVideoId)==0:
+		matchVideoId=re.compile("providerURL', '(http.*?)'").findall(content)
+
+	if len(matchVideoId)==0:
+		return None
+	
 	videoUrl = urllib2.unquote( matchVideoId[0])
 	
 	req = urllib2.Request(videoUrl)
@@ -105,7 +113,7 @@ def scrapPager(url):
 			available = selAvailability[0].string.strip() if len(selAvailability)>0 else '0'
 			
 			selDesc = it.select('.field-name-field-webdescription p')
-			desc = selDesc[0].string.strip() if len(selDesc)>0 else '0'
+			desc = selDesc[0].string.strip() if len(selDesc)>0 and selDesc[0].string != None else '0'
 			
 			selAvailabilityText = it.select('.availability-text')
 			availabilityText = selAvailabilityText[0].string.strip() if len(selAvailabilityText)>0 else ''
