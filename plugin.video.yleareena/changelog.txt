@@ -1,3 +1,12 @@
+1.3.3
+
+- configure default language
+- configure debug level
+
+1.3.2
+
+- show duration in minutes
+
 1.3.1
 
 - Added setting to show only playable videos from outside Finland

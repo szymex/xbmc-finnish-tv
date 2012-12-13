@@ -8,6 +8,17 @@ from datetime import date
 import time
 import datetime
 import os, sys, inspect
+import CommonFunctions
+
+#Lisätty Debug
+settings = xbmcaddon.Addon('plugin.video.yleareena')
+localize = settings.getLocalizedString
+common = CommonFunctions
+if settings.getSetting('debug') == "true":
+  common.dbg = True
+else:
+  common.dbg = False
+#Debug loppu
 
 #sets default encoding to utf-8
 reload(sys) 
@@ -130,6 +141,7 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 		self.addHandler('programs', self.handlePrograms)
 		self.addHandler('serie', self.handleSerie)
 		self.addHandler('live', self.handleLive)
+		self.DEFAULT_LANG = self.addon.getSetting("lang")
 	
 	def initConst(self):
 		self.NEXT = '[COLOR blue]   ➔  %s  ➔[/COLOR]' % self.lang(33078)

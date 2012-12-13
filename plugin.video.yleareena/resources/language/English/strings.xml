@@ -7,6 +7,8 @@
     <string id="30008">Published</string>
     <string id="30009">Expires</string>
     <string id="30010">Yesterday</string>
+	<string id="30011">Outside Finland</string>
+    <string id="30012">Subtitle language</string>
 	
 	<!-- categories -->
     <string id="30020">Programs</string>
@@ -20,4 +22,6 @@
     <string id="30028">Newest</string>
     <string id="30030">Most watched</string>
     <string id="30029">Food</string>
+
+    <string id="30100">Debug</string>
 </strings>
