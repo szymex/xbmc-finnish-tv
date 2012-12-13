@@ -16,17 +16,17 @@ Download: [repository.finnish-tv-1.0.0.zip](https://github.com/downloads/szymex/
 
 * **YLE Areena**
   
-  Download: [plugin.video.yleareena](https://github.com/szymex/xbmc-finnish-tv/downloads)
+  Download: [plugin.video.yleareena](https://github.com/szymex/xbmc-finnish-tv/tree/master/repo/plugin.video.yleareena)
 
   *Credit goes to Antti Ajanki for developing [yle-dl](https://github.com/aajanki/yle-dl) library.*
 
 * **Ruutu.fi**
   
-  Download: [plugin.video.ruutu](https://github.com/szymex/xbmc-finnish-tv/downloads)
+  Download: [plugin.video.ruutu](https://github.com/szymex/xbmc-finnish-tv/tree/master/repo/plugin.video.ruutu)
 
 * **Katsomo.fi**
   
-  Download: [plugin.video.katsomo](https://github.com/szymex/xbmc-finnish-tv/downloads)
+  Download: [plugin.video.katsomo](https://github.com/szymex/xbmc-finnish-tv/tree/master/repo/plugin.video.katsomo)
   
   *Known issue: poor video quality for some videos*
 
