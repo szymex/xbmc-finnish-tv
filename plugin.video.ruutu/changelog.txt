@@ -1,3 +1,7 @@
+1.2.4
+
+- Fixes scrapping video links due to changes on ruutu.fi
+
 1.2.3
 
 - Fixes scrapping video links due to changes on ruutu.fi

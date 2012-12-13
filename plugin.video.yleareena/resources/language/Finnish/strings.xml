@@ -5,9 +5,11 @@
     <string id="30006">Lisätty</string>
     <string id="30007">Poistettu</string>
     <string id="30008">Julkaistu</string>
-    <string id="30009">Erääntyä</string>
+    <string id="30009">Poistuu</string>
     <string id="30010">Eilen</string>
-	
+	<string id="30011">Näkyy ulkomailla</string>
+    <string id="30012">Tekstityksen kieli</string>
+
 	<!-- categories -->
     <string id="30020">Ohjelmat</string>
     <string id="30021">Uutiset</string>
@@ -20,4 +22,6 @@
     <string id="30028">Uusimmat</string>
     <string id="30030">Katsotuimmat</string>
     <string id="30029">Ruoka</string>
+
+    <string id="30100">Debug</string>
 </strings>

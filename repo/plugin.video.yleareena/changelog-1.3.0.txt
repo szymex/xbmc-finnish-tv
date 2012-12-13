@@ -1,4 +1,0 @@
-1.2.1
-
-- Updated icon
-- Added pycrypto module for OSX

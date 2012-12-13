@@ -10,6 +10,18 @@ import datetime
 import os, sys, inspect
 import SimpleDownloader as downloader
 import string
+import CommonFunctions
+
+#Lisätty Debug
+settings = xbmcaddon.Addon('plugin.video.yleareena')
+localize = settings.getLocalizedString
+common = CommonFunctions
+if settings.getSetting('debug') == "true":
+  common.dbg = True
+else:
+  common.dbg = False
+#Debug loppu
+>>>>>>> master
 
 #sets default encoding to utf-8
 reload(sys) 
@@ -149,6 +161,7 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 		self.addHandler('programs', self.handlePrograms)
 		self.addHandler('serie', self.handleSerie)
 		self.addHandler('live', self.handleLive)
+		self.DEFAULT_LANG = self.addon.getSetting("lang")
 	
 	def initConst(self):
 		self.NEXT = '[COLOR blue]   ➔  %s  ➔[/COLOR]' % self.lang(33078)
@@ -283,7 +296,7 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 					#	title += ' #' + item['published'][:10]
 					
 					published = item['published'].replace('T', ' ') if 'published' in item else ''
-					duration = str(item['durationSec'])	if 'durationSec' in item else ''
+					duration = time.strftime('%H:%M', time.gmtime(item['durationSec']) ) if 'durationSec' in item else ''
 					plot = item['desc'] if 'desc' in item and item['desc'] != None else ''
 					plot += '\r\n%s: %s' % (self.lang(30008),published) if published != '' else ''
 					
@@ -324,6 +337,13 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 						
 					plot = plot + u"\n\r%s: %s" % (self.lang(30009), expiresText) if expiresText != None else plot
 					
+<<<<<<< HEAD
+=======
+					isInternational = self.addon.getSetting("international")=='true'
+					if isInternational and 'international' in item and not item['international']:
+						continue
+
+>>>>>>> master
 					self.addVideoLink(title, link, img, infoLabels={'duration':duration, 'plot': plot, 'episode': episodeNumber,'aired': published, 'date': published }, contextMenu=contextMenu)
 				
 				if len(items['search']['results']) == self.DEFAULT_PAGE_SIZE:

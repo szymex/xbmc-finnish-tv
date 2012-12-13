@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <settings>
-  <category label="General">
     <setting id="download-path" type="folder" label="Download path" default="" />
-  </category>
-
+	<setting id="international" type="bool" label="30011" enable="!eq(-1,0)" default="False" />
+    <setting id="lang" type="enum" label="30012" values="fin|fih|swe|swh|sme|None" default="fin"/>
+    <setting id="debug" type="bool" label="30100" default="false" />	
 </settings>
