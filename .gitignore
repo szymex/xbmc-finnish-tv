@@ -30,4 +30,4 @@ favourites.txt
 *~
 addons_xml_generator.py
 
-deploy-yle.sh
+*.sh
