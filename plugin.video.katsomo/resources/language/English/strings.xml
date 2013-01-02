@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <string id="30002">h</string>		<!-- hours abr-->
+    <string id="30003">d</string>		<!-- days abr -->
+	<string id="30004">Today</string>
+    <string id="30006">Added</string>
+    <string id="30007">Removed</string>
+    <string id="30008">Published</string>
+    <string id="30009">Expires</string>
+    <string id="30010">Yesterday</string>
+	
+	<!-- categories -->
+    <string id="30020">Programs</string>
+    <string id="30021">News</string>
+    <string id="30022">Live</string>
+    <string id="30023">Kids</string>
+    <string id="30024">TV Shows and movies</string>
+    <string id="30025">Entertaiment and culture</string>
+    <string id="30026">Documentary</string>
+    <string id="30027">Sport</string>
+    <string id="30028">Newest</string>
+    <string id="30030">Most watched</string>
+    <string id="30029">Food</string>
+</strings>
