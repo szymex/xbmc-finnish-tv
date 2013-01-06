@@ -326,7 +326,7 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 		resolvedVideoLink, subtitleFiles = scrapVideo(link)
 		if (resolvedVideoLink!=None):
 			liz=xbmcgui.ListItem(path=resolvedVideoLink)
-			xbmcplugin.setResolvedUrl(0, True, liz)
+			xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, liz)
 			
 			if len(subtitleFiles)>0:
 				player = xbmc.Player()
