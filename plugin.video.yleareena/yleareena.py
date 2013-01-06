@@ -184,7 +184,7 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 			items = readJSON(link)
 			xbmcplugin.setContent(int(sys.argv[1]), 'tvshows')
 			for item in items['search']['results']:
-				if 'series' in item:
+				if 'series' in item and item['series']['name'] != None:
 					serie = item['series']
 					title = serie['name']
 					
