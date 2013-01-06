@@ -274,7 +274,7 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 					#	title += ' #' + item['published'][:10]
 					
 					published = item['published'].replace('T', ' ') if 'published' in item else ''
-					duration = time.strftime('%H:%M', time.gmtime(item['durationSec']) ) if 'durationSec' in item else ''
+					duration = str(item['duration'])  if 'duration' in item else ''					
 					plot = item['desc'] if 'desc' in item and item['desc'] != None else ''
 					plot += '\r\n%s: %s' % (self.lang(30008),published) if published != '' else ''
 					
