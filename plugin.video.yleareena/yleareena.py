@@ -274,7 +274,6 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 					#	title += ' #' + item['published'][:10]
 					
 					published = item['published'].replace('T', ' ') if 'published' in item else ''
-					duration = str(item['duration'])  if 'duration' in item else ''					
 					plot = item['desc'] if 'desc' in item and item['desc'] != None else ''
 					plot += '\r\n%s: %s' % (self.lang(30008),published) if published != '' else ''
 					
@@ -294,7 +293,7 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 						serieName = item['series']['name']
 						serieLink = 'http://areena.yle.fi/tv/' + item['series']['id']
 						contextMenu = [ (self.createContextMenuAction(self.FAVOURITE % self.lang(14076), 'addFav', {'name':serieName, 'link':serieLink}) )  ]
-						if not item['title'].upper().startswith(serieName.upper()):
+						if serieName != None and not item['title'].upper().startswith(serieName.upper()):
 							title = serieName + ': ' + title
 					else:
 						contextMenu = []
@@ -317,7 +316,8 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 					if isInternational and 'international' in item and not item['international']:
 						continue
 
-					self.addVideoLink(title, link, img, infoLabels={'duration':duration, 'plot': plot, 'episode': episodeNumber,'aired': published, 'date': published }, contextMenu=contextMenu)
+					self.addVideoLink(title, link, img, infoLabels={'plot': plot, 'episode': episodeNumber,'aired': published, 'date': published }, 
+									  contextMenu=contextMenu, videoStreamInfo={'duration':item['durationSec']})
 				
 				if len(items['search']['results']) == self.DEFAULT_PAGE_SIZE:
 					self.addViewLink(self.NEXT,'serie', pg+1, args )

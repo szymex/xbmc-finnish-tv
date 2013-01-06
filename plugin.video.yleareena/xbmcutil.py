@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
  Utility functions for xbmc. Simplifies common operations on xbmc.
- version 1.1.2
+ version 1.1.3
 """
 
 import sys,urllib,os
@@ -90,7 +90,7 @@ class ViewAddonAbstract:
 			liz.addContextMenuItems(contextMenu, True)
 		xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=u,listitem=liz, isFolder=True)
 	
-	def addVideoLink(self, title, link, img, infoLabels={}, contextMenu=[]):
+	def addVideoLink(self, title, link, img, infoLabels={}, contextMenu=[], videoStreamInfo={}):
 		u=sys.argv[0] + "?view=video&link=" +  urllib.quote_plus(link) 
 		#+ "&name=" + urllib.quote_plus(title)
 		icon= "DefaultVideo.png"
@@ -99,6 +99,7 @@ class ViewAddonAbstract:
 		infoLabels['Title'] = title
 		liz.setInfo( type="Video", infoLabels=infoLabels )
 		liz.addContextMenuItems(contextMenu, True)
+		liz.addStreamInfo('video', videoStreamInfo)
 		xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=u,listitem=liz, isFolder=False)
 
 	def addDirectVideoLink(self, name, link, img):
