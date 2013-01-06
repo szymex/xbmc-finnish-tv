@@ -100,11 +100,22 @@ def scrapPager(url):
 			image = it.find('img').get('src') if it.find('img')!= None else ''
 			link = it.select('h2 a')[0]['href']
 			title = it.select('h2 a')[0].string
-			episodeNum = ''
-			for sec in it.select('footer .details-inline div'):
-				for str in sec.stripped_strings:
-					episodeNum += " " + str
-			if len(episodeNum)>0: episodeNum = episodeNum[1:]
+			episodeNum = '';
+			seasonNum = '';
+
+			htmlSeason = it.select('.field-name-field-season')			
+			if len(htmlSeason)>0:
+				season = repr(htmlSeason[0])
+				season = re.compile('span>.+?([0-9]+?).*?</', re.DOTALL).findall(season)
+				if (len(season)>0): seasonNum = season[0]
+			
+			htmlEpisode = it.select('.field-name-field-episode')
+			if len(htmlEpisode)>0:
+				episode = repr(htmlEpisode[0])
+				episode = re.compile('span>.+?([0-9]+?).*?</', re.DOTALL).findall(episode)
+				if (len(episode)>0): episodeNum = episode[0]
+
+
 			selDuration = it.select('.field-name-field-duration')
 			duration = selDuration[0].string.strip() if len(selDuration)>0 else ''
 			duration = duration.replace(' min','')
@@ -126,7 +137,7 @@ def scrapPager(url):
 			for str in selStartTime[0].stripped_strings:
 				published = str
 
-			retList.append( {'title':title, 'episodeNum':episodeNum, 'link':"http://www.ruutu.fi" + link, 'image':image, 'duration': duration, 
+			retList.append( {'title':title, 'seasonNum':seasonNum, 'episodeNum':episodeNum, 'link':"http://www.ruutu.fi" + link, 'image':image, 'duration': duration, 
 							'published':published,'available-text':availabilityText, 'available': available, 'desc':desc, 'details':details });
 	except urllib2.HTTPError:
 		retList=[];	
@@ -274,8 +285,8 @@ class RuutuAddon (xbmcUtil.ViewAddonAbstract):
 					title += ': ' + item['details']
 					if len(title)>50:
 						title = title[:50] + u'…'
-				if len(item['episodeNum'])>0:
-					title += ' [' + item['episodeNum'].replace('Kausi ', '').replace(' Jakso ', '#') + ']'
+				if len(item['episodeNum'])>0 and len(item['seasonNum'])>0:
+					title += ' [%s#%s]' % (item['seasonNum'],item['episodeNum'])
 				
 				av = item['available']
 				expiresInHours = int((int(av) - time.time())/(60*60))
@@ -288,15 +299,10 @@ class RuutuAddon (xbmcUtil.ViewAddonAbstract):
 					title = self.EXPIRES_DAYS % (expiresInHours/24, title)
 					availableText = '[COLOR red]%s[/COLOR]' % availableText
 				
-				plot = '[B]%s[/B]\n\r%s\n\r%s\n\r%s' % (item['details'], item['episodeNum'], item['desc'], availableText)
+				plot = '[B]%s[/B]\n\r%s\n\r%s' % (item['details'], item['desc'], availableText)
 
-				episodeNum = None
-				seasonNum = None
-				if 'episodeNum' in item:
-					episodeMatch = re.compile("Jakso ([0-9]*)", re.DOTALL).findall(item['episodeNum'])
-					episodeNum = int(episodeMatch[0]) if len(episodeMatch)>0 else None
-					seasonMatch = re.compile("Kausi ([0-9]*)", re.DOTALL).findall(item['episodeNum'])
-					seasonNum = int(seasonMatch[0]) if len(seasonMatch)>0 else None
+				episodeNum = item['episodeNum']
+				seasonNum = item['seasonNum']
 
 				self.addVideoLink(title , item['link'], item['image'], infoLabels={'plot':plot,'season':seasonNum, 'episode': episodeNum,'aired': item['published'] , 'duration':item['duration']})
 			if len(items)>0 and len(items)>=pgSize:
