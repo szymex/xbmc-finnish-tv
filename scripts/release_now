@@ -22,7 +22,7 @@ do
 		echo "file exists"
 	else
 		echo "file does not exist"
-		zip -r $REPOFILE $i > /dev/null
+		zip -r $REPOFILE $i -x@.gitignore > /dev/null
 	fi
 	cat $i/addon.xml | grep -v "<?xml" >> ./addons.xml
 done
