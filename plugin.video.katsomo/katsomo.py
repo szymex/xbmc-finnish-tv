@@ -98,4 +98,5 @@ def formatDate(dt):
 
 
 katsomo = KatsomoAddon()
+lang = katsomo.lang
 katsomo.handle()
