@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# xpath -q -e "/addon/attribute::version" addon.xml | awk -F\" '{ print $2 }'
-
 REPOSITORY=./repo
 
 
