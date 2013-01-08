@@ -1,3 +1,8 @@
+1.2.5
+
+- Fixed episode and season scrapping
+- Added fanart
+
 1.2.4
 
 - Fixes scrapping video links due to changes on ruutu.fi

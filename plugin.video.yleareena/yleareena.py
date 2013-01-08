@@ -151,6 +151,7 @@ def getWeekday(weekday):
 class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 	ADDON_ID = 'plugin.video.yleareena'
 	DEFAULT_LANG = 'fin'
+	LANGUAGES = ['fin','fih','swe','swh','sme','None']
 	
 	def __init__(self):
 		xbmcUtil.ViewAddonAbstract.__init__(self)
@@ -161,7 +162,7 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 		self.addHandler('programs', self.handlePrograms)
 		self.addHandler('serie', self.handleSerie)
 		self.addHandler('live', self.handleLive)
-		self.DEFAULT_LANG = self.addon.getSetting("lang")
+		self.DEFAULT_LANG = self.LANGUAGES[int(self.addon.getSetting("lang"))]
 	
 	def initConst(self):
 		self.NEXT = '[COLOR blue]   ➔  %s  ➔[/COLOR]' % self.lang(33078)
@@ -204,7 +205,7 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 			items = readJSON(link)
 			xbmcplugin.setContent(int(sys.argv[1]), 'tvshows')
 			for item in items['search']['results']:
-				if 'series' in item:
+				if 'series' in item and item['series']['name'] != None:
 					serie = item['series']
 					title = serie['name']
 					
@@ -296,7 +297,6 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 					#	title += ' #' + item['published'][:10]
 					
 					published = item['published'].replace('T', ' ') if 'published' in item else ''
-					duration = time.strftime('%H:%M', time.gmtime(item['durationSec']) ) if 'durationSec' in item else ''
 					plot = item['desc'] if 'desc' in item and item['desc'] != None else ''
 					plot += '\r\n%s: %s' % (self.lang(30008),published) if published != '' else ''
 					
@@ -316,7 +316,7 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 						serieName = item['series']['name']
 						serieLink = 'http://areena.yle.fi/tv/' + item['series']['id']
 						contextMenu = [ (self.createContextMenuAction(self.FAVOURITE % self.lang(14076), 'addFav', {'name':serieName, 'link':serieLink}) )  ]
-						if not item['title'].upper().startswith(serieName.upper()):
+						if serieName != None and not item['title'].upper().startswith(serieName.upper()):
 							title = serieName + ': ' + title
 					else:
 						contextMenu = []
@@ -337,14 +337,12 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 						
 					plot = plot + u"\n\r%s: %s" % (self.lang(30009), expiresText) if expiresText != None else plot
 					
-<<<<<<< HEAD
-=======
 					isInternational = self.addon.getSetting("international")=='true'
 					if isInternational and 'international' in item and not item['international']:
 						continue
 
->>>>>>> master
-					self.addVideoLink(title, link, img, infoLabels={'duration':duration, 'plot': plot, 'episode': episodeNumber,'aired': published, 'date': published }, contextMenu=contextMenu)
+					self.addVideoLink(title, link, img, infoLabels={'plot': plot, 'episode': episodeNumber,'aired': published[:10], 'date': published }, 
+									  contextMenu=contextMenu, videoStreamInfo={'duration':item['durationSec']})
 				
 				if len(items['search']['results']) == self.DEFAULT_PAGE_SIZE:
 					self.addViewLink(self.NEXT,'serie', pg+1, args )
@@ -353,7 +351,7 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 		resolvedVideoLink, subtitleFiles = scrapVideo(link)
 		if (resolvedVideoLink!=None):
 			liz=xbmcgui.ListItem(path=resolvedVideoLink)
-			xbmcplugin.setResolvedUrl(0, True, liz)
+			xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, liz)
 			
 			if len(subtitleFiles)>0:
 				player = xbmc.Player()
@@ -361,15 +359,23 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 				while not player.isPlaying() or (player.isPlaying() and resolvedVideoLink != player.getPlayingFile()):
 					i += 1
 					time.sleep(1)
-					if i > 10:
+					if i > 20:
 						break
 				if player.isPlaying() and resolvedVideoLink == player.getPlayingFile():
-					defaultFound = False
+					defaultSubtitleFile = None
+					
+					#find default subtitle file
 					for subfile in subtitleFiles:				
-						xbmc.Player().setSubtitles(subfile)
 						if self.DEFAULT_LANG in subfile: 
-							defaultFound = True
-					xbmc.Player().showSubtitles(defaultFound)
+							defaultSubtitleFile = subfile
+
+					#add other subtitles
+					for subfile in subtitleFiles:				
+						if defaultSubtitleFile != subfile: xbmc.Player().setSubtitles(subfile)
+					
+					if defaultSubtitleFile != None:					
+						xbmc.Player().setSubtitles(defaultSubtitleFile)
+					xbmc.Player().showSubtitles(defaultSubtitleFile != None)
 
 		else:
 			print ("could not play " + link)

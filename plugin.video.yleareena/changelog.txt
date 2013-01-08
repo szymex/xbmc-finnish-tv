@@ -1,3 +1,17 @@
+1.3.5
+
+- fixed selecting default subtitle
+- fixes invalid date format for property 'aired'
+- fixed error with empty serie name; provide stream info with duration in seconds
+
+
+1.3.4
+
+- minor fixes:
+	* ignore null in title
+	* duration in minutes
+	* added missing dependency for script.module.parsedom
+
 1.3.3
 
 - configure default language

@@ -26,11 +26,11 @@ class KatsomoAddon (xbmcUtil.ViewAddonAbstract):
 		self.initFavourites()
 
 	def handleMain(self, pg, args):
-		self.addViewLink('›› Ohjelmat','programs',1 )
-		self.addViewLink('Uusimat','serie',1, {'link':'http://m.katsomo.fi/katsomo', 'useGroups': True} )
-		self.addViewLink('Uutiset','serie',1, {'link':'http://m.katsomo.fi/katsomo/?treeId=33001', 'useGroups': True} )
-		self.addViewLink('Urheilu','serie',1, {'link':'http://m.katsomo.fi/katsomo/?treeId=33002', 'useGroups': True} )
-		self.addViewLink('Lapset','serie',1, {'link':'http://m.katsomo.fi/katsomo/?treeId=33003', 'useGroups': True} )
+		self.addViewLink('›› ' + lang(30020),'programs',1 )
+		self.addViewLink(lang(30028),'serie',1, {'link':'http://m.katsomo.fi/katsomo', 'useGroups': True} )
+		self.addViewLink(lang(30021),'serie',1, {'link':'http://m.katsomo.fi/katsomo/?treeId=33001', 'useGroups': True} )
+		self.addViewLink(lang(30027),'serie',1, {'link':'http://m.katsomo.fi/katsomo/?treeId=33002', 'useGroups': True} )
+		self.addViewLink(lang(30023),'serie',1, {'link':'http://m.katsomo.fi/katsomo/?treeId=33003', 'useGroups': True} )
 		for title, link in self.favourites.items():
 			t = title			
 			cm = [ (self.createContextMenuAction(self.REMOVE, 'removeFav', {'name':t} ) ) ]
@@ -91,11 +91,12 @@ class KatsomoAddon (xbmcUtil.ViewAddonAbstract):
 
 def formatDate(dt):
 	delta = date.today() - dt.date()
-	if delta.days==0: return 'Today'
-	if delta.days==1: return 'Yesterday'
+	if delta.days==0: return lang(30004)
+	if delta.days==1: return lang(30010)
 	if delta.days>1 and delta.days<5: return dt.strftime('%A %d.%m.%Y')
 	return dt.strftime('%d.%m.%Y')
 
 
 katsomo = KatsomoAddon()
+lang = katsomo.lang
 katsomo.handle()
