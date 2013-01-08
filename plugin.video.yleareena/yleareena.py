@@ -131,6 +131,7 @@ def getWeekday(weekday):
 class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 	ADDON_ID = 'plugin.video.yleareena'
 	DEFAULT_LANG = 'fin'
+	LANGUAGES = ['fin','fih','swe','swh','sme','None']
 	
 	def __init__(self):
 		xbmcUtil.ViewAddonAbstract.__init__(self)
@@ -141,7 +142,7 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 		self.addHandler('programs', self.handlePrograms)
 		self.addHandler('serie', self.handleSerie)
 		self.addHandler('live', self.handleLive)
-		self.DEFAULT_LANG = self.addon.getSetting("lang")
+		self.DEFAULT_LANG = self.LANGUAGES[int(self.addon.getSetting("lang"))]
 	
 	def initConst(self):
 		self.NEXT = '[COLOR blue]   ➔  %s  ➔[/COLOR]' % self.lang(33078)
@@ -334,15 +335,23 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 				while not player.isPlaying() or (player.isPlaying() and resolvedVideoLink != player.getPlayingFile()):
 					i += 1
 					time.sleep(1)
-					if i > 10:
+					if i > 20:
 						break
 				if player.isPlaying() and resolvedVideoLink == player.getPlayingFile():
-					defaultFound = False
+					defaultSubtitleFile = None
+					
+					#find default subtitle file
 					for subfile in subtitleFiles:				
-						xbmc.Player().setSubtitles(subfile)
 						if self.DEFAULT_LANG in subfile: 
-							defaultFound = True
-					xbmc.Player().showSubtitles(defaultFound)
+							defaultSubtitleFile = subfile
+
+					#add other subtitles
+					for subfile in subtitleFiles:				
+						if defaultSubtitleFile != subfile: xbmc.Player().setSubtitles(subfile)
+					
+					if defaultSubtitleFile != None:					
+						xbmc.Player().setSubtitles(defaultSubtitleFile)
+					xbmc.Player().showSubtitles(defaultSubtitleFile != None)
 
 		else:
 			print ("could not play " + link)
