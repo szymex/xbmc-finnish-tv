@@ -317,7 +317,7 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 					if isInternational and 'international' in item and not item['international']:
 						continue
 
-					self.addVideoLink(title, link, img, infoLabels={'plot': plot, 'episode': episodeNumber,'aired': published[:10], 'date': published }, 
+					self.addVideoLink(title, link, img, infoLabels={'plot': plot,'duration':str(item.get('duration','')), 'episode': episodeNumber,'aired': published[:10], 'date': published }, 
 									  contextMenu=contextMenu, videoStreamInfo={'duration':item['durationSec']})
 				
 				if len(items['search']['results']) == self.DEFAULT_PAGE_SIZE:
