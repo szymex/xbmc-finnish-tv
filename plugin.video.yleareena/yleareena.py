@@ -142,7 +142,10 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 		self.addHandler('programs', self.handlePrograms)
 		self.addHandler('serie', self.handleSerie)
 		self.addHandler('live', self.handleLive)
-		self.DEFAULT_LANG = self.LANGUAGES[int(self.addon.getSetting("lang"))]
+		try:
+			self.DEFAULT_LANG = self.LANGUAGES[int(self.addon.getSetting("lang"))]
+		except:
+			pass
 	
 	def initConst(self):
 		self.NEXT = '[COLOR blue]   ➔  %s  ➔[/COLOR]' % self.lang(33078)
