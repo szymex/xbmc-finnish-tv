@@ -15,6 +15,6 @@
 	<language>fi</language>
     <description>TV Videos from Katsomo.fi (mtv3, sub, ava)</description>
     <platform>all</platform>
-	<nofanart>true</nofanart>
+	<nofanart>false</nofanart>
   </extension>
 </addon>

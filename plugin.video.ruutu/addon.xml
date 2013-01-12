@@ -15,6 +15,6 @@
 	<language>fi en</language>
     <description>Finnish tv programs from channels: Nelonen, Liv, Jim</description>
     <platform>all</platform>
-	<nofanart>true</nofanart>
+	<nofanart>false</nofanart>
   </extension>
 </addon>
