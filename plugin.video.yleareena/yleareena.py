@@ -331,7 +331,7 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 
 		else:
 			print ("could not play " + link)
-			notification(header="Warning", message="Could not find video.")
+			notification(header=self.lang(30101), message=self.lang(30102))
 
 	def handleVideo(self, link):
 		videoLink = scrapVideo(link)
