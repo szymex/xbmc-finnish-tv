@@ -21,4 +21,10 @@
     <string id="30028">Newest</string>
     <string id="30030">Most watched</string>
     <string id="30029">Food</string>
+
+	<!-- settings -->
+    <string id="30050">Login</string>
+    <string id="30051">Password</string>
+
+
 </strings>

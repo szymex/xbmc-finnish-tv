@@ -1,8 +1,14 @@
 import urllib,urllib2,re
+import cookielib
 import CommonFunctions
 import xbmc
 from datetime import datetime
 import time
+
+#cookie handling code
+cj = cookielib.CookieJar()
+opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
+
 
 common = CommonFunctions
 common.plugin = "plugin.video.katsomo"
@@ -11,6 +17,22 @@ USER_AGENT = 'Mozilla/5.0 (iPhone; CPU iPhone OS 5_0 like Mac OS X) AppleWebKit/
 
 class KatsomoScrapper:
 
+	def doLogin(self, username, password):
+		xbmc.log( "Login to katsomo" )
+		login_url='http://m.katsomo.fi/katsomo/login'
+		postvars = { 
+			'u' : username,
+			'p' : password
+		}
+		header_data = {
+			'User-Agent' : USER_AGENT,
+			'Referer' : 'http://m.katsomo.fi/katsomo/login'
+		}
+		req = urllib2.Request(login_url, urllib2.urlencode(postvars), header_data )
+		response = opener.open(req)
+#debug response
+		xbmc.log(response.read())
+#remove after use
 	def scrapVideoLink(self, url):
 		xbmc.log( url )
 		req = urllib2.Request(url)

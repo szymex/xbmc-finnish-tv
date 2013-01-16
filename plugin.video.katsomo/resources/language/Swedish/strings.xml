@@ -21,4 +21,10 @@
     <string id="30028">Nyaste</string>
     <string id="30030">Mest sedda</string>
     <string id="30029">Livsmedel</string>
+
+        <!-- settings -->
+    <string id="30050">Login</string>
+    <string id="30051">Password</string>
+                
+
 </strings>

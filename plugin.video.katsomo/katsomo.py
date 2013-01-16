@@ -22,6 +22,12 @@ class KatsomoAddon (xbmcUtil.ViewAddonAbstract):
 		self.addHandler('serie', self.handleSerie)
 		self.addHandler('programs', self.handlePrograms)
 		self.scrapper = KatsomoScrapper()
+#login
+		user = settings.getSetting('username')
+		passwd = settings.getSetting('password')
+		if user != "":
+			self.scrapper.doLogin(user, passwd)
+#end of login			
 		self.favourites = {}
 		self.initFavourites()
 
