@@ -1,3 +1,8 @@
+1.1.1
+
+- Added login
+- Added cookie handling
+
 1.1.0
 
 - Added finnish translation
