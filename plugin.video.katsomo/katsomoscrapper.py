@@ -32,9 +32,12 @@ class KatsomoScrapper:
 		response = opener.open(req)
 		ret = common.parseDOM(response.read(), "div", attrs = { "class": "login" })
 		ret = common.parseDOM(ret, "a", ret = "href")
-		if ret == "/katsomo/logout":
+		xbmc.log(ret[0])
+		if ret[0] == "/katsomo/logout":
+			xbmc.log( "Login to katsomo succeed" )
 			return 1
 		else:
+			xbmc.log( "Login to katsomo failed" )
 			return 0
 
 	def scrapVideoLink(self, url):

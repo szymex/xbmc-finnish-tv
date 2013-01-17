@@ -27,7 +27,10 @@ class KatsomoAddon (xbmcUtil.ViewAddonAbstract):
 		user = settings.getSetting('username')
 		passwd = settings.getSetting('password')
 		if user != "":
-			self.scrapper.doLogin(user, passwd)
+			if self.scrapper.doLogin(user, passwd):
+				xbmcUtil.notification('Message','Login success')
+			else:
+				xbmcUtil.notification('Message','Login failed')
 #end of login			
 		self.favourites = {}
 		self.initFavourites()
