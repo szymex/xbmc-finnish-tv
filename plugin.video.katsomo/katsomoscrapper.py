@@ -5,8 +5,8 @@ import xbmc
 from datetime import datetime
 import time
 
-#cookie handling code
-cj = cookielib.CookieJar()
+#cookie handling 
+cj = cookielib.LWPCookieJar()
 opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
 
 
@@ -28,18 +28,22 @@ class KatsomoScrapper:
 			'User-Agent' : USER_AGENT,
 			'Referer' : 'http://m.katsomo.fi/katsomo/login'
 		}
-		req = urllib2.Request(login_url, urllib2.urlencode(postvars), header_data )
+		req = urllib2.Request(login_url, urllib.urlencode(postvars), header_data )
 		response = opener.open(req)
-#debug response
-		xbmc.log(response.read())
-#remove after use
+		ret = common.parseDOM(response.read(), "div", attrs = { "class": "login" })
+		ret = common.parseDOM(ret, "a", ret = "href")
+		if ret == "/katsomo/logout":
+			return 1
+		else:
+			return 0
+
 	def scrapVideoLink(self, url):
 		xbmc.log( url )
 		req = urllib2.Request(url)
 		req.add_header('User-Agent', USER_AGENT)
 		req.add_header('Cookie', 'hq=1')
 
-		response = urllib2.urlopen(req)
+		response = opener.open(req)
 		ret = common.parseDOM(response.read(), "source", {'type': 'video/mp4'}, ret = "src")
 		if len(ret)>0:
 			return ret[0]
@@ -50,7 +54,7 @@ class KatsomoScrapper:
 		xbmc.log( url )
 		req = urllib2.Request(url)
 		req.add_header('User-Agent', USER_AGENT)
-		response = urllib2.urlopen(req)
+		response = opener.open(req)
 		ret = common.parseDOM(response.read(), "div", {'class': 'program'})
 		
 		l = []
@@ -79,7 +83,7 @@ class KatsomoScrapper:
 	def scrapPrograms(self):
 		req = urllib2.Request('http://m.katsomo.fi/katsomo/programs')
 		req.add_header('User-Agent', USER_AGENT)
-		response = urllib2.urlopen(req)
+		response = opener.open(req)
 		ret = common.parseDOM(response.read(), "ul", {'class': 'all-programs-list'})
 		retIDs = common.parseDOM(ret, "li", ret="data-id")
 		retNames = common.parseDOM(ret, "li")

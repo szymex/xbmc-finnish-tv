@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
-import xbmcplugin,xbmcgui
+import xbmcplugin,xbmcgui,xbmcaddon
 import xbmcutil as xbmcUtil
 import sys
 from katsomoscrapper import KatsomoScrapper
 from datetime import datetime, date
 
+settings = xbmcaddon.Addon('plugin.video.katsomo')
 
 #sets default encoding to utf-8
 reload(sys) 

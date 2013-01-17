@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <settings>
 	<setting id="username" label="30050" type="text" default="" />
-	<setting id="password" label="30051" type="text" option="false" enable="!eq(-1)" default="" />
+	<setting id="password" label="30051" type="text" option="hidden" default="" />
 </settings>
