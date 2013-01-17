@@ -12,6 +12,7 @@ cookie_file = xbmc.translatePath(addon.getAddonInfo('profile')) + "cookies.txt"
 cj = cookielib.LWPCookieJar(cookie_file)
 opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
 
+logmsg = "plugin.video.katsomo - "
 
 common = CommonFunctions
 common.plugin = "plugin.video.katsomo"
@@ -26,24 +27,23 @@ class KatsomoScrapper:
 			cj.revert(ignore_discard = True)
 		except IOError:
 			pass
-		xbmc.log( "checking login status to katsomo")
+		#xbmc.log(logmsg + "checking login status to katsomo")
 		login_url='http://m.katsomo.fi/katsomo/login'
 		req = urllib2.Request(login_url)
 		req.add_header('User-Agent', USER_AGENT)
 		response = opener.open(req)
 		ret = common.parseDOM(response.read(), "div", attrs = { "class": "login" })
 		ret = common.parseDOM(ret, "a", ret = "href")
-		xbmc.log(ret[0])
-		print(cj)
+		#xbmc.log(ret[0])
 		if "/katsomo/logout" in ret:
-			xbmc.log( "Login status active" )
+			xbmc.log(logmsg + "Login status active, no need to login" )
 			return 1
 		else:
-			xbmc.log( "Login status not active" )
+			xbmc.log(logmsg + "Login status not active, need to login" )
 			return 0
 
 	def doLogin(self, username, password):
-		xbmc.log( "Login to katsomo" )
+		xbmc.log(logmsg + "Login to katsomo" )
 		login_url='http://m.katsomo.fi/katsomo/login'
 		postvars = { 
 			'u' : username,
@@ -59,13 +59,13 @@ class KatsomoScrapper:
 		response = opener.open(req)
 		ret = common.parseDOM(response.read(), "div", attrs = { "class": "login" })
 		ret = common.parseDOM(ret, "a", ret = "href")
-		xbmc.log(ret[0])
+		#xbmc.log(ret[0])
 		if "/katsomo/logout" in ret:
-			xbmc.log( "Login to katsomo succeed" )
+			xbmc.log(logmsg + "Login to katsomo succeed" )
 			cj.save( ignore_discard=True )
 			return 1
 		else:
-			xbmc.log( "Login to katsomo failed" )
+			xbmc.log(logmsg + "Login to katsomo failed" )
 			cj.clear()
 			return 0
 
