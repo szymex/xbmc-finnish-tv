@@ -21,6 +21,11 @@ USER_AGENT = 'Mozilla/5.0 (iPhone; CPU iPhone OS 5_0 like Mac OS X) AppleWebKit/
 class KatsomoScrapper:
 
 	def checkLogin( self ):
+		global cj
+		try:
+			cj.revert(ignore_discard = True)
+		except IOError:
+			pass
 		xbmc.log( "checking login status to katsomo")
 		login_url='http://m.katsomo.fi/katsomo/login'
 		req = urllib2.Request(login_url)
