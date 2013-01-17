@@ -1,12 +1,15 @@
 import urllib,urllib2,re
 import cookielib
 import CommonFunctions
-import xbmc
+import xbmc,xbmcaddon
 from datetime import datetime
 import time
 
 #cookie handling 
-cj = cookielib.LWPCookieJar()
+addon = xbmcaddon.Addon('plugin.video.katsomo')
+cookie_file = xbmc.translatePath(addon.getAddonInfo('profile')) + "cookies.txt"
+
+cj = cookielib.LWPCookieJar(cookie_file)
 opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
 
 
@@ -16,6 +19,23 @@ common.plugin = "plugin.video.katsomo"
 USER_AGENT = 'Mozilla/5.0 (iPhone; CPU iPhone OS 5_0 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9A334 Safari/7534.48.3'
 
 class KatsomoScrapper:
+
+	def checkLogin( self ):
+		xbmc.log( "checking login status to katsomo")
+		login_url='http://m.katsomo.fi/katsomo/login'
+		req = urllib2.Request(login_url)
+		req.add_header('User-Agent', USER_AGENT)
+		response = opener.open(req)
+		ret = common.parseDOM(response.read(), "div", attrs = { "class": "login" })
+		ret = common.parseDOM(ret, "a", ret = "href")
+		xbmc.log(ret[0])
+		print(cj)
+		if "/katsomo/logout" in ret:
+			xbmc.log( "Login status active" )
+			return 1
+		else:
+			xbmc.log( "Login status not active" )
+			return 0
 
 	def doLogin(self, username, password):
 		xbmc.log( "Login to katsomo" )
@@ -28,16 +48,20 @@ class KatsomoScrapper:
 			'User-Agent' : USER_AGENT,
 			'Referer' : 'http://m.katsomo.fi/katsomo/login'
 		}
+		if self.checkLogin():
+			return 1
 		req = urllib2.Request(login_url, urllib.urlencode(postvars), header_data )
 		response = opener.open(req)
 		ret = common.parseDOM(response.read(), "div", attrs = { "class": "login" })
 		ret = common.parseDOM(ret, "a", ret = "href")
 		xbmc.log(ret[0])
-		if ret[0] == "/katsomo/logout":
+		if "/katsomo/logout" in ret:
 			xbmc.log( "Login to katsomo succeed" )
+			cj.save( ignore_discard=True )
 			return 1
 		else:
 			xbmc.log( "Login to katsomo failed" )
+			cj.clear()
 			return 0
 
 	def scrapVideoLink(self, url):
