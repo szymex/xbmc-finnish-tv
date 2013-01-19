@@ -1,3 +1,8 @@
+1.2.6
+
+- enabled fanart
+- improved publish date parsing
+
 1.2.5
 
 - Fixed episode and season scrapping

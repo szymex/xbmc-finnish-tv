@@ -1,3 +1,7 @@
+1.1.2
+
+- updated finnish translation
+
 1.1.1
 
 - Added login
