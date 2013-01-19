@@ -13,6 +13,8 @@ cj = cookielib.LWPCookieJar(cookie_file)
 cj.revert(ignore_discard = True)
 opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
 
+logintrue = False
+
 logmsg = "plugin.video.katsomo - "
 
 common = CommonFunctions
@@ -23,7 +25,7 @@ USER_AGENT = 'Mozilla/5.0 (iPhone; CPU iPhone OS 5_0 like Mac OS X) AppleWebKit/
 class KatsomoScrapper:
 
 	def checkLogin( self ):
-		global cj
+		global cj,login_true
 		try:
 			cj.revert(ignore_discard = True)
 		except IOError:
@@ -38,13 +40,16 @@ class KatsomoScrapper:
 		#xbmc.log(ret[0])
 		if "/katsomo/logout" in ret:
 			xbmc.log(logmsg + "Login status active, no need to login" )
+			login_true = True
 			return 1
 		else:
 			xbmc.log(logmsg + "Login status not active, need to login" )
+			login_true = False
 			return 0
 
 	def doLogin(self, username, password):
-		global cj
+		global cj,login_true
+		login_true = False
 		xbmc.log(logmsg + "Login to katsomo" )
 		login_url='http://m.katsomo.fi/katsomo/login'
 		postvars = { 
@@ -65,11 +70,18 @@ class KatsomoScrapper:
 		if "/katsomo/logout" in ret:
 			xbmc.log(logmsg + "Login to katsomo succeed" )
 			cj.save( ignore_discard=True )
+			login_true = True
 			return 1
 		else:
 			xbmc.log(logmsg + "Login to katsomo failed" )
 			cj.clear()
+			login_true = False
 			return 0
+
+	def noLogin(self):
+		global login_true
+		login_true = False
+		return 0
 
 	def scrapVideoLink(self, url):
 		xbmc.log( url )
@@ -85,6 +97,7 @@ class KatsomoScrapper:
 			return None
 			
 	def scrapSerie(self, url):
+		global login_true
 		xbmc.log( url )
 		req = urllib2.Request(url)
 		req.add_header('User-Agent', USER_AGENT)
@@ -95,7 +108,9 @@ class KatsomoScrapper:
 		for r in ret:
 			link = 'http://m.katsomo.fi' + common.parseDOM(r, "a", ret = "href")[0]
 			title = common.parseDOM(r, "p", {'class': 'program-name'})[0]
-			if 'class="star"' in title: continue
+			if 'class="star"' in title and not login_true: continue
+			if 'class="star"' in title and login_true:
+				title = "* " + common.stripTags(title)		
 				
 			title += ' ' + common.parseDOM(r, "p", {'class': 'program-abstract'})[0]
 			img = 'http://m.katsomo.fi' + common.parseDOM(r, "img", ret = "src")[0]
@@ -115,6 +130,7 @@ class KatsomoScrapper:
 		return l
 
 	def scrapPrograms(self):
+		global login_true
 		req = urllib2.Request('http://m.katsomo.fi/katsomo/programs')
 		req.add_header('User-Agent', USER_AGENT)
 		response = opener.open(req)
@@ -127,6 +143,7 @@ class KatsomoScrapper:
 			name = retNames[i]
 			id = retIDs[i]
 			if not 'star' in name:
-				l.append({'title':name, 'link':'http://m.katsomo.fi/katsomo/?treeId=' + id, 'treeId': id})
-		
+				l.append({'title':common.stripTags(name), 'link':'http://m.katsomo.fi/katsomo/?treeId=' + id, 'treeId': id})
+			elif login_true:
+					l.append({'title':common.stripTags(name) + " *", 'link':'http://m.katsomo.fi/katsomo/?treeId=' + id, 'treeId': id})
 		return l
