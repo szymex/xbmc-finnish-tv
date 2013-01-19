@@ -10,6 +10,7 @@ addon = xbmcaddon.Addon('plugin.video.katsomo')
 cookie_file = xbmc.translatePath(addon.getAddonInfo('profile')) + "cookies.txt"
 
 cj = cookielib.LWPCookieJar(cookie_file)
+cj.revert(ignore_discard = True)
 opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
 
 logmsg = "plugin.video.katsomo - "
@@ -43,6 +44,7 @@ class KatsomoScrapper:
 			return 0
 
 	def doLogin(self, username, password):
+		global cj
 		xbmc.log(logmsg + "Login to katsomo" )
 		login_url='http://m.katsomo.fi/katsomo/login'
 		postvars = { 
