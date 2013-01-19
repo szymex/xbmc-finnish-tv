@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addons>
 <addon id="repository.finnish-tv" name="Finnish TV" version="1.0.0" provider-name="szymex">
 	<extension point="xbmc.addon.repository" name="Finnish TV">
 		<info compressed="false">https://github.com/szymex/xbmc-finnish-tv/raw/master/addons.xml</info>
@@ -10,7 +11,7 @@
 		<platform>all</platform>
 	</extension>
 </addon>
-<addons>
+
 <addon id="plugin.video.katsomo"
        name="Katsomo"
        version="1.1.2"
