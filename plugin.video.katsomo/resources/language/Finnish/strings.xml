@@ -21,4 +21,9 @@
     <string id="30028">Uusimmat</string>
     <string id="30030">Katsotuimmat</string>
     <string id="30029">Ruoka</string>
+
+        <!-- settings -->
+    <string id="30050">Käyttäjätunnus</string>
+    <string id="30051">Salasana</string>
+                
 </strings>

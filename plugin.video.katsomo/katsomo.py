@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
-import xbmcplugin,xbmcgui
+import xbmcplugin,xbmcgui,xbmcaddon
 import xbmcutil as xbmcUtil
 import sys
 from katsomoscrapper import KatsomoScrapper
 from datetime import datetime, date
 
+settings = xbmcaddon.Addon('plugin.video.katsomo')
 
 #sets default encoding to utf-8
 reload(sys) 
@@ -22,6 +23,11 @@ class KatsomoAddon (xbmcUtil.ViewAddonAbstract):
 		self.addHandler('serie', self.handleSerie)
 		self.addHandler('programs', self.handlePrograms)
 		self.scrapper = KatsomoScrapper()
+		user = settings.getSetting('username')
+		passwd = settings.getSetting('password')
+		if user != "":
+			if not self.scrapper.doLogin(user, passwd):
+				xbmcUtil.notification('Message','Cannot login check your credentials')
 		self.favourites = {}
 		self.initFavourites()
 
