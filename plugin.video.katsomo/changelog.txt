@@ -1,3 +1,7 @@
+1.1.4
+
+- fixed duplicates in file listing
+
 1.1.3
 
 - fixed issue when paid content not shown
