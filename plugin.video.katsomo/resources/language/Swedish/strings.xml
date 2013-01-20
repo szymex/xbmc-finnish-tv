@@ -25,6 +25,8 @@
         <!-- settings -->
     <string id="30050">Login</string>
     <string id="30051">Password</string>
-                
-
+    
+    <!-- warnings -->
+    <string id="30070">Fel</string>
+    <string id="30071">Du inte har rätt att se denna video</string>
 </strings>

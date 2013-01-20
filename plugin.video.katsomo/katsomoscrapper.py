@@ -84,7 +84,7 @@ class KatsomoScrapper:
 		return 0
 
 	def scrapVideoLink(self, url):
-		xbmc.log( url )
+		#xbmc.log( logmsg + url )
 		req = urllib2.Request(url)
 		req.add_header('User-Agent', USER_AGENT)
 		req.add_header('Cookie', 'hq=1')
@@ -98,7 +98,7 @@ class KatsomoScrapper:
 			
 	def scrapSerie(self, url):
 		global login_true
-		xbmc.log( url )
+		xbmc.log( logmsg + url )
 		req = urllib2.Request(url)
 		req.add_header('User-Agent', USER_AGENT)
 		response = opener.open(req)
@@ -109,9 +109,8 @@ class KatsomoScrapper:
 			link = 'http://m.katsomo.fi' + common.parseDOM(r, "a", ret = "href")[0]
 			title = common.parseDOM(r, "p", {'class': 'program-name'})[0]
 			if 'class="star"' in title and not login_true: continue
-			if 'class="star"' in title and login_true:
-				title = "* " + common.stripTags(title)		
-				
+			elif 'class="star"' in title and login_true and self.scrapVideoLink(link) == None: continue	
+			
 			title += ' ' + common.parseDOM(r, "p", {'class': 'program-abstract'})[0]
 			img = 'http://m.katsomo.fi' + common.parseDOM(r, "img", ret = "src")[0]
 			

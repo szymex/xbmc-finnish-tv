@@ -25,6 +25,8 @@
 	<!-- settings -->
     <string id="30050">Login</string>
     <string id="30051">Password</string>
-
-
+    
+    <!-- warnings -->
+    <string id="30070">Error</string>
+    <string id="30071">You might not have subscription to view this video</string>
 </strings>

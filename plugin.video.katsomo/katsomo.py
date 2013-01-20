@@ -80,7 +80,7 @@ class KatsomoAddon (xbmcUtil.ViewAddonAbstract):
 	def handleVideo(self, link):
 		vid = self.scrapper.scrapVideoLink(link)
 		if vid==None:
-			xbmcUtil.notification(header="Warning", message="No rights to watch this video.")
+			xbmcUtil.notification(header=lang(30070), message=lang(30071))
 			return False
 		else:
 			return vid
