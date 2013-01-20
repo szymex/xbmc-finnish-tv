@@ -78,7 +78,13 @@ class KatsomoAddon (xbmcUtil.ViewAddonAbstract):
 			self.addVideoLink(s['title'] , s['link'], s['img'], infoLabels={'aired': s['published'] } )
 		
 	def handleVideo(self, link):
-		return self.scrapper.scrapVideoLink(link)
+		vid = self.scrapper.scrapVideoLink(link)
+		if vid==None:
+			xbmcUtil.notification(header="Warning", message="No rights to watch this video.")
+			return False
+		else:
+			return vid
+
 
 	def handleAction(self, action, params):
 		if action=='addFav':

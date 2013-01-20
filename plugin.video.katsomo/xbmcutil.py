@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
  Utility functions for xbmc. Simplifies common operations on xbmc.
- version 1.1.4
+ version 1.1.5
 """
 
 import sys,urllib,os
@@ -64,12 +64,13 @@ class ViewAddonAbstract:
 	
 	def playVideo(self, link):
 		resolvedVideoLink =	self.handleVideo(link)
-		if (resolvedVideoLink!=None):
-			liz=xbmcgui.ListItem(path=resolvedVideoLink)
-			xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, liz)
-		else:
-			print ("could not play " + link)
-			notification(header="Warning", message="Could not find video.")
+		if (resolvedVideoLink!=False):
+			if (resolvedVideoLink!=None):
+				liz=xbmcgui.ListItem(path=resolvedVideoLink)
+				xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, liz)
+			else:
+				print ("could not play " + link)
+				notification(header="Warning", message="Could not find video.")
 		
 
 	def handleVideo(self, link):
