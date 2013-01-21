@@ -144,6 +144,6 @@ class KatsomoScrapper:
 			id = retIDs[i]
 			if not 'star' in name:
 				l.append({'title':common.stripTags(name), 'link':'http://m.katsomo.fi/katsomo/?treeId=' + id, 'treeId': id})
-			elif login_true:
+			else:
 					l.append({'title':common.stripTags(name) + " *", 'link':'http://m.katsomo.fi/katsomo/?treeId=' + id, 'treeId': id})
 		return l
