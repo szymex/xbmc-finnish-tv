@@ -1,4 +1,5 @@
 import urllib,urllib2,re
+import os
 import cookielib
 import CommonFunctions
 import xbmc,xbmcaddon
@@ -10,7 +11,11 @@ addon = xbmcaddon.Addon('plugin.video.katsomo')
 cookie_file = xbmc.translatePath(addon.getAddonInfo('profile')) + "cookies.txt"
 
 cj = cookielib.LWPCookieJar(cookie_file)
-cj.revert(ignore_discard = True)
+if os.path.isfile(cookie_file):
+	try:
+		cj.revert(ignore_discard = True)
+	except IOError:
+		pass
 opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
 
 logintrue = False
@@ -26,10 +31,11 @@ class KatsomoScrapper:
 
 	def checkLogin( self ):
 		global cj,login_true
-		try:
-			cj.revert(ignore_discard = True)
-		except IOError:
-			pass
+		if os.path.isfile(cookie_file):
+			try:
+				cj.revert(ignore_discard = True)
+			except IOError:
+				pass
 		#xbmc.log(logmsg + "checking login status to katsomo")
 		login_url='http://m.katsomo.fi/katsomo/login'
 		req = urllib2.Request(login_url)
