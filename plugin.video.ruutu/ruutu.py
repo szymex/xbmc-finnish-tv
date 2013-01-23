@@ -105,13 +105,13 @@ def scrapPager(url):
 			htmlSeason = it.select('.field-name-field-season')			
 			if len(htmlSeason)>0:
 				season = repr(htmlSeason[0])
-				season = re.compile('span>.+?([0-9]+?).*?</', re.DOTALL).findall(season)
+				season = re.compile('span>.+?([0-9]+[0-9]*?).*?</', re.DOTALL).findall(season)
 				if (len(season)>0): seasonNum = season[0]
 			
 			htmlEpisode = it.select('.field-name-field-episode')
 			if len(htmlEpisode)>0:
 				episode = repr(htmlEpisode[0])
-				episode = re.compile('span>.+?([0-9]+?).*?</', re.DOTALL).findall(episode)
+				episode = re.compile('span>.+?([0-9]+[0-9]*?).*?</', re.DOTALL).findall(episode)
 				if (len(episode)>0): episodeNum = episode[0]
 
 

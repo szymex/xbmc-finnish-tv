@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="plugin.video.riemurasia"
        name="Riemurasia"
-       version="1.0.0"
+       version="1.0.1"
        provider-name="szymex">
   <requires>
     <import addon="xbmc.python" version="2.0"/>
@@ -11,7 +11,8 @@
         <provides>video</provides>
   </extension>
   <extension point="xbmc.addon.metadata">
-    <summary>riemurasia.net</summary>
+    <summary>Riemurasia.net</summary>
+	<description>Suomen suurin viihdesivusto</description>
 	<language>fi</language>
     <platform>all</platform>
 	<nofanart>true</nofanart>
