@@ -6,8 +6,8 @@ REPOSITORY=./repo
 PLUGINS=$(echo plugin.video.*)
 
 echo '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' > ./addons.xml
-cat ./repository.finnish-tv/addon.xml | grep -v "<?xml" >> ./addons.xml
 echo "<addons>" >> ./addons.xml
+cat ./repository.finnish-tv/addon.xml | grep -v "<?xml" >> ./addons.xml
 echo "making release zip files..."
 
 for i in $PLUGINS

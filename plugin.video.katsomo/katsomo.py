@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
-import xbmcplugin,xbmcgui
+import xbmcplugin,xbmcgui,xbmcaddon
 import xbmcutil as xbmcUtil
 import sys
 from katsomoscrapper import KatsomoScrapper
 from datetime import datetime, date
 
+settings = xbmcaddon.Addon('plugin.video.katsomo')
 
 #sets default encoding to utf-8
 reload(sys) 
@@ -22,6 +23,12 @@ class KatsomoAddon (xbmcUtil.ViewAddonAbstract):
 		self.addHandler('serie', self.handleSerie)
 		self.addHandler('programs', self.handlePrograms)
 		self.scrapper = KatsomoScrapper()
+		user = settings.getSetting('username')
+		passwd = settings.getSetting('password')
+		if user != "" and not self.scrapper.doLogin(user, passwd):
+			xbmcUtil.notification('Message','Cannot login check your credentials')
+		elif user == "":
+			self.scrapper.noLogin()
 		self.favourites = {}
 		self.initFavourites()
 
@@ -68,10 +75,16 @@ class KatsomoAddon (xbmcUtil.ViewAddonAbstract):
 				groupName = formatDate(s['publ-ts'])
 				self.addVideoLink(self.GROUP % groupName, '', '')
 
-			self.addVideoLink(s['title'] , s['link'], s['img'], infoLabels={'aired': s['published'] } )
+			self.addVideoLink(s['title'] , s['link'], s['img'], infoLabels={'aired': s['publ-ts'].strftime('%Y-%m-%d') } )
 		
 	def handleVideo(self, link):
-		return self.scrapper.scrapVideoLink(link)
+		vid = self.scrapper.scrapVideoLink(link)
+		if vid==None:
+			xbmcUtil.notification(header=lang(30070), message=lang(30071))
+			return False
+		else:
+			return vid
+
 
 	def handleAction(self, action, params):
 		if action=='addFav':

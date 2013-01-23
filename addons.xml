@@ -1,45 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addons>
-<addon id="plugin.video.yleareena"
-       name="YLE Areena"
-       version="1.3.5"
-       provider-name="szymex">
-  <requires>
-    <import addon="xbmc.python" version="2.0"/>
-    <import addon="script.module.parsedom" version="0.9.1"/>
-  </requires>
-  <extension point="xbmc.python.pluginsource" library="yleareena.py">
-        <provides>video</provides>
-  </extension>
-  <extension point="xbmc.addon.metadata">
-    <summary>YLE Areena</summary>
-	<language>fi en</language>
-    <description>http://areena.yle.fi</description>
-    <platform>all</platform>
-	<nofanart>true</nofanart>
-  </extension>
-</addon>
-
-<addon id="plugin.video.ruutu"
-       name="Ruutu.fi"
-       version="1.2.5"
-       provider-name="szymex">
-  <requires>
-    <import addon="xbmc.python" version="2.0"/>
-    <import addon="script.module.parsedom" version="0.9.1"/>
-  </requires>
-  <extension point="xbmc.python.pluginsource" library="ruutu.py">
-        <provides>video</provides>
-  </extension>
-  <extension point="xbmc.addon.metadata">
-    <summary>Ruutu.fi</summary>
-	<language>fi en</language>
-    <description>Finnish tv programs from channels: Nelonen, Liv, Jim</description>
-    <platform>all</platform>
-	<nofanart>true</nofanart>
-  </extension>
-</addon>
-
 <addon id="repository.finnish-tv" name="Finnish TV" version="1.0.0" provider-name="szymex">
 	<extension point="xbmc.addon.repository" name="Finnish TV">
 		<info compressed="false">https://github.com/szymex/xbmc-finnish-tv/raw/master/addons.xml</info>
@@ -51,10 +11,9 @@
 		<platform>all</platform>
 	</extension>
 </addon>
-
 <addon id="plugin.video.katsomo"
        name="Katsomo"
-       version="1.1.0"
+       version="1.1.7"
        provider-name="szymex">
   <requires>
     <import addon="xbmc.python" version="2.0"/>
@@ -68,7 +27,64 @@
 	<language>fi</language>
     <description>TV Videos from Katsomo.fi (mtv3, sub, ava)</description>
     <platform>all</platform>
+	<nofanart>false</nofanart>
+  </extension>
+</addon>
+<addon id="plugin.video.riemurasia"
+       name="Riemurasia"
+       version="1.0.1"
+       provider-name="szymex">
+  <requires>
+    <import addon="xbmc.python" version="2.0"/>
+    <import addon="script.module.parsedom" version="0.9.1"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="riemurasia.py">
+        <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary>Riemurasia.net</summary>
+	<description>Suomen suurin viihdesivusto</description>
+	<language>fi</language>
+    <platform>all</platform>
 	<nofanart>true</nofanart>
+  </extension>
+</addon>
+<addon id="plugin.video.ruutu"
+       name="Ruutu.fi"
+       version="1.2.7"
+       provider-name="szymex">
+  <requires>
+    <import addon="xbmc.python" version="2.0"/>
+    <import addon="script.module.parsedom" version="0.9.1"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="ruutu.py">
+        <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary>Ruutu.fi</summary>
+	<language>fi en</language>
+    <description>Finnish tv programs from channels: Nelonen, Liv, Jim</description>
+    <platform>all</platform>
+	<nofanart>false</nofanart>
+  </extension>
+</addon>
+<addon id="plugin.video.yleareena"
+       name="YLE Areena"
+       version="1.3.7"
+       provider-name="szymex">
+  <requires>
+    <import addon="xbmc.python" version="2.0"/>
+    <import addon="script.module.parsedom" version="0.9.1"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="yleareena.py">
+        <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary>YLE Areena</summary>
+	<language>fi en</language>
+    <description>http://areena.yle.fi</description>
+    <platform>all</platform>
+	<nofanart>false</nofanart>
   </extension>
 </addon>
 </addons>

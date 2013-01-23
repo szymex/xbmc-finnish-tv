@@ -7,7 +7,7 @@
     <string id="30008">Julkaistu</string>
     <string id="30009">Poistuu</string>
     <string id="30010">Eilen</string>
-	<string id="30011">Näkyy ulkomailla</string>
+    <string id="30011">Vain ulkomailla näkyvät ohjelmat</string>
     <string id="30012">Tekstityksen kieli</string>
 
 	<!-- categories -->
@@ -24,4 +24,6 @@
     <string id="30029">Ruoka</string>
 
     <string id="30100">Debug</string>
+    <string id="30101">Varoitus</string>
+    <string id="30102">Videota ei löydy.</string>    
 </strings>

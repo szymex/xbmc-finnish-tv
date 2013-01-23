@@ -1,3 +1,34 @@
+1.1.7
+
+- fixed 'aired' parameter's date format
+
+1.1.6
+
+- Emergency fix for windows users
+
+1.1.5
+
+- Added error handling for pay content
+- Added more translations
+- Removed pay content that you have no subscription
+
+1.1.4
+
+- fixed duplicates in file listing
+
+1.1.3
+
+- fixed issue when paid content not shown
+
+1.1.2
+
+- updated finnish translation
+
+1.1.1
+
+- Added login
+- Added cookie handling
+
 1.1.0
 
 - Added finnish translation

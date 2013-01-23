@@ -24,4 +24,6 @@
     <string id="30029">Food</string>
 
     <string id="30100">Debug</string>
+    <string id="30101">Warning</string>
+    <string id="30102">Could not find video.</string>
 </strings>

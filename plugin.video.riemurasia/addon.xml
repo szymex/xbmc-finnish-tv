@@ -1,21 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.yleareena"
-       name="YLE Areena"
-       version="1.4.0"
+<addon id="plugin.video.riemurasia"
+       name="Riemurasia"
+       version="1.0.1"
        provider-name="szymex">
   <requires>
     <import addon="xbmc.python" version="2.0"/>
     <import addon="script.module.parsedom" version="0.9.1"/>
-    <import addon='script.module.simple.downloader' version='0.9.3'/>
   </requires>
-  <extension point="xbmc.python.pluginsource" library="yleareena.py">
+  <extension point="xbmc.python.pluginsource" library="riemurasia.py">
         <provides>video</provides>
   </extension>
   <extension point="xbmc.addon.metadata">
-    <summary>YLE Areena</summary>
-	<language>fi en</language>
-    <description>http://areena.yle.fi</description>
+    <summary>Riemurasia.net</summary>
+	<description>Suomen suurin viihdesivusto</description>
+	<language>fi</language>
     <platform>all</platform>
-	<nofanart>false</nofanart>
+	<nofanart>true</nofanart>
   </extension>
 </addon>

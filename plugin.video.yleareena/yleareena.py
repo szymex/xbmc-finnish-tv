@@ -4,9 +4,8 @@ import urllib,urllib2,re
 import xbmcplugin,xbmcgui,xbmcaddon
 import xbmcutil as xbmcUtil
 import simplejson as json
-from datetime import date
+from datetime import date, datetime
 import time
-import datetime
 import os, sys, inspect
 import SimpleDownloader as downloader
 import string
@@ -21,7 +20,6 @@ if settings.getSetting('debug') == "true":
 else:
   common.dbg = False
 #Debug loppu
->>>>>>> master
 
 #sets default encoding to utf-8
 reload(sys) 
@@ -111,42 +109,6 @@ def readJSON(url):
 		xbmcUtil.notification('Error', str(e))
 		return [];
 
-today = str(date.today())
-tomorrow = str(datetime.date.today() + datetime.timedelta(days=1))
-yesterday = str(datetime.date.today() + datetime.timedelta(days=-1))
-day_minus_2 = str(datetime.date.today() + datetime.timedelta(days=-2))
-day_minus_3 = str(datetime.date.today() + datetime.timedelta(days=-3))
-day_minus_4 = str(datetime.date.today() + datetime.timedelta(days=-4))
-day_minus_5 = str(datetime.date.today() + datetime.timedelta(days=-5))
-def relativeDay(day):
-	if day==tomorrow:
-		return lang(33007)
-	if day==today:
-		return lang(33006)
-	if day==yesterday:
-		return lang(30010)
-	if day==day_minus_2:
-		return getWeekday(datetime.date.today().weekday()-2) + ' (' + day + ')'
-	if day==day_minus_3:
-		return getWeekday(datetime.date.today().weekday()-3) + ' (' + day + ')'
-	if day==day_minus_4:
-		return getWeekday(datetime.date.today().weekday()-4) + ' (' + day + ')'
-	if day==day_minus_5:
-		return getWeekday(datetime.date.today().weekday()-5) + ' (' + day + ')'
-	
-	return day
-
-#w={0:'Maanantai',1:'Tiistai',2:'Keskiviikko',3:'Torstai',4:'Perjantai',5:'Lauantai',6:'Sunnuntai'}
-
-def getWeekday(weekday):
-	if weekday<0: weekday+=7
-	if weekday==0: return lang(11)
-	if weekday==1: return lang(12)
-	if weekday==2: return lang(13)
-	if weekday==3: return lang(14)
-	if weekday==4: return lang(15)
-	if weekday==5: return lang(16)
-	if weekday==6: return lang(17)
 	
 class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 	ADDON_ID = 'plugin.video.yleareena'
@@ -162,7 +124,10 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 		self.addHandler('programs', self.handlePrograms)
 		self.addHandler('serie', self.handleSerie)
 		self.addHandler('live', self.handleLive)
-		self.DEFAULT_LANG = self.LANGUAGES[int(self.addon.getSetting("lang"))]
+		try:
+			self.DEFAULT_LANG = self.LANGUAGES[int(self.addon.getSetting("lang"))]
+		except:
+			pass
 	
 	def initConst(self):
 		self.NEXT = '[COLOR blue]   ➔  %s  ➔[/COLOR]' % self.lang(33078)
@@ -198,6 +163,13 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 			self.addViewLink(self.FAVOURITE % key, 'serie', 1, 
 							{'link':self.favSeries[key] + '.json?from=0&to=24&sisalto=ohjelmat'},
 							[(self.createContextMenuAction(self.REMOVE, 'removeFav', {'name':key}) )] )
+	
+	def formatDate(self,dt):
+		delta = date.today() - dt.date()
+		if delta.days==0: return lang(30004)
+		if delta.days==1: return lang(30010)
+		if delta.days>1 and delta.days<5: return dt.strftime('%A %d.%m.%Y')
+		return dt.strftime('%d.%m.%Y')	
 	
 	def handlePrograms(self, pg, args):
 		link = args['link']+self.getPageQuery(pg, 100) if 'link' in args else ''
@@ -282,7 +254,7 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 		grouping = args['grouping'] if 'grouping' in args else False
 		groupName = ''
 		link = args['link']+self.getPageQuery(pg) if 'link' in args else ''
-		print link
+
 		if link != '':
 			items = readJSON(link)
 			if 'search' in items:
@@ -293,10 +265,13 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 					if 'episodeNumber' in item and int(item['episodeNumber'])<1000:				
 						episodeNumber = int(item['episodeNumber'])
 						title += ' #' + str(episodeNumber)
-					#elif 'published' in item:
-					#	title += ' #' + item['published'][:10]
 					
+					try:
+						publishedTs = datetime.strptime(item['published'], '%Y-%m-%dT%H:%M:%S')
+					except TypeError:
+						publishedTs = datetime(*(time.strptime(item['published'], '%Y-%m-%dT%H:%M:%S')[0:6]))	
 					published = item['published'].replace('T', ' ') if 'published' in item else ''
+					
 					plot = item['desc'] if 'desc' in item and item['desc'] != None else ''
 					plot += '\r\n%s: %s' % (self.lang(30008),published) if published != '' else ''
 					
@@ -323,8 +298,8 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 					contextMenu.append( (self.createContextMenuAction('Download', 'download', {'videoLink':link, 'title': title}) ) )
 
 					if grouping:						
-						if 'published' in item and groupName != relativeDay(item['published'][:10]):
-							groupName = relativeDay(item['published'][:10])
+						if 'published' in item and groupName != self.formatDate(publishedTs):
+							groupName = self.formatDate(publishedTs)
 							if groupName != self.lang(33006):
 								self.addVideoLink(self.GROUP % groupName, '', '')
 					
@@ -341,7 +316,7 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 					if isInternational and 'international' in item and not item['international']:
 						continue
 
-					self.addVideoLink(title, link, img, infoLabels={'plot': plot, 'episode': episodeNumber,'aired': published[:10], 'date': published }, 
+					self.addVideoLink(title, link, img, infoLabels={'plot': plot,'duration':str(item.get('duration','')), 'episode': episodeNumber,'aired': publishedTs.strftime('%Y.%m.%d'), 'date': publishedTs.strftime('%d.%m.%Y') }, 
 									  contextMenu=contextMenu, videoStreamInfo={'duration':item['durationSec']})
 				
 				if len(items['search']['results']) == self.DEFAULT_PAGE_SIZE:
@@ -379,7 +354,7 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 
 		else:
 			print ("could not play " + link)
-			notification(header="Warning", message="Could not find video.")
+			notification(header=self.lang(30101), message=self.lang(30102))
 
 	def handleVideo(self, link):
 		videoLink = scrapVideo(link)

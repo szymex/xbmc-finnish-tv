@@ -5,8 +5,7 @@ import CommonFunctions
 import xbmcutil as xbmcUtil
 import inspect
 import time
-import datetime
-from datetime import date
+from datetime import date, datetime
 from bs4 import BeautifulSoup
 import sys
 dbg = True
@@ -129,13 +128,13 @@ def scrapPager(url):
 			htmlSeason = it.select('.field-name-field-season')			
 			if len(htmlSeason)>0:
 				season = repr(htmlSeason[0])
-				season = re.compile('span>.+?([0-9]+?).*?</', re.DOTALL).findall(season)
+				season = re.compile('span>.+?([0-9]+[0-9]*?).*?</', re.DOTALL).findall(season)
 				if (len(season)>0): seasonNum = season[0]
 			
 			htmlEpisode = it.select('.field-name-field-episode')
 			if len(htmlEpisode)>0:
 				episode = repr(htmlEpisode[0])
-				episode = re.compile('span>.+?([0-9]+?).*?</', re.DOTALL).findall(episode)
+				episode = re.compile('span>.+?([0-9]+[0-9]*?).*?</', re.DOTALL).findall(episode)
 				if (len(episode)>0): episodeNum = episode[0]
 
 
@@ -159,9 +158,14 @@ def scrapPager(url):
 			selStartTime = it.select('.field-name-field-starttime')
 			for str in selStartTime[0].stripped_strings:
 				published = str
-
+			
+			try:
+				publishedTs = datetime.strptime(published, '%d.%m.%Y')
+			except TypeError:
+				publishedTs = datetime(*(time.strptime(published, '%d.%m.%Y')[0:6]))	
+				
 			retList.append( {'title':title, 'seasonNum':seasonNum, 'episodeNum':episodeNum, 'link':"http://www.ruutu.fi" + link, 'image':image, 'duration': duration, 
-							'published':published,'available-text':availabilityText, 'available': available, 'desc':desc, 'details':details });
+							'published-ts':publishedTs,'available-text':availabilityText, 'available': available, 'desc':desc, 'details':details });
 	except urllib2.HTTPError:
 		retList=[];	
 
@@ -193,38 +197,12 @@ def scrapPrograms():
 
 	return retLinks
 
-today = date.today().strftime("%d.%m.%Y").lstrip('0')
-yesterday = (datetime.date.today() + datetime.timedelta(days=-1)).strftime("%d.%m.%Y").lstrip('0')
-day_minus_2 = (datetime.date.today() + datetime.timedelta(days=-2)).strftime("%d.%m.%Y").lstrip('0')
-day_minus_3 = (datetime.date.today() + datetime.timedelta(days=-3)).strftime("%d.%m.%Y").lstrip('0')
-day_minus_4 = (datetime.date.today() + datetime.timedelta(days=-4)).strftime("%d.%m.%Y").lstrip('0')
-day_minus_5 = (datetime.date.today() + datetime.timedelta(days=-5)).strftime("%d.%m.%Y").lstrip('0')
-def relativeDay(day, emptyToday=False):
-	if day==today:
-		return lang(33006) if not emptyToday else '' #today
-	if day==yesterday:
-		return lang(30010) #yesterday
-	if day==day_minus_2:
-		return getWeekday(datetime.date.today().weekday()-2) + ' (' + day + ')'
-	if day==day_minus_3:
-		return getWeekday(datetime.date.today().weekday()-3) + ' (' + day + ')'
-	if day==day_minus_4:
-		return getWeekday(datetime.date.today().weekday()-4) + ' (' + day + ')'
-	if day==day_minus_5:
-		return getWeekday(datetime.date.today().weekday()-5) + ' (' + day + ')'
-	
-	return day
-
-def getWeekday(weekday):
-	if weekday<0: weekday+=7
-	if weekday==0: return lang(11)
-	if weekday==1: return lang(12)
-	if weekday==2: return lang(13)
-	if weekday==3: return lang(14)
-	if weekday==4: return lang(15)
-	if weekday==5: return lang(16)
-	if weekday==6: return lang(17)
-
+def formatDate(dt):
+	delta = date.today() - dt.date()
+	if delta.days==0: return lang(30004)
+	if delta.days==1: return lang(30010)
+	if delta.days>1 and delta.days<5: return dt.strftime('%A %d.%m.%Y')
+	return dt.strftime('%d.%m.%Y')	
 	
 class RuutuAddon (xbmcUtil.ViewAddonAbstract):
 	ADDON_ID = 'plugin.video.ruutu'
@@ -297,8 +275,8 @@ class RuutuAddon (xbmcUtil.ViewAddonAbstract):
 		if items != None:		
 			xbmcplugin.setContent(int(sys.argv[1]), 'episodes')		
 			for item in items:
-				if grouping and groupName != relativeDay(item['published'], True):
-					groupName = relativeDay(item['published'], len(groupName)==0)
+				if grouping and groupName != formatDate(item['published-ts']):
+					groupName = formatDate(item['published-ts'])
 					self.addVideoLink(self.GROUP_FORMAT % groupName, '', '')
 
 				title = item['title']
@@ -327,7 +305,7 @@ class RuutuAddon (xbmcUtil.ViewAddonAbstract):
 				episodeNum = item['episodeNum']
 				seasonNum = item['seasonNum']
 				contextMenu = [ (self.createContextMenuAction('Download', 'download', {'videoLink':item['link'], 'title': item['title']}) ) ]
-				self.addVideoLink(title , item['link'], item['image'], infoLabels={'plot':plot,'season':seasonNum, 'episode': episodeNum,'aired': item['published'] , 'duration':item['duration']}, contextMenu=contextMenu)
+				self.addVideoLink(title , item['link'], item['image'], infoLabels={'plot':plot,'season':seasonNum, 'episode': episodeNum,'aired': item['published-ts'].strftime('%Y-%m-%d') , 'duration':item['duration']}, contextMenu=contextMenu)
 			if len(items)>0 and len(items)>=pgSize:
 				self.addViewLink(self.NEXT,handler, pg+1, args )
 			

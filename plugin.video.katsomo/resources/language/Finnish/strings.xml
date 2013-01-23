@@ -21,4 +21,12 @@
     <string id="30028">Uusimmat</string>
     <string id="30030">Katsotuimmat</string>
     <string id="30029">Ruoka</string>
+
+    <!-- settings -->
+    <string id="30050">Käyttäjätunnus</string>
+    <string id="30051">Salasana</string>
+    
+    <!-- warnings -->
+    <string id="30070">Virhe</string>
+    <string id="30071">Sinulla ei ole maksettua katseluoikeutta tähän videoon</string>
 </strings>

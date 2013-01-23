@@ -1,0 +1,11 @@
+1.0.1
+
+- added ison
+
+1.0.0
+
+- showing videos from: www.riemurasia.net
+
+
+
+
