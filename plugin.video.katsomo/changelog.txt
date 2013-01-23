@@ -1,3 +1,7 @@
+1.1.7
+
+- fixed 'aired' parameter's date format
+
 1.1.6
 
 - Emergency fix for windows users

@@ -1,3 +1,7 @@
+1.2.7
+
+- fixed parsing season or episode that is larger then 9
+
 1.2.6
 
 - enabled fanart
