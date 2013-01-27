@@ -70,7 +70,7 @@ def downloadVideo(url, title):
 
 	downloadPath = ruutu.addon.getSetting('download-path')
 	if downloadPath == None or downloadPath == '': 
-		downloadPath = '~/'
+		return
 	downloadPath += url.split('/')[-2]
 	if not os.path.exists(downloadPath):
 		os.makedirs(downloadPath)
