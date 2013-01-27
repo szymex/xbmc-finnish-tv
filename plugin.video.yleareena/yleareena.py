@@ -83,10 +83,10 @@ def downloadVideo(url, title):
 	video_url, subtitles = scrapVideo(url)
 	params = {}
 	params["url"] = video_url
-	params["download_path"] = '/home/szymon'
 	downloadPath = yleAreenaAddon.addon.getSetting('download-path')
 	if downloadPath == None or downloadPath == '': 
-		downloadPath = '~/'
+		return
+	params["download_path"] = downloadPath
 
 	filename = "%s.mp4" % (''.join(c for c in title if c in valid_chars) )
 	#filename = 'test.mp4'
@@ -128,6 +128,7 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 			self.DEFAULT_LANG = self.LANGUAGES[int(self.addon.getSetting("lang"))]
 		except:
 			pass
+		self.enabledDownload = self.addon.getSetting("enable-download") == 'true'
 	
 	def initConst(self):
 		self.NEXT = '[COLOR blue]   ➔  %s  ➔[/COLOR]' % self.lang(33078)
@@ -295,7 +296,8 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 							title = serieName + ': ' + title
 					else:
 						contextMenu = []
-					contextMenu.append( (self.createContextMenuAction('Download', 'download', {'videoLink':link, 'title': title}) ) )
+					if self.enabledDownload:					
+						contextMenu.append( (self.createContextMenuAction('Download', 'download', {'videoLink':link, 'title': title}) ) )
 
 					if grouping:						
 						if 'published' in item and groupName != self.formatDate(publishedTs):

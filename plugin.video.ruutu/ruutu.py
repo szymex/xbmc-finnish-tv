@@ -216,6 +216,7 @@ class RuutuAddon (xbmcUtil.ViewAddonAbstract):
 		self.addHandler('programs', self.handlePrograms)
 		self.favourites = {}
 		self.initFavourites()
+		self.enabledDownload = self.addon.getSetting("enable-download") == 'true'
 		
 	def initConst(self):
 		self.NEXT = '[COLOR blue]   ➔  %s  ➔[/COLOR]' % self.lang(33078)
@@ -304,7 +305,10 @@ class RuutuAddon (xbmcUtil.ViewAddonAbstract):
 
 				episodeNum = item['episodeNum']
 				seasonNum = item['seasonNum']
-				contextMenu = [ (self.createContextMenuAction('Download', 'download', {'videoLink':item['link'], 'title': item['title']}) ) ]
+				contextMenu = []
+				
+				if self.enabledDownload:					
+					contextMenu.append((self.createContextMenuAction('Download', 'download', {'videoLink':item['link'], 'title': item['title']}) ))
 				self.addVideoLink(title , item['link'], item['image'], infoLabels={'plot':plot,'season':seasonNum, 'episode': episodeNum,'aired': item['published-ts'].strftime('%Y-%m-%d') , 'duration':item['duration']}, contextMenu=contextMenu)
 			if len(items)>0 and len(items)>=pgSize:
 				self.addViewLink(self.NEXT,handler, pg+1, args )
