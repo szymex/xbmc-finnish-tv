@@ -12,7 +12,7 @@ XBMC Video Plugins for playing Finnish television content containers.
 - subtitles support (YLE Areena)
 
 ### Repository
-Download: [repository.finnish-tv-1.0.0.zip](https://github.com/downloads/szymex/xbmc-finnish-tv/repository.finnish-tv-1.0.0.zip)
+Download: [repository.finnish-tv-1.0.1.zip](https://github.com/szymex/xbmc-finnish-tv/blob/master/repo/repository.finnish-tv/repository.finnish-tv-1.0.1.zip)
 
 * **YLE Areena**
   
