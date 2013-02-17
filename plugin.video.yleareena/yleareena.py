@@ -135,8 +135,8 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 		self.GROUP = u'   [COLOR blue]%s[/COLOR]'
 		self.EXPIRES_HOURS = u'[COLOR red]%d' + self.lang(30002) + '[/COLOR] %s'
 		self.EXPIRES_DAYS = u'[COLOR brown]%d' + self.lang(30003) + '[/COLOR] %s'
-		self.FAVOURITE = '[COLOR yellow]★[/COLOR] %s'
-		self.REMOVE = u'[COLOR red]✖[/COLOR] %s' % self.lang(1210)
+		self.FAVOURITE = '[COLOR yellow]*[/COLOR] %s'
+		self.REMOVE = u'[COLOR red]x[/COLOR] %s' % self.lang(1210)
 		
 	def initFavourites(self):
 		fav = self.addon.getSetting("fav")
@@ -218,25 +218,30 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 
 			startTime = item['start'][11:16]
 			img = item['pubContent']['images']['orig']
-			title = u"[COLOR red]◉[/COLOR] " + startTime + ' | ' + item['pubContent']['title'] 
+			title = u"[COLOR red]NYT[/COLOR] " + startTime + ' | ' + item['pubContent']['title'] 
 			plot = item['pubContent']['desc']
 			link = 'http://areena.yle.fi/tv/' + item['pubContent']['id']
-			
 			self.addVideoLink(title, link, img, infoLabels={'plot': plot })
 		if 'upcoming' in items:
 			for days in items['upcoming']:
-				day = relativeDay( days['day'][:10])
-				if day != self.lang(33006): 
+				
+				try:
+					liveDayTs = datetime.strptime(days['day'], '%Y-%m-%dT%H:%M:%S')
+				except TypeError:
+					liveDayTs = datetime(*(time.strptime(days['day'], '%Y-%m-%dT%H:%M:%S')[0:6]))	
+				day = self.formatDate(liveDayTs)
+
+				if day != self.lang(33006) and day != '': 
 					self.addVideoLink('   [COLOR blue]' + day + '[/COLOR]', '', '')
 				
 				for item in days['items']:
-					if datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%dT%H:%M:%S')[:13] == item['start'][:13]:
-						title = u"[COLOR orange]◉[/COLOR] "
-					else:
-						title = u"◉ "
+					#if datetime.strftime(datetime.now(), '%Y-%m-%dT%H:%M:%S')[:13] == item['start'][:13]:
+					#	title = u"[COLOR orange][/COLOR]"
+					#else:
+					#	title = u""
 					startTime = item['start'][11:16]
 					img = item['pubContent']['images']['orig']
-					title +=  startTime + ' | ' + item['pubContent']['title'] 
+					title =  startTime + ' | ' + item['pubContent']['title'] 
 					plot = item['pubContent']['desc']
 					link = 'http://areena.yle.fi/tv/' + item['pubContent']['id']
 					
