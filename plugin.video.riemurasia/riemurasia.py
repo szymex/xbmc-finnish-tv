@@ -33,7 +33,8 @@ class RiemurasiaScraper:
 	
 		retItems = []	
 		for item in retList:
-			link = self.ADDR + common.parseDOM(item, "a", {'href': '*'}, 'href')[0]
+			link = 'http://www.riemurasia.net' + common.parseDOM(item, "a", {'href': '*'}, 'href')[0]
+			link = link.replace('ä', 'a').replace('ö', 'o').replace('Ä', 'A').replace('Ö', 'O')
 			title = common.parseDOM(item, "img", ret='alt')[0].replace('&ouml;', 'ö').replace('&auml;', 'ä')
 			img = common.parseDOM(item, "img", ret='src')[0]
 			retItems.append( {'link':link, 'img':img, 'plot': '', 'title': title } )		
