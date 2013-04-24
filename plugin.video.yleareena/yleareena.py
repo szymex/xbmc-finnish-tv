@@ -56,6 +56,13 @@ def scrapVideo(url):
 	rtmpparams = dl.get_rtmp_parameters(clip, url)
 	enc = sys.getfilesystemencoding()
 	rtmpUrl = dl.rtmp_parameters_to_url(rtmpparams).encode(enc, 'replace')
+	# socks-use enum in settings:
+	# 0 = no SOCKS proxy
+	# 1 = always use SOCKS proxy
+	# 2 = use SOCKS proxy if clip has international == False
+	useSocks = settings.getSetting('socks-use')
+	if useSocks > 0 and (clip['international'] == False or useSocks == 1):
+	    rtmpUrl += " socks=%s" % settings.getSetting('socks-server')
 
 	media = clip.get('media', {})
 	subtitles = media.get('subtitles', [])

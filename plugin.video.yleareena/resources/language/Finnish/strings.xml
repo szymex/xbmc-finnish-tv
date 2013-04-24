@@ -9,6 +9,8 @@
     <string id="30010">Eilen</string>
     <string id="30011">Vain ulkomailla näkyvät ohjelmat</string>
     <string id="30012">Tekstityksen kieli</string>
+    <string id="30015">Käytä SOCKS proxyä</string>
+    <string id="30016">SOCKS-palvelin</string>
 
 	<!-- categories -->
     <string id="30020">Ohjelmat</string>
