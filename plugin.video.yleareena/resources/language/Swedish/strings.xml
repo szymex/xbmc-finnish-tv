@@ -9,6 +9,8 @@
     <string id="30010">I går</string>
     <string id="30011">Utanför Finland</string>
     <string id="30012">Textningsspråk</string>
+    <string id="30015">Använda en SOCKS proxy</string>
+    <string id="30016">SOCKS server</string>
 	
 	<!-- categories -->
     <string id="30020">Program</string>
