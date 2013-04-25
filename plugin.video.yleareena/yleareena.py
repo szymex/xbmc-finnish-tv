@@ -289,7 +289,7 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 						publishedTs = datetime(*(time.strptime(item['published'], '%Y-%m-%dT%H:%M:%S')[0:6]))	
 					published = item['published'].replace('T', ' ') if 'published' in item else ''
 					
-					plot = item['desc'] if 'desc' in item and item['desc'] != None else ''
+					plot = item['desc'] + '\r\n' if 'desc' in item and item['desc'] != None else ''
 					plot += '\r\n%s: %s' % (self.lang(30008),published) if published != '' else ''
 					
 					expiresInHours = -1
@@ -329,6 +329,8 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 						expiresText = '[COLOR red]%s[/COLOR]' % expiresText
 						
 					plot = plot + u"\n\r%s: %s" % (self.lang(30009), expiresText) if expiresText != None else plot
+					plot = plot + (u"\n\r%s" % (self.lang(30013) \
+                        if item['international'] else self.lang(30014)))
 					
 					isInternational = self.addon.getSetting("international")=='true'
 					if isInternational and 'international' in item and not item['international']:
