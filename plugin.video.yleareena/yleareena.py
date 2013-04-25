@@ -304,14 +304,13 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 						
 					img = item['images']['M']
 					link='http://areena.yle.fi/tv/' + item['id']
+					contextMenu = [ (self.lang(30018),'XBMC.Action(Info)',) ]
 					if 'series' in item:
 						serieName = item['series']['name']
 						serieLink = 'http://areena.yle.fi/tv/' + item['series']['id']
-						contextMenu = [ (self.createContextMenuAction(self.FAVOURITE % self.lang(14076), 'addFav', {'name':serieName, 'link':serieLink}) )  ]
+						contextMenu.append((self.createContextMenuAction(self.FAVOURITE % self.lang(14076), 'addFav', {'name':serieName, 'link':serieLink}) ))
 						if serieName != None and not item['title'].upper().startswith(serieName.upper()):
 							title = serieName + ': ' + title
-					else:
-						contextMenu = []
 					if self.enabledDownload:					
 						contextMenu.append( (self.createContextMenuAction('Download', 'download', {'videoLink':link, 'title': title}) ) )
 
