@@ -25,6 +25,12 @@
     <string id="30030">Mest sedda</string>
     <string id="30029">Mat</string>
 
+    <string id="30050">Söka</string>
+    <string id="30051">Ny sök</string>
+    <string id="30052">Sök:</string>
+    <string id="30053">Avlägsna senaste sökningarna</string>
+    <string id="30054">Avlägsna senaste sökningarna?</string>
+
     <string id="30100">Debug</string>
     <string id="30101">Warning</string>
     <string id="30102">Could not find video.</string>

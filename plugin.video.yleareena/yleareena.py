@@ -131,6 +131,9 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 		self.addHandler('programs', self.handlePrograms)
 		self.addHandler('serie', self.handleSerie)
 		self.addHandler('live', self.handleLive)
+		self.addHandler('search', self.handleSearch)
+		self.addHandler('newsearch', self.handleNewsearch)
+		self.addHandler('delsearches', self.handleDelsearches)
 		try:
 			self.DEFAULT_LANG = self.LANGUAGES[int(self.addon.getSetting("lang"))]
 		except:
@@ -166,6 +169,7 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 		self.addViewLink(self.lang(30025),'serie', 1, {'link':'http://areena.yle.fi/tv/viihde-ja-kulttuuri/kaikki.json?jarjestys=uusin', 'grouping':True } )
 		self.addViewLink(self.lang(30026),'serie', 1, {'link':'http://areena.yle.fi/tv/dokumentit-ja-fakta/kaikki.json?jarjestys=uusin', 'grouping':True } )
 		self.addViewLink(self.lang(30027),'serie', 1, {'link':'http://areena.yle.fi/tv/urheilu/kaikki.json?jarjestys=uusin', 'grouping':True } )
+		self.addViewLink(self.lang(30050), 'search')
 		
 		for key in  self.favSeries.iterkeys():
 			self.addViewLink(self.FAVOURITE % key, 'serie', 1, 
@@ -373,6 +377,38 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 	def handleVideo(self, link):
 		videoLink = scrapVideo(link)
 		return videoLink
+
+	def handleNewsearch(self, pg, args):
+		keyboard = xbmc.Keyboard()
+		keyboard.doModal()
+		if (keyboard.isConfirmed() and keyboard.getText() != ''):
+			searches = settings.getSetting("searches").splitlines()
+		try:
+			searches.remove(keyboard.getText())
+		except ValueError:
+			pass
+		if len(searches)>20:
+			searches.pop()
+		query = keyboard.getText()
+		searches.insert(0, query)
+		settings.setSetting("searches","\n".join(searches))
+		link = 'http://areena.yle.fi/.json?q=%s&media=video' % query
+		self.handleSerie(1, {'link': link})
+
+	def handleDelsearches(self, pg, args):
+		dialog = xbmcgui.Dialog()
+		if(dialog.yesno('YLE Areena', self.lang(30054))):
+			settings.setSetting("searches", "")
+
+	def handleSearch(self, pg, args):
+		self.addViewLink(self.lang(30051), 'newsearch')
+		searches = settings.getSetting('searches').splitlines()
+		for s in searches:
+			self.addViewLink(self.lang(30052) + ' ' + s, 'serie',1, \
+				{'link':'http://areena.yle.fi/.json?q=%s&media=video' % s })
+		if(settings.getSetting("searches") != ""):
+			self.addViewLink(self.lang(30053), 'delsearches')
+		xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 #-----------------------------------
 
