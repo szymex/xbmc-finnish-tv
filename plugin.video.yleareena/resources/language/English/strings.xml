@@ -25,6 +25,12 @@
     <string id="30030">Most watched</string>
     <string id="30029">Food</string>
 
+    <string id="30050">Search</string>
+    <string id="30051">New search</string>
+    <string id="30052">Search:</string>
+    <string id="30053">Remove latest searches</string>
+    <string id="30054">Remove latest searches?</string>
+
     <string id="30100">Debug</string>
     <string id="30101">Warning</string>
     <string id="30102">Could not find video.</string>

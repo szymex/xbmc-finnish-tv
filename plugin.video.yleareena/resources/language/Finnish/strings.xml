@@ -25,6 +25,12 @@
     <string id="30030">Katsotuimmat</string>
     <string id="30029">Ruoka</string>
 
+    <string id="30050">Haku</string>
+    <string id="30051">Uusi haku</string>
+    <string id="30052">Haku:</string>
+    <string id="30053">Poista viimeiset haut</string>
+    <string id="30054">Poistetaanko viimeiset haut?</string>
+
     <string id="30100">Debug</string>
     <string id="30101">Varoitus</string>
     <string id="30102">Videota ei löydy.</string>    
