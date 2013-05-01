@@ -330,10 +330,14 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 					plot = plot + u"\n\r%s: %s" % (self.lang(30009), expiresText) if expiresText != None else plot
 					plot = plot + (u"\n\r%s" % (self.lang(30013) \
                         if item['international'] else self.lang(30014)))
-					
-					isInternational = self.addon.getSetting("international")=='true'
-					if isInternational and 'international' in item and not item['international']:
+
+					intSetting = int(self.addon.getSetting("international"))
+					if intSetting == 0:
+						pass
+					if intSetting == 1 and not item.get('international', False):
 						continue
+					elif intSetting == 2 and item.get('international', False):
+						title = '[COLOR white]i [/COLOR]' + title
 
 					self.addVideoLink(title, link, img, infoLabels={'plot': plot,'duration':str(item.get('duration','')), 'episode': episodeNumber,'aired': publishedTs.strftime('%Y.%m.%d'), 'date': publishedTs.strftime('%d.%m.%Y') }, 
 									  contextMenu=contextMenu, videoStreamInfo={'duration':item['durationSec']})
