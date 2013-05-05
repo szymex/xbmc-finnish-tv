@@ -289,7 +289,7 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 						publishedTs = datetime(*(time.strptime(item['published'], '%Y-%m-%dT%H:%M:%S')[0:6]))	
 					published = item['published'].replace('T', ' ') if 'published' in item else ''
 					
-					plot = item['desc'] if 'desc' in item and item['desc'] != None else ''
+					plot = item['desc'] + '\r\n' if 'desc' in item and item['desc'] != None else ''
 					plot += '\r\n%s: %s' % (self.lang(30008),published) if published != '' else ''
 					
 					expiresInHours = -1
@@ -304,14 +304,13 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 						
 					img = item['images']['M']
 					link='http://areena.yle.fi/tv/' + item['id']
+					contextMenu = [ (self.lang(30018),'XBMC.Action(Info)',) ]
 					if 'series' in item:
 						serieName = item['series']['name']
 						serieLink = 'http://areena.yle.fi/tv/' + item['series']['id']
-						contextMenu = [ (self.createContextMenuAction(self.FAVOURITE % self.lang(14076), 'addFav', {'name':serieName, 'link':serieLink}) )  ]
+						contextMenu.append((self.createContextMenuAction(self.FAVOURITE % self.lang(14076), 'addFav', {'name':serieName, 'link':serieLink}) ))
 						if serieName != None and not item['title'].upper().startswith(serieName.upper()):
 							title = serieName + ': ' + title
-					else:
-						contextMenu = []
 					if self.enabledDownload:					
 						contextMenu.append( (self.createContextMenuAction('Download', 'download', {'videoLink':link, 'title': title}) ) )
 
@@ -329,10 +328,16 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 						expiresText = '[COLOR red]%s[/COLOR]' % expiresText
 						
 					plot = plot + u"\n\r%s: %s" % (self.lang(30009), expiresText) if expiresText != None else plot
-					
-					isInternational = self.addon.getSetting("international")=='true'
-					if isInternational and 'international' in item and not item['international']:
+					plot = plot + (u"\n\r%s" % (self.lang(30013) \
+                        if item['international'] else self.lang(30014)))
+
+					intSetting = int(self.addon.getSetting("international"))
+					if intSetting == 0:
+						pass
+					if intSetting == 1 and not item.get('international', False):
 						continue
+					elif intSetting == 2 and item.get('international', False):
+						title = '[COLOR white]i [/COLOR]' + title
 
 					self.addVideoLink(title, link, img, infoLabels={'plot': plot,'duration':str(item.get('duration','')), 'episode': episodeNumber,'aired': publishedTs.strftime('%Y.%m.%d'), 'date': publishedTs.strftime('%d.%m.%Y') }, 
 									  contextMenu=contextMenu, videoStreamInfo={'duration':item['durationSec']})
