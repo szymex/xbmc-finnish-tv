@@ -18,7 +18,7 @@ if os.path.isfile(cookie_file):
 		pass
 opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
 
-logintrue = False
+login_true = False
 
 logmsg = "plugin.video.katsomo - "
 
