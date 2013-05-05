@@ -2,7 +2,7 @@
 import xbmcplugin,xbmcgui,xbmcaddon
 import xbmcutil as xbmcUtil
 import sys
-from katsomoscrapper import KatsomoScrapper
+from katsomoscraper import KatsomoScraper
 from datetime import datetime, date
 
 settings = xbmcaddon.Addon('plugin.video.katsomo')
@@ -22,7 +22,7 @@ class KatsomoAddon (xbmcUtil.ViewAddonAbstract):
 		self.addHandler(None, self.handleMain)
 		self.addHandler('serie', self.handleSerie)
 		self.addHandler('programs', self.handlePrograms)
-		self.scrapper = KatsomoScrapper()
+		self.scrapper = KatsomoScraper()
 		user = settings.getSetting('username')
 		passwd = settings.getSetting('password')
 		if user != "" and not self.scrapper.doLogin(user, passwd):
