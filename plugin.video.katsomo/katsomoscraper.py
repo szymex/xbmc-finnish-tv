@@ -93,7 +93,8 @@ class KatsomoScraper:
 		#xbmc.log( logmsg + url )
 		req = urllib2.Request(url)
 		req.add_header('User-Agent', USER_AGENT)
-		req.add_header('Cookie', 'hq=1')
+		ck = cookielib.Cookie(version=0, name='hq', value='1', port=None, port_specified=False, domain='m.katsomo.fi', domain_specified=False, domain_initial_dot=False, path='/', path_specified=True, secure=False, expires=None, discard=True, comment=None, comment_url=None, rest={'HttpOnly': None}, rfc2109=False)
+		cj.set_cookie(ck)
 
 		response = opener.open(req)
 		ret = common.parseDOM(response.read(), "source", {'type': 'video/mp4'}, ret = "src")
