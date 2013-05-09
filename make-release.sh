@@ -1,25 +1,23 @@
 #!/bin/bash
 
 REPOSITORY=./repo
-
-
 PLUGINS=$(echo plugin.video.*)
 
 echo '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' > ./addons.xml
 echo "<addons>" >> ./addons.xml
 cat ./repository.finnish-tv/addon.xml | grep -v "<?xml" >> ./addons.xml
-echo "making release zip files..."
+echo "Release generator.."
 
 for i in $PLUGINS
 do
-	echo "check if version of plugin $i exists on repo"
+	#echo "check if version of plugin $i exists on repo"
 	VERSION=$(xpath -q -e "/addon/attribute::version" $i/addon.xml | awk -F\" '{ print $2 }')
 	REPOFILE=$REPOSITORY/$i/$i-$VERSION.zip
 	if [ -f $REPOFILE ]
 	then
-		echo "file exists"
+		echo " skip: $i-$VERSION"
 	else
-		echo "file does not exist"
+		echo " new release: $i-$VERSION"
 		zip -r $REPOFILE $i -x@.gitignore > /dev/null
 	fi
 	cat $i/addon.xml | grep -v "<?xml" >> ./addons.xml
@@ -27,4 +25,3 @@ done
 echo "</addons>" >> ./addons.xml
 md5sum addons.xml > addons.xml.md5
 
-#zip -r $REPOSITORY/repository.finnish-tv/repository.finnish-tv-1.0.0.zip repository.finnish.tv
