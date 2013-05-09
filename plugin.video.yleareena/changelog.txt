@@ -1,3 +1,11 @@
+1.6.0
+
+- updated yle-dl library to 2.1.0
+- support for live tv
+- added international availability to plot description
+- added context menu item for showing Info screen.
+- optionally mark internationally available shows with 'i'
+
 1.5.0
 
 - added search

@@ -50,38 +50,44 @@ def scrapVideo(url):
 	
 	url = yledl.encode_url_utf8(url)
 	dl = yledl.downloader_factory(url)
-	playlist = dl.get_playlist(url, True)
-	clip = playlist[0]
+	if isinstance(dl, yledl.AreenaLiveDownloader):
+		rtmpparams = dl.get_live_rtmp_parameters(url)
+		clip = None
+	else:
+		playlist = dl.get_playlist(url, True)
+		clip = playlist[0]
+		rtmpparams = dl.get_rtmp_parameters(clip, url)
 
-	rtmpparams = dl.get_rtmp_parameters(clip, url)
 	enc = sys.getfilesystemencoding()
 	rtmpUrl = dl.rtmp_parameters_to_url(rtmpparams).encode(enc, 'replace')
+	
 	# socks-use enum in settings:
 	# 0 = no SOCKS proxy
 	# 1 = always use SOCKS proxy
 	# 2 = use SOCKS proxy if clip has international == False
 	useSocks = settings.getSetting('socks-use')
-	if useSocks > 0 and (clip['international'] == False or useSocks == 1):
+	if useSocks > 0 and ( (clip != None and clip['international'] == False) or useSocks == 1):
 	    rtmpUrl += " socks=%s" % settings.getSetting('socks-server')
 
-	media = clip.get('media', {})
-	subtitles = media.get('subtitles', [])
-	subtitlesFiles = []
-	if len(subtitles)>0:	
-		videoname = url.split('/')[-1];
-		path = os.path.join(xbmc.translatePath(yleAreenaAddon.addon.getAddonInfo("profile") ).decode("utf-8"), videoname)
+	subtitlesFiles = []	
+	if clip != None:	
+		media = clip.get('media', {})
+		subtitles = media.get('subtitles', [])		
+		if len(subtitles)>0:	
+			videoname = url.split('/')[-1];
+			path = os.path.join(xbmc.translatePath(yleAreenaAddon.addon.getAddonInfo("profile") ).decode("utf-8"), videoname)
 		
-		for sub in subtitles:
-			lang = sub.get('lang', '')
-			url = sub.get('url', None)
-			if url:
-				try:
-					subtitlefile = path + '.' + lang + '.srt'
-					enc = sys.getfilesystemencoding()
-					urllib.urlretrieve(url, subtitlefile.encode(enc, 'replace'))
-					subtitlesFiles.append(subtitlefile)
-				except IOError, exc:
-					xbmc.log(u'Failed to download subtitles from: ' + url)
+			for sub in subtitles:
+				lang = sub.get('lang', '')
+				url = sub.get('url', None)
+				if url:
+					try:
+						subtitlefile = path + '.' + lang + '.srt'
+						enc = sys.getfilesystemencoding()
+						urllib.urlretrieve(url, subtitlefile.encode(enc, 'replace'))
+						subtitlesFiles.append(subtitlefile)
+					except IOError, exc:
+						xbmc.log(u'Failed to download subtitles from: ' + url)
 
 	return (rtmpUrl, subtitlesFiles)
 
@@ -222,6 +228,14 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 		
 	def handleLive(self, pg, args):
 		items = readJSON(args['link'])
+
+		#Live channels
+		self.addVideoLink('YLE TV 1', 'http://areena.yle.fi/tv/suora/tv1', 'http://yle.fi/yleisradio/sites/default/files/styles/inline-medium/public/yle-tv1.jpg')
+		self.addVideoLink('YLE TV 2', 'http://areena.yle.fi/tv/suora/tv2', 'http://yle.fi/yleisradio/sites/default/files/styles/inline-medium/public/yle-tv2.jpg')
+		self.addVideoLink('YLE TEEMA', 'http://areena.yle.fi/tv/suora/teema', 'http://yle.fi/yleisradio/sites/default/files/styles/inline-medium/public/yle-teema.jpg')
+		
+		yleFemLankLink = '?kieli=sv' if (self.DEFAULT_LANG == 'swh' or self.DEFAULT_LANG == 'swe') else ''
+		self.addVideoLink('YLE FEM', 'http://areena.yle.fi/tv/suora/fem' + yleFemLankLink, 'http://yle.fi/yleisradio/sites/default/files/styles/inline-medium/public/yle-fem.jpg')
 
 		xbmcplugin.setContent(int(sys.argv[1]), 'episodes')
 		for i in range(0, len(items['current'])) :
