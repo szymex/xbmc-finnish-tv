@@ -151,8 +151,8 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 		self.GROUP = u'   [COLOR blue]%s[/COLOR]'
 		self.EXPIRES_HOURS = u'[COLOR red]%d' + self.lang(30002) + '[/COLOR] %s'
 		self.EXPIRES_DAYS = u'[COLOR brown]%d' + self.lang(30003) + '[/COLOR] %s'
-		self.FAVOURITE = '[COLOR yellow]*[/COLOR] %s'
-		self.REMOVE = u'[COLOR red]x[/COLOR] %s' % self.lang(1210)
+		self.FAVOURITE = '[COLOR yellow][B]•[/B][/COLOR] %s'
+		self.REMOVE = u'[COLOR red][B]•[/B][/COLOR] %s' % self.lang(30019)
 		
 	def initFavourites(self):
 		fav = self.addon.getSetting("fav")
@@ -205,7 +205,7 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 						title = self.FAVOURITE % title
 						cxm = []
 					else:
-						cxm = [ (self.createContextMenuAction(self.FAVOURITE % self.lang(14076), 'addFav', {'name':title, 'link':link}) )  ]
+						cxm = [ (self.createContextMenuAction(self.FAVOURITE % self.lang(30017), 'addFav', {'name':title, 'link':link}) )  ]
 					self.addViewLink(title,'serie',1, {'link':link }, infoLabels={'plot': serie['shortDesc']},contextMenu=cxm )
 			if len(items['search']['results']) == 100:
 					self.addViewLink(self.NEXT,'programs', pg+1, args )
@@ -322,7 +322,7 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 					if 'series' in item:
 						serieName = item['series']['name']
 						serieLink = 'http://areena.yle.fi/tv/' + item['series']['id']
-						contextMenu.append((self.createContextMenuAction(self.FAVOURITE % self.lang(14076), 'addFav', {'name':serieName, 'link':serieLink}) ))
+						contextMenu.append((self.createContextMenuAction(self.FAVOURITE % self.lang(30017), 'addFav', {'name':serieName, 'link':serieLink}) ))
 						if serieName != None and not item['title'].upper().startswith(serieName.upper()):
 							title = serieName + ': ' + title
 					if self.enabledDownload:					

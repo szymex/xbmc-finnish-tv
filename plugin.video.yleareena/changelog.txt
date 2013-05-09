@@ -1,5 +1,6 @@
 1.6.0
 
+- re-enabled xbmc build-in context menu items
 - updated yle-dl library to 2.1.0
 - support for live tv
 - added international availability to plot description

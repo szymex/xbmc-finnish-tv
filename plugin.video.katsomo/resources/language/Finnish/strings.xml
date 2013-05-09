@@ -8,6 +8,8 @@
     <string id="30008">Julkaistu</string>
     <string id="30009">Poistuu</string>
     <string id="30010">Eilen</string>
+    <string id="30017">Lisä kirjanmerkki</string>
+    <string id="30019">Poista kirjanmerkki</string>
 	
 	<!-- categories -->
     <string id="30020">Ohjelmat</string>

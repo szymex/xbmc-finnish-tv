@@ -14,6 +14,8 @@
     <string id="30015">Använda en SOCKS proxy</string>
     <string id="30016">SOCKS server</string>
     <string id="30018">Information om program</string>
+    <string id="30017">Add bookmark</string>
+    <string id="30019">Remove bookmark</string>
 	
 	<!-- categories -->
     <string id="30020">Program</string>

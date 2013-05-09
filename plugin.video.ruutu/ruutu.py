@@ -223,8 +223,8 @@ class RuutuAddon (xbmcUtil.ViewAddonAbstract):
 		self.GROUP_FORMAT = u'   [COLOR blue]%s[/COLOR]'
 		self.EXPIRES_HOURS = u'[COLOR red]%d' + self.lang(30002) + '[/COLOR] %s'
 		self.EXPIRES_DAYS = u'[COLOR brown]%d' + self.lang(30003) + '[/COLOR] %s'
-		self.FAVOURITE = '[COLOR yellow]★[/COLOR] %s'
-		self.REMOVE = u'[COLOR red]✖[/COLOR] %s' % self.lang(1210)
+		self.FAVOURITE = '[COLOR yellow][B]•[/B][/COLOR] %s'
+		self.REMOVE = u'[COLOR red][B]•[/B][/COLOR] %s' % self.lang(30019)
 	
 
 	def handleMain(self, pg, args):
@@ -326,7 +326,7 @@ class RuutuAddon (xbmcUtil.ViewAddonAbstract):
 		for serie in serieList:
 			try:				
 				title = serie['name'].encode('utf-8')
-				menu = [ (self.createContextMenuAction(self.FAVOURITE % self.lang(14076), 'addFav', {'name':serie['name'], 'link':serie['link']} ) ) ]
+				menu = [ (self.createContextMenuAction(self.FAVOURITE % self.lang(30017), 'addFav', {'name':serie['name'], 'link':serie['link']} ) ) ]
 				if self.isFavourite(title):
 					title = self.FAVOURITE % title
 					menu = [ (self.createContextMenuAction(self.REMOVE, 'removeFav', {'name':serie['name']} ) ) ]

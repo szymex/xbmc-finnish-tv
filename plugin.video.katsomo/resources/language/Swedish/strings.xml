@@ -8,7 +8,9 @@
     <string id="30008">Publicerad</string>
     <string id="30009">Utgår</string>
     <string id="30010">I går</string>
-	
+    <string id="30017">Add bookmark</string>
+    <string id="30019">Remove bookmark</string>	
+
 	<!-- categories -->
     <string id="30020">Program</string>
     <string id="30021">Nyheter</string>

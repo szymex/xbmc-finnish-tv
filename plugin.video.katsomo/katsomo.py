@@ -14,8 +14,7 @@ sys.setdefaultencoding('utf8')
 class KatsomoAddon (xbmcUtil.ViewAddonAbstract):
 	ADDON_ID = 'plugin.video.katsomo'
 	GROUP = u'   [COLOR blue]%s[/COLOR]'
-	REMOVE = u'[COLOR red]✖[/COLOR] %s' % 'Remove'
-	FAVOURITE = '[COLOR yellow]★[/COLOR] %s'
+	FAVOURITE = '[COLOR yellow][B]•[/B][/COLOR] %s'
 
 	def __init__(self):
 		xbmcUtil.ViewAddonAbstract.__init__(self)
@@ -31,6 +30,8 @@ class KatsomoAddon (xbmcUtil.ViewAddonAbstract):
 			self.scrapper.noLogin()
 		self.favourites = {}
 		self.initFavourites()
+
+		self.REMOVE = u'[COLOR red][B]•[/B][/COLOR] %s' % self.lang(30019)
 
 	def handleMain(self, pg, args):
 		self.addViewLink('›› ' + lang(30020),'programs',1 )
@@ -57,7 +58,7 @@ class KatsomoAddon (xbmcUtil.ViewAddonAbstract):
 		programs = self.scrapper.scrapPrograms()
 		for p in programs:
 			title = p['title']
-			menu = [ (self.createContextMenuAction(self.FAVOURITE % 'Mark as favourite', 'addFav', {'name':p['title'], 'link':p['link']} ) ) ]
+			menu = [ (self.createContextMenuAction(self.FAVOURITE % self.lang(30017), 'addFav', {'name':p['title'], 'link':p['link']} ) ) ]
 			if p['title'] in self.favourites:
 				title = self.FAVOURITE % title
 				menu = [ (self.createContextMenuAction(self.REMOVE, 'removeFav', {'name':p['title']} ) ) ]
