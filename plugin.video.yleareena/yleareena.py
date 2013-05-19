@@ -25,15 +25,10 @@ else:
 reload(sys) 
 sys.setdefaultencoding('utf8')
 
-#for windows add Crypto module folder 
-if sys.platform == 'win32':
-	cmd_subfolder = os.path.realpath(os.path.abspath(os.path.join(os.path.split(inspect.getfile( inspect.currentframe() ))[0],"win32")))
-	if cmd_subfolder not in sys.path:
-		sys.path.insert(0, cmd_subfolder)
-
-#for OSX add Crypto module folder 
-if sys.platform == 'darwin':
-	cmd_subfolder = os.path.realpath(os.path.abspath(os.path.join(os.path.split(inspect.getfile( inspect.currentframe() ))[0],"osx")))
+# add Crypto module folder 
+crypto_folder = {'win32':'win32', 'darwin':'osx', 'linux2':'linux'}.get(sys.platform, None)
+if crypto_folder:
+	cmd_subfolder = os.path.realpath(os.path.abspath(os.path.join(os.path.split(inspect.getfile( inspect.currentframe() ))[0],crypto_folder)))
 	if cmd_subfolder not in sys.path:
 		sys.path.insert(0, cmd_subfolder)
 	 
