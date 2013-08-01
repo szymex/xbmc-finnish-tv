@@ -51,6 +51,8 @@ def scrapVideoLink(url):
 	matchVideoId=re.compile('ruutuplayer\(.*"(http.*?)"').findall(content)
 	if len(matchVideoId)==0:
 		matchVideoId=re.compile("providerURL', '(http.*?)'").findall(content)
+	if len(matchVideoId)==0:
+		matchVideoId=re.compile("<!-- (http.*?) -->").findall(content)
 
 	if len(matchVideoId)==0:
 		return None

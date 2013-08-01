@@ -1,3 +1,7 @@
+1.3.2
+
+-fixed scraping video due to ruutu changes
+
 1.3.1
 
 - re-enabled xbmc build-in context menu items
