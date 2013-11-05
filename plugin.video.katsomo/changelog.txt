@@ -1,3 +1,8 @@
+1.1.9
+
+- scraper update due to katsomo changes
+- updated icon
+
 1.1.8
 
 - re-enabled xbmc build-in context menu items
