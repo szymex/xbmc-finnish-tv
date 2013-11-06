@@ -21,6 +21,7 @@ class KatsomoAddon (xbmcUtil.ViewAddonAbstract):
 		self.addHandler(None, self.handleMain)
 		self.addHandler('serie', self.handleSerie)
 		self.addHandler('programs', self.handlePrograms)
+		self.addHandler('live', self.handleLive)
 		self.scrapper = KatsomoScraper()
 		user = settings.getSetting('username')
 		passwd = settings.getSetting('password')
@@ -35,6 +36,7 @@ class KatsomoAddon (xbmcUtil.ViewAddonAbstract):
 
 	def handleMain(self, pg, args):
 		self.addViewLink('›› ' + lang(30020),'programs',1 )
+		self.addViewLink('LIVE','live',1 )
 		self.addViewLink(lang(30028),'serie',1, {'link':'http://m.mtvkatsomo.fi', 'useGroups': True} )
 		self.addViewLink(lang(30021),'serie',1, {'link':'http://m.mtvkatsomo.fi/?treeId=33001', 'useGroups': True} )
 		self.addViewLink(lang(30027),'serie',1, {'link':'http://m.mtvkatsomo.fi/?treeId=33002', 'useGroups': True} )
@@ -63,6 +65,11 @@ class KatsomoAddon (xbmcUtil.ViewAddonAbstract):
 				title = self.FAVOURITE % title
 				menu = [ (self.createContextMenuAction(self.REMOVE, 'removeFav', {'name':p['title']} ) ) ]
 			self.addViewLink(title ,'serie',1,{'link': p['link']}, menu)
+	
+	def handleLive(self, pg, args):
+		self.addVideoLink('MTV3' , 'http://m.mtvkatsomo.fi/?progId=261752', 'http://m.mtvkatsomo.fi/images/channel-logos/channel-logo-mtv3@2x.png', {} )
+		self.addVideoLink('SUB' , 'http://m.mtvkatsomo.fi/?progId=261753', 'http://m.mtvkatsomo.fi/images/channel-logos/channel-logo-sub@2x.png', {} )
+		self.addVideoLink('AVA' , 'http://m.mtvkatsomo.fi/?progId=261756', 'http://m.mtvkatsomo.fi/images/channel-logos/channel-logo-ava@2x.png', {} )
 
 	def handleSerie(self, pg, args):
 		link = args['link']
@@ -80,6 +87,7 @@ class KatsomoAddon (xbmcUtil.ViewAddonAbstract):
 		
 	def handleVideo(self, link):
 		vid = self.scrapper.scrapVideoLink(link)
+		xbmc.log(vid)
 		if vid==None:
 			xbmcUtil.notification(header=lang(30070), message=lang(30071))
 			return False
