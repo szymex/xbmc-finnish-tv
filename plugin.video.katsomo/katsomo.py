@@ -67,9 +67,9 @@ class KatsomoAddon (xbmcUtil.ViewAddonAbstract):
 			self.addViewLink(title ,'serie',1,{'link': p['link']}, menu)
 	
 	def handleLive(self, pg, args):
-		self.addVideoLink('MTV3' , 'http://m.mtvkatsomo.fi/?progId=261752', 'http://m.mtvkatsomo.fi/images/channel-logos/channel-logo-mtv3@2x.png', {} )
-		self.addVideoLink('SUB' , 'http://m.mtvkatsomo.fi/?progId=261753', 'http://m.mtvkatsomo.fi/images/channel-logos/channel-logo-sub@2x.png', {} )
-		self.addVideoLink('AVA' , 'http://m.mtvkatsomo.fi/?progId=261756', 'http://m.mtvkatsomo.fi/images/channel-logos/channel-logo-ava@2x.png', {} )
+		self.addVideoLink('MTV3', 'rtsp://212.226.124.236/mtv3/DR49HLSH.sdp?secure=A', 'http://m.mtvkatsomo.fi/images/channel-logos/channel-logo-mtv3@2x.png', {} )
+		self.addVideoLink('SUB' , 'rtsp://212.226.124.236/mtv3/DR47HLSH.sdp?secure=A', 'http://m.mtvkatsomo.fi/images/channel-logos/channel-logo-sub@2x.png', {} )
+		self.addVideoLink('AVA' , 'rtsp://212.226.124.236/mtv3/DR48HLSH.sdp?secure=A', 'http://m.mtvkatsomo.fi/images/channel-logos/channel-logo-ava@2x.png', {} )
 
 	def handleSerie(self, pg, args):
 		link = args['link']
