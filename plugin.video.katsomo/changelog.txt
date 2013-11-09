@@ -1,3 +1,8 @@
+1.2.0
+
+- added live channels
+- fixes on not playing some videos
+
 1.1.9
 
 - scraper update due to katsomo changes

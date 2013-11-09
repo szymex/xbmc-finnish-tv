@@ -36,7 +36,7 @@ class KatsomoAddon (xbmcUtil.ViewAddonAbstract):
 
 	def handleMain(self, pg, args):
 		self.addViewLink('›› ' + lang(30020),'programs',1 )
-		self.addViewLink('LIVE','live',1 )
+		self.addViewLink('LIVE','live',1, {'link':'http://m.mtvkatsomo.fi'} )
 		self.addViewLink(lang(30028),'serie',1, {'link':'http://m.mtvkatsomo.fi', 'useGroups': True} )
 		self.addViewLink(lang(30021),'serie',1, {'link':'http://m.mtvkatsomo.fi/?treeId=33001', 'useGroups': True} )
 		self.addViewLink(lang(30027),'serie',1, {'link':'http://m.mtvkatsomo.fi/?treeId=33002', 'useGroups': True} )
@@ -67,9 +67,12 @@ class KatsomoAddon (xbmcUtil.ViewAddonAbstract):
 			self.addViewLink(title ,'serie',1,{'link': p['link']}, menu)
 	
 	def handleLive(self, pg, args):
-		self.addVideoLink('MTV3', 'rtsp://212.226.124.236/mtv3/DR49HLSH.sdp?secure=A', 'http://m.mtvkatsomo.fi/images/channel-logos/channel-logo-mtv3@2x.png', {} )
-		self.addVideoLink('SUB' , 'rtsp://212.226.124.236/mtv3/DR47HLSH.sdp?secure=A', 'http://m.mtvkatsomo.fi/images/channel-logos/channel-logo-sub@2x.png', {} )
-		self.addVideoLink('AVA' , 'rtsp://212.226.124.236/mtv3/DR48HLSH.sdp?secure=A', 'http://m.mtvkatsomo.fi/images/channel-logos/channel-logo-ava@2x.png', {} )
+		link = args['link']
+		channels = self.scrapper.scrapLive(link)
+		xbmcplugin.setContent(int(sys.argv[1]), 'episodes')
+		
+		for s in channels:
+			self.addVideoLink(s['title'] , s['link'], s['img'] )
 
 	def handleSerie(self, pg, args):
 		link = args['link']

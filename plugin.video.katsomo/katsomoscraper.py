@@ -25,7 +25,7 @@ logmsg = "plugin.video.katsomo - "
 common = CommonFunctions
 common.plugin = "plugin.video.katsomo"
 
-USER_AGENT = 'Mozilla/5.0 (iPhone; CPU iPhone OS 5_0 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9A334 Safari/7534.48.3'
+USER_AGENT = 'Mozilla/5.0 (Linux; Android 4.0.4; Galaxy Nexus Build/IMM76B) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.133 Mobile Safari/535.19'
 
 class KatsomoScraper:
 
@@ -136,6 +136,37 @@ class KatsomoScraper:
 			
 		return l
 
+	def scrapLive(self, url):
+		global login_true
+		xbmc.log( logmsg + url )
+		req = urllib2.Request(url)
+		req.add_header('User-Agent', USER_AGENT)
+		response = opener.open(req)
+		
+		channels = common.parseDOM(response.read(), "div", {'class': 'channel'})
+		l = []
+		for r in channels:
+			link = 'http://m.mtvkatsomo.fi' + common.parseDOM(r, "a", ret = "href")[0]
+			title = common.parseDOM(r, "h1")[0]
+			
+			title += ' - ' + common.parseDOM(r, "h2")[0]
+			imgClass = common.parseDOM(r, "div", ret = "class")[0].split(' ')[1]
+			img = ''
+			if imgClass == 'channel-logo-1':
+				title = '[MTV3] ' + title
+				img = 'http://m.mtvkatsomo.fi/images/channel-logos/channel-logo-mtv3@2x.png'
+			elif imgClass == 'channel-logo-3':
+				title = '[SUB] ' + title
+				img = 'http://m.mtvkatsomo.fi/images/channel-logos/channel-logo-sub@2x.png'
+			elif imgClass == 'channel-logo-6':
+				title = '[AVA] ' + title
+				img = 'http://m.mtvkatsomo.fi/images/channel-logos/channel-logo-ava@2x.png'
+			
+			
+			l.append( {'link':link, 'title':common.replaceHTMLCodes(title), 'img':img} )
+			
+		return l		
+		
 	def scrapPrograms(self):
 		global login_true
 		req = urllib2.Request('http://m.mtvkatsomo.fi/programs')
