@@ -11,7 +11,8 @@ echo "Release generator.."
 for i in $PLUGINS
 do
 	#echo "check if version of plugin $i exists on repo"
-	VERSION=$(xpath -q -e "/addon/attribute::version" $i/addon.xml | awk -F\" '{ print $2 }')
+	#VERSION=$(xpath -q -e "/addon/attribute::version" $i/addon.xml | awk -F\" '{ print $2 }')
+	VERSION=$(perl -n -e'/^[ ]+version="(.*?)"/ && print $1' $i/addon.xml)
 	REPOFILE=$REPOSITORY/$i/$i-$VERSION.zip
 	if [ -f $REPOFILE ]
 	then
