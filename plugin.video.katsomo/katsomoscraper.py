@@ -41,10 +41,10 @@ class KatsomoScraper:
 		req = urllib2.Request(login_url)
 		req.add_header('User-Agent', USER_AGENT)
 		response = opener.open(req)
-		ret = common.parseDOM(response.read(), "div", attrs = { "class": "login" })
+		ret = common.parseDOM(response.read(), "nav", attrs = { "id": "login-search" })
 		ret = common.parseDOM(ret, "a", ret = "href")
 		#xbmc.log(ret[0])
-		if "/katsomo/logout" in ret:
+		if "/user" in ret:
 			xbmc.log(logmsg + "Login status active, no need to login" )
 			login_true = True
 			return 1
@@ -70,10 +70,10 @@ class KatsomoScraper:
 			return 1
 		req = urllib2.Request(login_url, urllib.urlencode(postvars), header_data )
 		response = opener.open(req)
-		ret = common.parseDOM(response.read(), "div", attrs = { "class": "login" })
+		ret = common.parseDOM(response.read(), "nav", attrs = { "id": "login-search" })
 		ret = common.parseDOM(ret, "a", ret = "href")
 		#xbmc.log(ret[0])
-		if "/katsomo/logout" in ret:
+		if "/user" in ret:
 			xbmc.log(logmsg + "Login to katsomo succeed" )
 			cj.save( ignore_discard=True )
 			login_true = True
