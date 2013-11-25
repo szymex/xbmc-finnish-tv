@@ -25,7 +25,7 @@ logmsg = "plugin.video.katsomo - "
 common = CommonFunctions
 common.plugin = "plugin.video.katsomo"
 
-USER_AGENT = 'Mozilla/5.0 (Linux; Android 4.0.4; Galaxy Nexus Build/IMM76B) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.133 Mobile Safari/535.19'
+USER_AGENT = 'Mozilla/5.0 (Linux; Android 4.1.1; Nexus 7 Build/JRO03D) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.166 Safari/535.19'
 
 class KatsomoScraper:
 
@@ -119,7 +119,6 @@ class KatsomoScraper:
 			if 'class="star"' in title and not login_true: continue
 			elif 'class="star"' in title and login_true and self.scrapVideoLink(link) == None: continue	
 			
-			title += ' ' + common.parseDOM(r, "p", {'class': 'program-name'})[0]
 			img = 'http://m.mtvkatsomo.fi' + common.parseDOM(r, "img", ret = "src")[0]
 			
 			timestamp = common.parseDOM(r, "p", {'class': 'timestamp'})[0]
