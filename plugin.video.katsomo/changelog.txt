@@ -1,3 +1,8 @@
+1.2.1
+
+- updated user agent and removed duplicate title
+- fixed authentication issues
+
 1.2.0
 
 - added live channels
