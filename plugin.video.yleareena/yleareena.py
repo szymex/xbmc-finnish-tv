@@ -345,7 +345,12 @@ class YleAreenaAddon (xbmcUtil.ViewAddonAbstract):
 					plot = plot + (u"\n\r%s" % (self.lang(30013) \
                         if item['international'] else self.lang(30014)))
 
-					intSetting = int(self.addon.getSetting("international"))
+					
+					try:
+						intSetting = int(self.addon.getSetting("international"))
+					except:
+						intSetting = 0
+						
 					if intSetting == 0:
 						pass
 					if intSetting == 1 and not item.get('international', False):
