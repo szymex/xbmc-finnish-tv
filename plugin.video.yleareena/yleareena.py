@@ -66,6 +66,9 @@ def scrapVideo(url):
 	# 1 = always use SOCKS proxy
 	# 2 = use SOCKS proxy if clip has international == False
 	useSocks = settings.getSetting('socks-use')
+	if useSocks == 'no':
+		useSocks = 0
+
 	if useSocks > 0 and ( (clip != None and clip['international'] == False) or useSocks == 1):
 	    rtmpUrl += " socks=%s" % settings.getSetting('socks-server')
 
