@@ -101,14 +101,18 @@ def scrapSeries(url, pg=1):
 			url = 'http://www.ruutu.fi/views_cacheable_pager/videos_by_series/episodes_1/' + serieId + '?page=0%2C' + str(pg-1)
 			return scrapPager(url)
 		else:
-			xbmcUtil.notification('Error', 'Could not find series')
-			return None
+			soup = BeautifulSoup(content)
+			items = soup.findAll('div', 'views-row grid-3')
+			content = ''
+			for it in items:
+				content = content + str(it)				
+			return scrapPagerContent(str(it))
+			#xbmcUtil.notification('Error', 'Could not find series')
+			#return None
 	except Exception as e:
 		xbmcUtil.notification('Error', str(e))
 		return None
 		
-		
-
 def scrapPager(url):
 	req = urllib2.Request(url)
 	req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
@@ -116,14 +120,18 @@ def scrapPager(url):
 		response = urllib2.urlopen(req)
 		content=response.read()	
 		response.close()				
+		return scrapPagerContent(content)
+	except urllib2.HTTPError:
+		return [];			
 
+def scrapPagerContent(content):
 		retList = []
 		soup = BeautifulSoup(content)
 		items = soup.findAll('article')
 		for it in items:
 			image = it.find('img').get('src') if it.find('img')!= None else ''
 			link = it.select('h2 a')[0]['href']
-			title = it.select('h2 a')[0].string
+			title = it.select('h2 a')[0].string.strip()
 			episodeNum = '';
 			seasonNum = '';
 
@@ -158,20 +166,19 @@ def scrapPager(url):
 			details = selDetails[0].string.strip() if len(selDetails)>0 and selDetails[0].string!=None else ''
 			
 			selStartTime = it.select('.field-name-field-starttime')
-			for str in selStartTime[0].stripped_strings:
-				published = str
-			
-			try:
-				publishedTs = datetime.strptime(published, '%d.%m.%Y')
-			except TypeError:
-				publishedTs = datetime(*(time.strptime(published, '%d.%m.%Y')[0:6]))	
-				
+			publishedTs = None
+			if len(selStartTime)>0:
+				for str in selStartTime[0].stripped_strings:
+					published = str			
+				try:
+					publishedTs = datetime.strptime(published, '%d.%m.%Y')
+				except TypeError:
+					publishedTs = datetime(*(time.strptime(published, '%d.%m.%Y')[0:6]))	
 			retList.append( {'title':title, 'seasonNum':seasonNum, 'episodeNum':episodeNum, 'link':"http://www.ruutu.fi" + link, 'image':image, 'duration': duration, 
 							'published-ts':publishedTs,'available-text':availabilityText, 'available': available, 'desc':desc, 'details':details });
-	except urllib2.HTTPError:
-		retList=[];	
+	
 
-	return retList
+		return retList
 
 
 
@@ -311,7 +318,11 @@ class RuutuAddon (xbmcUtil.ViewAddonAbstract):
 				
 				if self.enabledDownload:					
 					contextMenu.append((self.createContextMenuAction('Download', 'download', {'videoLink':item['link'], 'title': item['title']}) ))
-				self.addVideoLink(title , item['link'], item['image'], infoLabels={'plot':plot,'season':seasonNum, 'episode': episodeNum,'aired': item['published-ts'].strftime('%Y-%m-%d') , 'duration':item['duration']}, contextMenu=contextMenu)
+				if item['published-ts'] != None:
+					aired = item['published-ts'].strftime('%Y-%m-%d')
+				else:
+					aired = ''
+				self.addVideoLink(title , item['link'], item['image'], infoLabels={'plot':plot,'season':seasonNum, 'episode': episodeNum,'aired': aired , 'duration':item['duration']}, contextMenu=contextMenu)
 			if len(items)>0 and len(items)>=pgSize:
 				self.addViewLink(self.NEXT,handler, pg+1, args )
 			

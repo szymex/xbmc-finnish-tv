@@ -1,3 +1,7 @@
+1.2.2
+
+- python version update
+
 1.2.1
 
 - updated user agent and removed duplicate title

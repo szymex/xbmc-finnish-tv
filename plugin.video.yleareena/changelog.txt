@@ -1,3 +1,7 @@
+1.6.2
+
+- python version update
+
 1.6.1
 
 - fix for default international setting value
