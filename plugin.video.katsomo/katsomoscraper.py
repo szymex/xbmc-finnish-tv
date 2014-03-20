@@ -25,7 +25,7 @@ logmsg = "plugin.video.katsomo - "
 common = CommonFunctions
 common.plugin = "plugin.video.katsomo"
 
-USER_AGENT = 'Mozilla/5.0 (Linux; Android 4.1.1; Nexus 7 Build/JRO03D) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.166 Safari/535.19'
+USER_AGENT = 'Mozilla/5.0 (Linux; Android 4.1.2; fi-fi; alien_jolla_bionic Build/JZO54K) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30'
 
 class KatsomoScraper:
 
