@@ -119,17 +119,21 @@ class KatsomoScraper:
 			if 'class="star"' in title and not login_true: continue
 			elif 'class="star"' in title and login_true and self.scrapVideoLink(link) == None: continue	
 			
-			img = 'http://m.mtvkatsomo.fi' + common.parseDOM(r, "img", ret = "src")[0]
+			img = common.parseDOM(r, "img", ret = "src")[0]
+			tsList = common.parseDOM(r, "p", {'class': 'timestamp'})
+			if len(tsList) > 0:
+				timestamp = tsList[0]
+				ts = None
+				if 'TULOSSA' in timestamp:
+					continue;
 			
-			timestamp = common.parseDOM(r, "p", {'class': 'timestamp'})[0]
-			ts = None
-			if 'TULOSSA' in timestamp:
-				continue;
-
-			try:
-				ts = datetime.strptime(timestamp.replace('- ', ''), '%d.%m.%Y %H.%M')
-			except TypeError:
-				ts = datetime(*(time.strptime(timestamp.replace('- ', ''), '%d.%m.%Y %H.%M')[0:6]))				
+				try:
+					ts = datetime.strptime(timestamp.replace('- ', ''), '%d.%m.%Y %H.%M')
+				except TypeError:
+					try:
+						tsts = datetime(*(time.strptime(timestamp.replace('- ', ''), '%d.%m.%Y %H.%M')[0:6]))				
+					except:
+						xbmc.log('Could not parse timestamp: ' + timestamp, xbmc.LOGDEBUG)
 			
 			l.append( {'link':link, 'title':title, 'img':img, 'published': timestamp, 'publ-ts': ts} )
 			
