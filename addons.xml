@@ -14,7 +14,7 @@
 </addon>
 <addon id="plugin.video.katsomo"
        name="Katsomo"
-       version="1.2.2"
+       version="1.2.3"
        provider-name="szymex">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
