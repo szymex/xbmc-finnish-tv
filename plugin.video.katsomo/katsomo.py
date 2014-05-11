@@ -37,10 +37,10 @@ class KatsomoAddon (xbmcUtil.ViewAddonAbstract):
 	def handleMain(self, pg, args):
 		self.addViewLink('›› ' + lang(30020),'programs',1 )
 		self.addViewLink('LIVE','live',1, {'link':'http://m.mtvkatsomo.fi'} )
-		self.addViewLink(lang(30028),'serie',1, {'link':'http://m.mtvkatsomo.fi', 'useGroups': True} )
-		self.addViewLink(lang(30021),'serie',1, {'link':'http://m.mtvkatsomo.fi/?treeId=33001', 'useGroups': True} )
-		self.addViewLink(lang(30027),'serie',1, {'link':'http://m.mtvkatsomo.fi/?treeId=33002', 'useGroups': True} )
-		self.addViewLink(lang(30023),'serie',1, {'link':'http://m.mtvkatsomo.fi/?treeId=33003', 'useGroups': True} )
+		self.addViewLink(lang(30028),'serie',1, {'link':'http://m.katsomo.fi', 'useGroups': True} )
+		self.addViewLink(lang(30021),'serie',1, {'link':'http://m.katsomo.fi/?treeId=33001', 'useGroups': True} )
+		self.addViewLink(lang(30027),'serie',1, {'link':'http://m.katsomo.fi/?treeId=33002', 'useGroups': True} )
+		self.addViewLink(lang(30023),'serie',1, {'link':'http://m.katsomo.fi/?treeId=33003', 'useGroups': True} )
 		for title, link in self.favourites.items():
 			t = title			
 			cm = [ (self.createContextMenuAction(self.REMOVE, 'removeFav', {'name':t} ) ) ]

@@ -105,13 +105,13 @@ class KatsomoScraper:
 			
 	def scrapSerie(self, url):
 		global login_true
-		xbmc.log( logmsg + url )
+		xbmc.log( logmsg + url, xbmc.LOGDEBUG)
 		req = urllib2.Request(url)
 		req.add_header('User-Agent', USER_AGENT)
 		response = opener.open(req)
 		
 		programs = common.parseDOM(response.read(), "div", {'class': 'programs'})[0]
-		ret = common.parseDOM(programs, "div", {'class': 'program program-toggle'})
+		ret = common.parseDOM(programs, "div", {'class': 'program'})
 		l = []
 		for r in ret:
 			link = 'http://m.mtvkatsomo.fi' + common.parseDOM(r, "a", ret = "href")[0]
@@ -129,7 +129,7 @@ class KatsomoScraper:
 			
 				try:
 					ts = datetime.strptime(timestamp.replace('- ', ''), '%d.%m.%Y %H.%M')
-				except TypeError:
+				except (TypeError, ValueError) as e:
 					try:
 						tsts = datetime(*(time.strptime(timestamp.replace('- ', ''), '%d.%m.%Y %H.%M')[0:6]))				
 					except:
@@ -151,20 +151,8 @@ class KatsomoScraper:
 		for r in channels:
 			link = 'http://m.mtvkatsomo.fi' + common.parseDOM(r, "a", ret = "href")[0]
 			title = common.parseDOM(r, "h1")[0]
-			
 			title += ' - ' + common.parseDOM(r, "h2")[0]
-			imgClass = common.parseDOM(r, "div", ret = "class")[0].split(' ')[1]
-			img = ''
-			if imgClass == 'channel-logo-1':
-				title = '[MTV3] ' + title
-				img = 'http://m.mtvkatsomo.fi/images/channel-logos/channel-logo-mtv3@2x.png'
-			elif imgClass == 'channel-logo-3':
-				title = '[SUB] ' + title
-				img = 'http://m.mtvkatsomo.fi/images/channel-logos/channel-logo-sub@2x.png'
-			elif imgClass == 'channel-logo-6':
-				title = '[AVA] ' + title
-				img = 'http://m.mtvkatsomo.fi/images/channel-logos/channel-logo-ava@2x.png'
-			
+			img = common.parseDOM(r, "img", ret = "src")[0]
 			
 			l.append( {'link':link, 'title':common.replaceHTMLCodes(title), 'img':img} )
 			
