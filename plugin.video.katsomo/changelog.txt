@@ -1,3 +1,7 @@
+1.2.5
+
+- Fixed URL to use HQ
+
 1.2.4
 
 - fixed scrapping
