@@ -1,3 +1,7 @@
+1.7.0
+
+- updated crypto to work with Gotham
+
 1.6.2
 
 - python version update
