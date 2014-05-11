@@ -1,3 +1,7 @@
+1.2.4
+
+- fixed scrapping
+
 1.2.3
 
 - fixed katsomo (#46, #48)
