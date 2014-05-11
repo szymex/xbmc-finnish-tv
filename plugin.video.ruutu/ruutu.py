@@ -95,7 +95,7 @@ def scrapSeries(url, pg=1):
 		content=response.read()	
 		response.close()
 	
-		res = re.compile('episodes_1":\["(.*?)"\]').findall(content)
+		res = re.compile('episodes_1","args":\["(.*?)"\]').findall(content)
 		if len(res)>0:
 			serieId = res[0]
 			url = 'http://www.ruutu.fi/views_cacheable_pager/videos_by_series/episodes_1/' + serieId + '?page=0%2C' + str(pg-1)
@@ -106,7 +106,7 @@ def scrapSeries(url, pg=1):
 			content = ''
 			for it in items:
 				content = content + str(it)				
-			return scrapPagerContent(str(it))
+			return scrapPagerContent(content)
 			#xbmcUtil.notification('Error', 'Could not find series')
 			#return None
 	except Exception as e:
