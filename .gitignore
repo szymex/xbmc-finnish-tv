@@ -31,3 +31,4 @@ favourites.txt
 addons_xml_generator.py
 
 *.sh
+.idea/*
