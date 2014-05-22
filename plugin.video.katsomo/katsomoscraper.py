@@ -10,7 +10,7 @@ from datetime import datetime
 import time
 
 
-#cookie handling 
+#cookie handling
 addon = xbmcaddon.Addon('plugin.video.katsomo')
 cookie_file = xbmc.translatePath(addon.getAddonInfo('profile')) + "cookies.txt"
 
@@ -47,8 +47,8 @@ class KatsomoScraper:
 		response = opener.open(req)
 		ret = common.parseDOM(response.read(), "nav", attrs={"id": "login-search"})
 		ret = common.parseDOM(ret, "a", ret="href")
-		#xbmc.log(ret[0])
-		if "/user" in ret:
+		xbmc.log(logmsg + ret[0])
+		if "/logout" in ret:
 			xbmc.log(logmsg + "Login status active, no need to login")
 			login_true = True
 			return 1
@@ -76,8 +76,8 @@ class KatsomoScraper:
 		response = opener.open(req)
 		ret = common.parseDOM(response.read(), "nav", attrs={"id": "login-search"})
 		ret = common.parseDOM(ret, "a", ret="href")
-		#xbmc.log(ret[0])
-		if "/user" in ret:
+		xbmc.log(logmsg + ret[0])
+		if "/logout" in ret:
 			xbmc.log(logmsg + "Login to katsomo succeed")
 			cj.save(ignore_discard=True)
 			login_true = True
