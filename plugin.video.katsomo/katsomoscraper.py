@@ -10,7 +10,7 @@ from datetime import datetime
 import time
 
 
-#cookie handling 
+#cookie handling
 addon = xbmcaddon.Addon('plugin.video.katsomo')
 cookie_file = xbmc.translatePath(addon.getAddonInfo('profile')) + "cookies.txt"
 
@@ -29,7 +29,7 @@ logmsg = "plugin.video.katsomo - "
 common = CommonFunctions
 common.plugin = "plugin.video.katsomo"
 
-USER_AGENT = 'Mozilla/5.0 (Linux; Android 4.1.2; fi-fi; alien_jolla_bionic Build/JZO54K) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30'
+USER_AGENT = 'Mozilla/5.0 (iPhone; CPU iPhone OS 7_1_1 like Mac OS X) AppleWebKit/537.51.1 (KHTML, like Gecko) CriOS/34.0.1847.18 Mobile/11D201 Safari/9537.53'
 
 
 class KatsomoScraper:
