@@ -1,3 +1,8 @@
+1.2.6
+
+- fix for streaming paid content - switched UA to iOS
+- fixed login issue
+
 1.2.5
 
 - Fixed URL to use HQ
