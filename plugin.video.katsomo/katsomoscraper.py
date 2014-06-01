@@ -30,7 +30,7 @@ common = CommonFunctions
 common.plugin = "plugin.video.katsomo"
 
 USER_AGENT = 'Mozilla/5.0 (iPad; CPU OS 7_1_1 like Mac OS X) AppleWebKit/537.51.2 (KHTML, like Gecko) Mobile/11D201'
-USER_AGENT_FFMPEG = "AppleCoreMedia/1.0.0.11D201%20(iPad;%20CPU%20OS%207_1_1%20like%20Mac%20OS%20X)"
+FFMPEG_PARAMETERS = "|User-Agent=AppleCoreMedia/1.0.0.11D201%20(iPad;%20U;%20CPU%20OS%207_1_1%20like%20Mac%20OS%20X;%20fi_fi)&seekable=0"
 
 class KatsomoScraper:
 	def checkLogin(self):
@@ -94,7 +94,7 @@ class KatsomoScraper:
 		return 0
 
 	def scrapVideoLink(self, url):
-		#xbmc.log( logmsg + url )
+		xbmc.log( logmsg + url )
 		req = urllib2.Request(url)
 		req.add_header('User-Agent', USER_AGENT)
 		ck = cookielib.Cookie(version=0, name='hq', value='1', port=None, port_specified=False, domain='m.katsomo.fi', domain_specified=False, domain_initial_dot=False, path='/',
@@ -102,7 +102,7 @@ class KatsomoScraper:
 		cj.set_cookie(ck)
 
 		response = opener.open(req)
-		ret = str((common.parseDOM(response.read(), "source", {'type': 'video/mp4'}, ret="src"))[0]) + '|User-Agent=' + USER_AGENT_FFMPEG
+		ret = str((common.parseDOM(response.read(), "source", {'type': 'video/mp4'}, ret="src"))[0]) + FFMPEG_PARAMETERS
 		if len(ret) > 0:
 			return ret
 		else:
