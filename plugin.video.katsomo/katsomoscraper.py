@@ -29,7 +29,8 @@ logmsg = "plugin.video.katsomo - "
 common = CommonFunctions
 common.plugin = "plugin.video.katsomo"
 
-USER_AGENT = 'Mozilla/5.0 (iPhone; CPU iPhone OS 7_1_1 like Mac OS X) AppleWebKit/537.51.1 (KHTML, like Gecko) CriOS/34.0.1847.18 Mobile/11D201 Safari/9537.53'
+USER_AGENT = 'Mozilla/5.0 (iPad; CPU OS 7_1_1 like Mac OS X) AppleWebKit/537.51.2 (KHTML, like Gecko) Mobile/11D201'
+FFMPEG_PARAMETERS = "|User-Agent=AppleCoreMedia/1.0.0.11D201%20(iPad;%20U;%20CPU%20OS%207_1_1%20like%20Mac%20OS%20X;%20fi_fi)&seekable=0"
 
 
 class KatsomoScraper:
@@ -102,9 +103,9 @@ class KatsomoScraper:
 		cj.set_cookie(ck)
 
 		response = opener.open(req)
-		ret = common.parseDOM(response.read(), "source", {'type': 'video/mp4'}, ret="src")
+		ret = str((common.parseDOM(response.read(), "source", {'type': 'video/mp4'}, ret="src"))[0]) + FFMPEG_PARAMETERS
 		if len(ret) > 0:
-			return ret[0]
+			return ret
 		else:
 			return None
 
