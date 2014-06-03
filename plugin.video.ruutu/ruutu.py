@@ -23,6 +23,8 @@ import string
 common = CommonFunctions
 common.plugin = "plugin.video.ruutu"
 
+USER_AGENT = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'
+
 #sets default encoding to utf-8
 reload(sys)
 sys.setdefaultencoding('utf8')
@@ -30,7 +32,7 @@ sys.setdefaultencoding('utf8')
 
 def scrapRSS(url):
 	req = urllib2.Request(url)
-	req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
+	req.add_header('User-Agent', USER_AGENT)
 	response = urllib2.urlopen(req)
 	content = response.read()
 	response.close()
@@ -42,7 +44,7 @@ def scrapRSS(url):
 
 def scrapVideoId(url):
 	req = urllib2.Request(url)
-	req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
+	req.add_header('User-Agent', USER_AGENT)
 	response = urllib2.urlopen(req)
 	matchVideoId = re.compile("vid=(.*)").findall(response.geturl())
 
@@ -53,7 +55,7 @@ def scrapVideoId(url):
 def scrapVideoLink(url):
 	xbmc.log(url)
 	req = urllib2.Request(url)
-	req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
+	req.add_header('User-Agent', USER_AGENT)
 	response = urllib2.urlopen(req)
 	content = response.read()
 	response.close()
@@ -70,11 +72,13 @@ def scrapVideoLink(url):
 	videoUrl = urllib2.unquote(matchVideoId[0])
 
 	req = urllib2.Request(videoUrl)
-	req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
+	req.add_header('User-Agent', USER_AGENT)
 	response = urllib2.urlopen(req)
-	videoLink = re.compile('<SourceFile>(.*?)</SourceFile>').findall(response.read())[0]
+        regexp = "(http://)(.*)(/playlist.m3u8)"
+        regexp = re.compile(regexp, re.IGNORECASE)
+        videoLink = regexp.search(response.read())
 
-	return videoLink
+	return videoLink.group(0)
 
 
 def downloadVideo(url, title):
@@ -102,7 +106,7 @@ def scrapSeries(url, pg=1):
 	try:
 		#find serie id
 		req = urllib2.Request(url)
-		req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
+		req.add_header('User-Agent', USER_AGENT)
 		response = urllib2.urlopen(req)
 		content = response.read()
 		response.close()
@@ -128,7 +132,7 @@ def scrapSeries(url, pg=1):
 
 def scrapPager(url):
 	req = urllib2.Request(url)
-	req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
+	req.add_header('User-Agent', USER_AGENT)
 	try:
 		response = urllib2.urlopen(req)
 		content = response.read()
@@ -195,7 +199,7 @@ def scrapPagerContent(content):
 
 def scrapJSON(url):
 	req = urllib2.Request(url)
-	req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
+	req.add_header('User-Agent', USER_AGENT)
 	try:
 		response = urllib2.urlopen(req)
 		content = response.read()
