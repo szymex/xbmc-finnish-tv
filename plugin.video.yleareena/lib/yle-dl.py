@@ -32,7 +32,7 @@ from Crypto.Cipher import AES
 
 version = '2.1.0'
 
-AREENA_NG_SWF = 'http://areena.yle.fi/static/player/1.2.8/flowplayer/flowplayer.commercial-3.2.7-encrypted.swf'
+AREENA_NG_SWF = 'http://areena.yle.fi/static/player/1.3.14/flowplayer/flowplayer.commercial-3.2.16-encrypted.swf'
 AREENA_NG_HTTP_HEADERS = {'User-Agent': 'yle-dl/' + version.split(' ')[0]}
 
 ARKISTO_SWF = 'http://yle.fi/elavaarkisto/flowplayer/flowplayer.commercial-3.2.7.swf?0.7134730119723827'
