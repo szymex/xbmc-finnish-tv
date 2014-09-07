@@ -1,19 +1,17 @@
 # -*- coding: utf-8 -*-
-import urllib
 import urllib2
 import re
-import xbmcplugin
-import xbmcgui
 import os
-import subprocess
+
 import json
-import CommonFunctions
-import xbmcutil as xbmcUtil
-import inspect
 import time
 from datetime import date, datetime
-from bs4 import BeautifulSoup
 import sys
+
+import xbmcplugin
+import CommonFunctions
+import xbmcutil as xbmcUtil
+from bs4 import BeautifulSoup
 
 
 dbg = True
@@ -25,7 +23,7 @@ common.plugin = "plugin.video.ruutu"
 
 USER_AGENT = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3'
 
-#sets default encoding to utf-8
+# sets default encoding to utf-8
 reload(sys)
 sys.setdefaultencoding('utf8')
 
@@ -74,9 +72,9 @@ def scrapVideoLink(url):
 	req = urllib2.Request(videoUrl)
 	req.add_header('User-Agent', USER_AGENT)
 	response = urllib2.urlopen(req)
-        regexp = "(http://)(.*)(/playlist.m3u8)"
-        regexp = re.compile(regexp, re.IGNORECASE)
-        videoLink = regexp.search(response.read())
+	regexp = "(http://)(.*)(/playlist.m3u8)"
+	regexp = re.compile(regexp, re.IGNORECASE)
+	videoLink = regexp.search(response.read())
 
 	return videoLink.group(0)
 
@@ -86,7 +84,7 @@ def downloadVideo(url, title):
 	videoUrl = scrapVideoLink(url)
 
 	downloadPath = ruutu.addon.getSetting('download-path')
-	if downloadPath == None or downloadPath == '':
+	if downloadPath is None or downloadPath == '':
 		return
 	downloadPath += url.split('/')[-2]
 	if not os.path.exists(downloadPath):
@@ -94,9 +92,7 @@ def downloadVideo(url, title):
 
 	filename = "%s %s" % (''.join(c for c in title if c in valid_chars), videoUrl.split(':')[-1] )
 
-	params = {}
-	params["url"] = videoUrl
-	params["download_path"] = downloadPath
+	params = {"url": videoUrl, "download_path": downloadPath}
 	xbmc.log(url + " " + filename + "   " + str(params))
 	dw = downloader.SimpleDownloader()
 	dw.download(filename, params)
@@ -140,19 +136,21 @@ def scrapPager(url):
 		response.close()
 		return scrapPagerContent(content)
 	except urllib2.HTTPError:
-		return [];
+		return []
+
 
 def trimFromExtraSpaces(text):
 	text = text.strip().replace('\n', '')
 	while "  " in text: text = text.replace('  ', ' ')
 	return text
 
+
 def scrapPagerContent(content):
 	retList = []
 	soup = BeautifulSoup(content)
 	items = soup.findAll('article')
 	for it in items:
-		image = it.find('img').get('src') if it.find('img') != None else ''
+		image = it.find('img').get('src') if it.find('img') is not None else ''
 		link = it.select('h2 a')[0]['href']
 		title = trimFromExtraSpaces(it.select('h2 a')[0].string)
 		episodeNum = ''
@@ -162,13 +160,13 @@ def scrapPagerContent(content):
 		if len(htmlSeason) > 0:
 			season = repr(htmlSeason[0])
 			season = re.compile('span>.+?([0-9]+[0-9]*?).*?</', re.DOTALL).findall(season)
-			if (len(season) > 0): seasonNum = season[0]
+			if len(season) > 0: seasonNum = season[0]
 
 		htmlEpisode = it.select('.field-name-field-episode')
 		if len(htmlEpisode) > 0:
 			episode = repr(htmlEpisode[0])
 			episode = re.compile('span>.+?([0-9]+[0-9]*?).*?</', re.DOTALL).findall(episode)
-			if (len(episode) > 0): episodeNum = episode[0]
+			if len(episode) > 0: episodeNum = episode[0]
 
 		selDuration = it.select('.field-name-field-duration')
 		duration = selDuration[0].string.strip() if len(selDuration) > 0 else ''
@@ -178,20 +176,20 @@ def scrapPagerContent(content):
 		available = selAvailability[0].string.strip() if len(selAvailability) > 0 else '0'
 
 		selDesc = it.select('.field-name-field-webdescription p')
-		desc = selDesc[0].string.strip() if len(selDesc) > 0 and selDesc[0].string != None else '0'
+		desc = selDesc[0].string.strip() if len(selDesc) > 0 and selDesc[0].string is not None else '0'
 
 		selAvailabilityText = it.select('.availability-text')
 		availabilityText = selAvailabilityText[0].string.strip() if len(selAvailabilityText) > 0 else ''
 		#desc += '\n\r' + availabilityText
 
 		selDetails = it.select('.details .field-type-text')
-		details = selDetails[0].string.strip() if len(selDetails) > 0 and selDetails[0].string != None else ''
+		details = selDetails[0].string.strip() if len(selDetails) > 0 and selDetails[0].string is not None else ''
 
 		selStartTime = it.select('.field-name-field-starttime')
 		publishedTs = None
 		if len(selStartTime) > 0:
-			for str in selStartTime[0].stripped_strings:
-				published = str
+			for strippedString in selStartTime[0].stripped_strings:
+				published = strippedString
 			try:
 				publishedTs = datetime.strptime(published, '%d.%m.%Y')
 			except TypeError:
@@ -205,7 +203,7 @@ def scrapPagerContent(content):
 
 		if not isDuplicate:
 			retList.append({'title': title, 'seasonNum': seasonNum, 'episodeNum': episodeNum, 'link': "http://www.ruutu.fi" + link, 'image': image, 'duration': duration,
-						'published-ts': publishedTs, 'available-text': availabilityText, 'available': available, 'desc': desc, 'details': details})
+							'published-ts': publishedTs, 'available-text': availabilityText, 'available': available, 'desc': desc, 'details': details})
 
 	return retList
 
@@ -220,7 +218,7 @@ def scrapJSON(url):
 		jsonObj = json.loads(content)
 		return jsonObj
 	except urllib2.HTTPError:
-		return [];
+		return []
 
 
 def scrapPrograms():
@@ -243,7 +241,7 @@ def formatDate(dt):
 	delta = date.today() - dt.date()
 	if delta.days == 0: return lang(30004)
 	if delta.days == 1: return lang(30010)
-	if delta.days > 1 and delta.days < 5: return dt.strftime('%A %d.%m.%Y')
+	if 1 < delta.days < 5: return dt.strftime('%A %d.%m.%Y')
 	return dt.strftime('%d.%m.%Y')
 
 
@@ -252,7 +250,13 @@ class RuutuAddon(xbmcUtil.ViewAddonAbstract):
 
 	def __init__(self):
 		xbmcUtil.ViewAddonAbstract.__init__(self)
-		self.initConst()
+		self.REMOVE = u'[COLOR red][B]•[/B][/COLOR] %s' % self.lang(30019)
+		self.FAVOURITE = '[COLOR yellow][B]•[/B][/COLOR] %s'
+		self.EXPIRES_DAYS = u'[COLOR brown]%d' + self.lang(30003) + '[/COLOR] %s'
+		self.EXPIRES_HOURS = u'[COLOR red]%d' + self.lang(30002) + '[/COLOR] %s'
+		self.GROUP_FORMAT = u'   [COLOR blue]%s[/COLOR]'
+		self.NEXT = '[COLOR blue]   ➔  %s  ➔[/COLOR]' % self.lang(33078)
+
 		self.addHandler(None, self.handleMain)
 		self.addHandler('category', self.handleCategory)
 		self.addHandler('serie', self.handleSeries)
@@ -260,14 +264,6 @@ class RuutuAddon(xbmcUtil.ViewAddonAbstract):
 		self.favourites = {}
 		self.initFavourites()
 		self.enabledDownload = self.addon.getSetting("enable-download") == 'true'
-
-	def initConst(self):
-		self.NEXT = '[COLOR blue]   ➔  %s  ➔[/COLOR]' % self.lang(33078)
-		self.GROUP_FORMAT = u'   [COLOR blue]%s[/COLOR]'
-		self.EXPIRES_HOURS = u'[COLOR red]%d' + self.lang(30002) + '[/COLOR] %s'
-		self.EXPIRES_DAYS = u'[COLOR brown]%d' + self.lang(30003) + '[/COLOR] %s'
-		self.FAVOURITE = '[COLOR yellow][B]•[/B][/COLOR] %s'
-		self.REMOVE = u'[COLOR red][B]•[/B][/COLOR] %s' % self.lang(30019)
 
 
 	def handleMain(self, pg, args):
@@ -300,7 +296,8 @@ class RuutuAddon(xbmcUtil.ViewAddonAbstract):
 	def isFavourite(self, title):
 		return title in self.favourites
 
-	def getPageQuery(self, pg):
+	@staticmethod
+	def getPageQuery(pg):
 		return str(pg - 1) if pg > 0    else ''
 
 	def handleCategory(self, pg, args):
@@ -319,7 +316,7 @@ class RuutuAddon(xbmcUtil.ViewAddonAbstract):
 		grouping = args['grouping'] if 'grouping' in args else False
 		pgSize = int(args['pg-size']) if 'pg-size' in args else -1
 		groupName = ''
-		if items != None:
+		if items is not None:
 			xbmcplugin.setContent(int(sys.argv[1]), 'episodes')
 			for item in items:
 				if grouping and groupName != formatDate(item['published-ts']):
@@ -340,10 +337,10 @@ class RuutuAddon(xbmcUtil.ViewAddonAbstract):
 				expiresInHours = int((int(av) - time.time()) / (60 * 60))
 
 				availableText = item['available-text']
-				if expiresInHours < 24 and expiresInHours >= 0:
+				if 24 > expiresInHours >= 0:
 					title = self.EXPIRES_HOURS % (expiresInHours, title)
 					availableText = '[COLOR red]%s[/COLOR]' % availableText
-				elif expiresInHours <= 120 and expiresInHours >= 0:
+				elif 120 >= expiresInHours >= 0:
 					title = self.EXPIRES_DAYS % (expiresInHours / 24, title)
 					availableText = '[COLOR red]%s[/COLOR]' % availableText
 
@@ -355,7 +352,7 @@ class RuutuAddon(xbmcUtil.ViewAddonAbstract):
 
 				if self.enabledDownload:
 					contextMenu.append((self.createContextMenuAction('Download', 'download', {'videoLink': item['link'], 'title': item['title']}) ))
-				if item['published-ts'] != None:
+				if item['published-ts'] is not None:
 					aired = item['published-ts'].strftime('%Y-%m-%d')
 				else:
 					aired = ''
