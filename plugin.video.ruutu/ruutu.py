@@ -118,10 +118,11 @@ def scrapSeries(url, pg=1):
 			return scrapPager(url)
 		else:
 			soup = BeautifulSoup(content)
-			items = soup.findAll('div', 'views-row grid-3')
+			section = soup.find(id='quicktabs-container-ruutu_series_episodes_by_season')
+			#section = soup.find(id='quicktabs-tabpage-ruutu_series_episodes_by_season-1')
+			items = section.findAll('div', 'views-row grid-3')
 			content = ''
-			for it in items:
-				content = content + str(it)
+			for it in items: content += str(it)
 			return scrapPagerContent(content)
 		#xbmcUtil.notification('Error', 'Could not find series')
 		#return None
@@ -141,6 +142,10 @@ def scrapPager(url):
 	except urllib2.HTTPError:
 		return [];
 
+def trimFromExtraSpaces(text):
+	text = text.strip().replace('\n', '')
+	while "  " in text: text = text.replace('  ', ' ')
+	return text
 
 def scrapPagerContent(content):
 	retList = []
@@ -149,9 +154,9 @@ def scrapPagerContent(content):
 	for it in items:
 		image = it.find('img').get('src') if it.find('img') != None else ''
 		link = it.select('h2 a')[0]['href']
-		title = it.select('h2 a')[0].string.strip()
-		episodeNum = '';
-		seasonNum = '';
+		title = trimFromExtraSpaces(it.select('h2 a')[0].string)
+		episodeNum = ''
+		seasonNum = ''
 
 		htmlSeason = it.select('.field-name-field-season')
 		if len(htmlSeason) > 0:
@@ -191,8 +196,16 @@ def scrapPagerContent(content):
 				publishedTs = datetime.strptime(published, '%d.%m.%Y')
 			except TypeError:
 				publishedTs = datetime(*(time.strptime(published, '%d.%m.%Y')[0:6]))
-		retList.append({'title': title, 'seasonNum': seasonNum, 'episodeNum': episodeNum, 'link': "http://www.ruutu.fi" + link, 'image': image, 'duration': duration,
-						'published-ts': publishedTs, 'available-text': availabilityText, 'available': available, 'desc': desc, 'details': details});
+		#search for duplicate
+		isDuplicate = False
+		for entry in retList:
+			if entry['link'] == "http://www.ruutu.fi" + link:
+				isDuplicate = True
+				break
+
+		if not isDuplicate:
+			retList.append({'title': title, 'seasonNum': seasonNum, 'episodeNum': episodeNum, 'link': "http://www.ruutu.fi" + link, 'image': image, 'duration': duration,
+						'published-ts': publishedTs, 'available-text': availabilityText, 'available': available, 'desc': desc, 'details': details})
 
 	return retList
 
@@ -360,13 +373,13 @@ class RuutuAddon(xbmcUtil.ViewAddonAbstract):
 		serieList = scrapPrograms()
 		for serie in serieList:
 			try:
-				title = serie['name'].encode('utf-8')
+				title = serie['name'].encode('utf-8').replace('&#039;', "'")
 				menu = [(self.createContextMenuAction(self.FAVOURITE % self.lang(30017), 'addFav', {'name': serie['name'], 'link': serie['link']}) )]
 				if self.isFavourite(title):
 					title = self.FAVOURITE % title
 					menu = [(self.createContextMenuAction(self.REMOVE, 'removeFav', {'name': serie['name']}) )]
 
-				self.addViewLink(title, 'serie', 1, {'link': serie['link'], 'pg-size': 10}, menu)
+				self.addViewLink(title, 'serie', 1, {'link': serie['link'], 'pg-size': 1000}, menu)
 			except:
 				pass
 
