@@ -1,3 +1,7 @@
+1.7.1
+
+- uses newer version of swf player
+
 1.7.0
 
 - updated crypto to work with Gotham
