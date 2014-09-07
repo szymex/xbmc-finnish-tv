@@ -226,12 +226,15 @@ def scrapJSON(url):
 def scrapPrograms():
 	url = 'http://www.ruutu.fi/ajax/series-navi'
 	result = common.fetchPage({"link": url})
-	ret = common.parseDOM(result['content'], "div", {'class': 'view-content'})
-	links = common.parseDOM(ret[0], "a", {'href': '*'}, 'href')
-	names = common.parseDOM(ret[0], "a", {'href': '*'})
+	content = result['content']
+	match = re.compile("<li>(.*?)</li>", re.DOTALL).findall(content)
+
 	retLinks = []
-	for i in range(0, len(names)):
-		retLinks.append({'link': "http://www.ruutu.fi" + str(links[i]), 'name': names[i]})
+	for m in match:
+		link = common.parseDOM(m, "a", {'href': '*'}, 'href')
+		name = common.parseDOM(m, "a", {'href': '*'})
+		if len(link) > 0 and not "ruutuplus" in m:
+			retLinks.append({'link': "http://www.ruutu.fi" + str(link[0]), 'name': name[0]})
 
 	return retLinks
 
