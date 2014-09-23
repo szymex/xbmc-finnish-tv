@@ -1,3 +1,7 @@
+1.2.8
+
+- updated user agent
+
 1.2.7
 
 - fixed issue #57
