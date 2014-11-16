@@ -140,7 +140,10 @@ def scrapPager(url):
 
 
 def trimFromExtraSpaces(text):
-	text = text.strip().replace('\n', '')
+	try:
+		text = text.strip().replace('\n', '')
+	except:
+		text = ""
 	while "  " in text: text = text.replace('  ', ' ')
 	return text
 
@@ -153,6 +156,8 @@ def scrapPagerContent(content):
 		image = it.find('img').get('src') if it.find('img') is not None else ''
 		link = it.select('h2 a')[0]['href']
 		title = trimFromExtraSpaces(it.select('h2 a')[0].string)
+		if len(title) == 0:
+			title = link
 		episodeNum = ''
 		seasonNum = ''
 
