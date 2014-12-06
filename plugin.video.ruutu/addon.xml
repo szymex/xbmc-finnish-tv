@@ -6,6 +6,7 @@
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
     <import addon="script.module.parsedom" version="0.9.1"/>
+    <import addon="script.module.simple.downloader"/>
   </requires>
   <extension point="xbmc.python.pluginsource" library="ruutu.py">
         <provides>video</provides>

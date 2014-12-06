@@ -15,7 +15,6 @@ from bs4 import BeautifulSoup
 
 
 dbg = True
-import SimpleDownloader as downloader
 import string
 
 common = CommonFunctions
