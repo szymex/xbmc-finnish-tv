@@ -6,7 +6,7 @@
 
 import sys
 import urllib
-import os
+
 import xbmcplugin
 import xbmcgui
 import xbmc
@@ -22,7 +22,7 @@ class ViewAddonAbstract:
 		self.addon = xbmcaddon.Addon(id=self.ADDON_ID)
 		self.BASE_PATH = self.addon.getAddonInfo('path')
 
-	#self.lang = self.addon.getLocalizedString
+	# self.lang = self.addon.getLocalizedString
 
 	def lang(self, id):
 		if id >= 30000 and id <= 30999:
@@ -94,12 +94,12 @@ class ViewAddonAbstract:
 		infoLabels['Title'] = title
 		liz.setInfo(type="Video", infoLabels=infoLabels)
 		if len(contextMenu) > 0:
-			liz.addContextMenuItems(contextMenu)  #keep xmbc build it menu items
+			liz.addContextMenuItems(contextMenu)  # keep xmbc build it menu items
 		xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=u, listitem=liz, isFolder=True)
 
 	def addVideoLink(self, title, link, img, infoLabels={}, contextMenu=[], videoStreamInfo={}):
 		u = sys.argv[0] + "?view=video&link=" + urllib.quote_plus(link)
-		#+ "&name=" + urllib.quote_plus(title)
+		# + "&name=" + urllib.quote_plus(title)
 		icon = "DefaultVideo.png"
 		liz = xbmcgui.ListItem(title, iconImage=icon, thumbnailImage=img)
 		liz.setProperty("IsPlayable", "true")
@@ -161,7 +161,7 @@ def addLink(name, url, iconimage):
 def getParams():
 	param = {}
 	paramstring = sys.argv[2]
-	#self.log.debug('raw param string: ' + paramstring)
+	# self.log.debug('raw param string: ' + paramstring)
 	if len(paramstring) >= 2:
 		params = sys.argv[2]
 		cleanedparams = params.replace('?', '')
@@ -181,7 +181,7 @@ def getParam(params, name):
 	try:
 		result = params[name]
 		result = result
-		#result = urllib.unquote_plus(result)
+		# result = urllib.unquote_plus(result)
 		return result
 	except:
 		return None

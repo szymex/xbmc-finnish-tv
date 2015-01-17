@@ -2,11 +2,11 @@
 import urllib2
 import re
 import os
-
 import json
 import time
 from datetime import date, datetime
 import sys
+import string
 
 import xbmcplugin
 import CommonFunctions
@@ -15,7 +15,6 @@ from bs4 import BeautifulSoup
 
 
 dbg = True
-import string
 
 common = CommonFunctions
 common.plugin = "plugin.video.ruutu"
@@ -35,7 +34,7 @@ def scrapRSS(url):
 	response.close()
 	match = re.compile("<item>.*?<title>(.*?)</title>.*?<link>(.*?)</link>.*?<description>.*?src='(.*?)'.*?br/&gt;(.*?)</description>.*?<pubDate>(.*?)</pubDate>.*?</item>",
 					   re.DOTALL).findall(content)
-	#title, link, img, description, date
+	# title, link, img, description, date
 	return match
 
 
@@ -99,7 +98,7 @@ def downloadVideo(url, title):
 
 def scrapSeries(url, pg=1):
 	try:
-		#find serie id
+		# find serie id
 		req = urllib2.Request(url)
 		req.add_header('User-Agent', USER_AGENT)
 		response = urllib2.urlopen(req)
@@ -114,13 +113,13 @@ def scrapSeries(url, pg=1):
 		else:
 			soup = BeautifulSoup(content)
 			section = soup.find(id='quicktabs-container-ruutu_series_episodes_by_season')
-			#section = soup.find(id='quicktabs-tabpage-ruutu_series_episodes_by_season-1')
+			# section = soup.find(id='quicktabs-tabpage-ruutu_series_episodes_by_season-1')
 			items = section.findAll('div', 'views-row grid-3')
 			content = ''
 			for it in items: content += str(it)
 			return scrapPagerContent(content)
-		#xbmcUtil.notification('Error', 'Could not find series')
-		#return None
+		# xbmcUtil.notification('Error', 'Could not find series')
+		# return None
 	except Exception as e:
 		xbmcUtil.notification('Error', str(e))
 		return None
@@ -184,7 +183,7 @@ def scrapPagerContent(content):
 
 		selAvailabilityText = it.select('.availability-text')
 		availabilityText = selAvailabilityText[0].string.strip() if len(selAvailabilityText) > 0 else ''
-		#desc += '\n\r' + availabilityText
+		# desc += '\n\r' + availabilityText
 
 		selDetails = it.select('.details .field-type-text')
 		details = selDetails[0].string.strip() if len(selDetails) > 0 and selDetails[0].string is not None else ''
@@ -198,7 +197,7 @@ def scrapPagerContent(content):
 				publishedTs = datetime.strptime(published, '%d.%m.%Y')
 			except TypeError:
 				publishedTs = datetime(*(time.strptime(published, '%d.%m.%Y')[0:6]))
-		#search for duplicate
+		# search for duplicate
 		isDuplicate = False
 		for entry in retList:
 			if entry['link'] == "http://www.ruutu.fi" + link:
@@ -274,7 +273,7 @@ class RuutuAddon(xbmcUtil.ViewAddonAbstract):
 		self.addViewLink('›› ' + self.lang(30020), 'programs', 1)
 		self.addViewLink(self.lang(30028), 'category', 1, {'link': 'http://www.ruutu.fi/views_cacheable_pager/videos/block_1?page=0%2C', 'grouping': True, 'pg-size': 10})
 		self.addViewLink(self.lang(30030), 'category', 1,
-						 {'link': 'http://www.ruutu.fi/views_cacheable_pager/videos/block_6?page=0%2C0%2C0%2C0%2C', 'pg-size': 10})  #yhden viikon ajalta
+						 {'link': 'http://www.ruutu.fi/views_cacheable_pager/videos/block_6?page=0%2C0%2C0%2C0%2C', 'pg-size': 10})  # yhden viikon ajalta
 		self.addViewLink(self.lang(30021), 'category', 1,
 						 {'link': 'http://www.ruutu.fi/views_cacheable_pager/videos_by_series/episodes_1/164876?page=0%2C', 'grouping': True, 'pg-size': 10})
 		self.addViewLink(self.lang(30027), 'category', 1, {'link': 'http://www.ruutu.fi/views_cacheable_pager/videos/block_2?page=0%2C', 'grouping': True, 'pg-size': 10})
@@ -407,7 +406,7 @@ class RuutuAddon(xbmcUtil.ViewAddonAbstract):
 		videoLink = scrapVideoLink(link)
 		return videoLink
 
-#-----------------------------------
+# -----------------------------------
 
 ruutu = RuutuAddon()
 lang = ruutu.lang

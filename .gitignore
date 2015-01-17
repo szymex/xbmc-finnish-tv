@@ -32,3 +32,4 @@ addons_xml_generator.py
 
 *.sh
 .idea/*
+!.idea/codeStyleSettings.xml

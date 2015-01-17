@@ -1,25 +1,26 @@
 # -*- coding: utf-8 -*-
-import os
-import subprocess
 import urllib
 import urllib2
-import re
-import xbmcplugin
-import xbmcgui
-import xbmcaddon
-import xbmcutil as xbmcUtil
+
 import json
 from datetime import date, datetime
 import time
 import os
 import sys
 import inspect
-import SimpleDownloader as downloader
 import string
+
+import xbmcplugin
+import xbmcgui
+import xbmcaddon
+import xbmcutil as xbmcUtil
+import SimpleDownloader as downloader
 import CommonFunctions
 
 
-#Lisätty Debug
+
+
+# Lisätty Debug
 settings = xbmcaddon.Addon('plugin.video.yleareena')
 localize = settings.getLocalizedString
 common = CommonFunctions
@@ -27,26 +28,26 @@ if settings.getSetting('debug') == "true":
 	common.dbg = True
 else:
 	common.dbg = False
-#Debug loppu
+# Debug loppu
 
-#sets default encoding to utf-8
+# sets default encoding to utf-8
 reload(sys)
 sys.setdefaultencoding('utf8')
 
-#for windows add Crypto module folder
+# for windows add Crypto module folder
 if sys.platform == 'win32':
 	cmd_subfolder = os.path.realpath(os.path.abspath(os.path.join(os.path.split(inspect.getfile(inspect.currentframe()))[0], "win32")))
 	if cmd_subfolder not in sys.path:
 		sys.path.insert(0, cmd_subfolder)
 
-#for OSX add Crypto module folder
+# for OSX add Crypto module folder
 if sys.platform == 'darwin':
 	cmd_subfolder = os.path.realpath(os.path.abspath(os.path.join(os.path.split(inspect.getfile(inspect.currentframe()))[0], "osx")))
 	if cmd_subfolder not in sys.path:
 		sys.path.insert(0, cmd_subfolder)
 
 try:
-	#import yle-dl (version 2.0.1)
+	# import yle-dl (version 2.0.1)
 	yledl = __import__('lib.yle-dl', globals(), locals(), ['yle-dl'], -1)
 except ImportError as e:
 	xbmc.log(str(e), level=xbmc.LOGERROR)
@@ -113,7 +114,7 @@ def downloadVideo(url, title):
 	params["download_path"] = downloadPath
 
 	filename = "%s.mp4" % (''.join(c for c in title if c in valid_chars) )
-	#filename = 'test.mp4'
+	# filename = 'test.mp4'
 	xbmc.log(filename + "  " + str(params))
 	dw = downloader.SimpleDownloader()
 	dw.download(filename, params)
@@ -240,7 +241,7 @@ class YleAreenaAddon(xbmcUtil.ViewAddonAbstract):
 	def handleLive(self, pg, args):
 		items = readJSON(args['link'])
 
-		#Live channels
+		# Live channels
 		self.addVideoLink('YLE TV 1', 'http://areena.yle.fi/tv/suora/tv1', 'http://yle.fi/yleisradio/sites/default/files/styles/inline-medium/public/yle-tv1.jpg')
 		self.addVideoLink('YLE TV 2', 'http://areena.yle.fi/tv/suora/tv2', 'http://yle.fi/yleisradio/sites/default/files/styles/inline-medium/public/yle-tv2.jpg')
 		self.addVideoLink('YLE TEEMA', 'http://areena.yle.fi/tv/suora/teema', 'http://yle.fi/yleisradio/sites/default/files/styles/inline-medium/public/yle-teema.jpg')
@@ -271,8 +272,8 @@ class YleAreenaAddon(xbmcUtil.ViewAddonAbstract):
 					self.addVideoLink('   [COLOR blue]' + day + '[/COLOR]', '', '')
 
 				for item in days['items']:
-					#if datetime.strftime(datetime.now(), '%Y-%m-%dT%H:%M:%S')[:13] == item['start'][:13]:
-					#	title = u"[COLOR orange][/COLOR]"
+					# if datetime.strftime(datetime.now(), '%Y-%m-%dT%H:%M:%S')[:13] == item['start'][:13]:
+					# title = u"[COLOR orange][/COLOR]"
 					#else:
 					#	title = u""
 					startTime = item['start'][11:16]
@@ -323,7 +324,7 @@ class YleAreenaAddon(xbmcUtil.ViewAddonAbstract):
 					if 'expires' in item and item['expires'] != None:
 						try:
 							expiresInHours = int((time.mktime(time.strptime(item['expires'], "%Y-%m-%dT%H:%M:%S")) - time.time()) / (60 * 60))
-							#plot += u"\n\r%s: %s" % (self.lang(30009), str(item['expires']) )
+							# plot += u"\n\r%s: %s" % (self.lang(30009), str(item['expires']) )
 							expiresText = item['expires'].replace('T', ' ')
 						except:
 							xbmc.log('Could not parse ' + item['expires'], level=xbmc.LOGWARNING)
@@ -394,12 +395,12 @@ class YleAreenaAddon(xbmcUtil.ViewAddonAbstract):
 				if player.isPlaying() and resolvedVideoLink == player.getPlayingFile():
 					defaultSubtitleFile = None
 
-					#find default subtitle file
+					# find default subtitle file
 					for subfile in subtitleFiles:
 						if self.DEFAULT_LANG in subfile:
 							defaultSubtitleFile = subfile
 
-					#add other subtitles
+					# add other subtitles
 					for subfile in subtitleFiles:
 						if defaultSubtitleFile != subfile: xbmc.Player().setSubtitles(subfile)
 
@@ -447,7 +448,7 @@ class YleAreenaAddon(xbmcUtil.ViewAddonAbstract):
 			self.addViewLink(self.lang(30053), 'delsearches')
 		xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
-#-----------------------------------
+# -----------------------------------
 
 yleAreenaAddon = YleAreenaAddon()
 lang = yleAreenaAddon.lang

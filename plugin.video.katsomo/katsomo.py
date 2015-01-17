@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
+import sys
+from datetime import datetime, date
+
 import xbmcplugin
-import xbmcgui
 import xbmcaddon
 import xbmcutil as xbmcUtil
-import sys
 from katsomoscraper import KatsomoScraper
-from datetime import datetime, date
 
 
 settings = xbmcaddon.Addon('plugin.video.katsomo')
 
-#sets default encoding to utf-8
+# sets default encoding to utf-8
 reload(sys)
 sys.setdefaultencoding('utf8')
 
@@ -118,7 +118,7 @@ class KatsomoAddon(xbmcUtil.ViewAddonAbstract):
 			super(ViewAddonAbstract, self).handleAction(self, action, params)
 
 
-#-----------------------------------
+# -----------------------------------
 
 def formatDate(dt):
 	delta = date.today() - dt.date()

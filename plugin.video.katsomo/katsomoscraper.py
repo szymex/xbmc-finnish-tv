@@ -1,16 +1,18 @@
 import urllib
 import urllib2
-import re
 import os
 import cookielib
-import CommonFunctions
-import xbmc
-import xbmcaddon
 from datetime import datetime
 import time
 
+import CommonFunctions
+import xbmc
+import xbmcaddon
 
-#cookie handling
+
+
+
+# cookie handling
 addon = xbmcaddon.Addon('plugin.video.katsomo')
 cookie_file = xbmc.translatePath(addon.getAddonInfo('profile')) + "cookies.txt"
 
@@ -41,7 +43,7 @@ class KatsomoScraper:
 				cj.revert(ignore_discard=True)
 			except IOError:
 				pass
-		#xbmc.log(logmsg + "checking login status to katsomo")
+		# xbmc.log(logmsg + "checking login status to katsomo")
 		login_url = 'http://m.katsomo.fi/login'
 		req = urllib2.Request(login_url)
 		req.add_header('User-Agent', USER_AGENT)
@@ -95,7 +97,7 @@ class KatsomoScraper:
 		return 0
 
 	def scrapVideoLink(self, url):
-		#xbmc.log( logmsg + url )
+		# xbmc.log( logmsg + url )
 		req = urllib2.Request(url)
 		req.add_header('User-Agent', USER_AGENT)
 		ck = cookielib.Cookie(version=0, name='hq', value='1', port=None, port_specified=False, domain='m.katsomo.fi', domain_specified=False, domain_initial_dot=False, path='/',
@@ -175,7 +177,7 @@ class KatsomoScraper:
 		ret = common.parseDOM(ret, "ul", {'class': 'all-programs-list'})
 		retIDs = common.parseDOM(ret, "a", ret="href")
 		retNames = common.parseDOM(ret, "li")
-		#xbmc.log( str(retIDs) )
+		# xbmc.log( str(retIDs) )
 		l = []
 		for i in range(0, len(retIDs)):
 			name = retNames[i]
