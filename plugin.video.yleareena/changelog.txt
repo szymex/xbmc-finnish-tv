@@ -1,3 +1,7 @@
+1.7.2
+
+- fixes
+
 1.7.1
 
 - uses newer version of swf player
