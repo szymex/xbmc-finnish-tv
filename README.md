@@ -1,7 +1,7 @@
-Finnish TV XBMC Plugins
+Finnish TV Kodi Plugins
 ===============
 
-XBMC Video Plugins for playing Finnish television content containers.
+Kodi Video Plugins for playing Finnish television content containers.
 
 *Features:*
 - browse all programs
