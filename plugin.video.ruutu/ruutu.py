@@ -176,7 +176,7 @@ def scrapPagerContent(content):
 		duration = duration.replace(' min', '')
 
 		selAvailability = it.select('.availability-timestamp')
-		available = selAvailability[0].string.strip() if len(selAvailability) > 0 else '0'
+		available = selAvailability[0].string.strip() if len(selAvailability) > 0 and selAvailability[0].string is not None else '0'
 
 		selDesc = it.select('.field-name-field-webdescription p')
 		desc = selDesc[0].string.strip() if len(selDesc) > 0 and selDesc[0].string is not None else '0'
