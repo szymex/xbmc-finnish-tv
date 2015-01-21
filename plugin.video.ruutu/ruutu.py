@@ -182,7 +182,7 @@ def scrapPagerContent(content):
 		desc = selDesc[0].string.strip() if len(selDesc) > 0 and selDesc[0].string is not None else '0'
 
 		selAvailabilityText = it.select('.availability-text')
-		availabilityText = selAvailabilityText[0].string.strip() if len(selAvailabilityText) > 0 else ''
+		availabilityText = selAvailabilityText[0].string.strip() if len(selAvailabilityText) > 0 and selAvailabilityText[0].string is not None else ''
 		# desc += '\n\r' + availabilityText
 
 		selDetails = it.select('.details .field-type-text')
