@@ -193,10 +193,10 @@ def scrapPagerContent(content):
 		if len(selStartTime) > 0:
 			for strippedString in selStartTime[0].stripped_strings:
 				published = strippedString
-			try:
-				publishedTs = datetime.strptime(published, '%d.%m.%Y')
-			except TypeError:
-				publishedTs = datetime(*(time.strptime(published, '%d.%m.%Y')[0:6]))
+				try:
+					publishedTs = datetime.strptime(published, '%d.%m.%Y')
+				except TypeError:
+					publishedTs = datetime(*(time.strptime(published, '%d.%m.%Y')[0:6]))
 		# search for duplicate
 		isDuplicate = False
 		for entry in retList:
