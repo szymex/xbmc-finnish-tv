@@ -33,7 +33,7 @@
 </addon>
 <addon id="plugin.video.yleareena"
        name="YLE Areena"
-       version="1.7.3"
+       version="1.8.0"
        provider-name="szymex">
     <requires>
         <import addon="xbmc.python" version="2.1.0"/>

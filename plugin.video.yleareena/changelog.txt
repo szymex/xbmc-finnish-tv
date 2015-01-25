@@ -1,3 +1,7 @@
+1.8.0
+
+- updated with yledl 2.7.0 (supports HD videos)
+
 1.7.3
 
 - #82 fix due to yleareena webpage changes, using older version: areena-v3.yle.fi

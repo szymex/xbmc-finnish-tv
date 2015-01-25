@@ -47,7 +47,7 @@ if sys.platform == 'darwin':
 		sys.path.insert(0, cmd_subfolder)
 
 try:
-	# import yle-dl (version 2.0.1)
+	# import yle-dl (version 2.7.0)
 	yledl = __import__('lib.yle-dl', globals(), locals(), ['yle-dl'], -1)
 except ImportError as e:
 	xbmc.log(str(e), level=xbmc.LOGERROR)
@@ -57,17 +57,18 @@ except ImportError as e:
 
 def scrapVideo(url):
 	url = yledl.encode_url_utf8(url)
-	dl = yledl.downloader_factory(url)
+	dl = yledl.downloader_factory(url, None).wrapped_class("rtmp")
+	sfilt = yledl.StreamFilters(True, 'all', False, sys.maxint)
 	if isinstance(dl, yledl.AreenaLiveDownloader):
-		rtmpparams = dl.get_live_rtmp_parameters(url)
+		streamurl = yledl.AreenaLiveStreamUrl(url, sfilt)
 		clip = None
 	else:
 		playlist = dl.get_playlist(url, True)
 		clip = playlist[0]
-		rtmpparams = dl.get_rtmp_parameters(clip, url)
+		streamurl = dl.stream_class_factory(clip, url, sfilt)
 
 	enc = sys.getfilesystemencoding()
-	rtmpUrl = dl.rtmp_parameters_to_url(rtmpparams).encode(enc, 'replace')
+	rtmpUrl = streamurl.to_url().encode(enc, 'replace')
 
 	# socks-use enum in settings:
 	# 0 = no SOCKS proxy
