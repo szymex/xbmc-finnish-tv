@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import urllib
 import urllib2
-
 import json
 from datetime import date, datetime
 import time
@@ -16,6 +15,7 @@ import xbmcaddon
 import xbmcutil as xbmcUtil
 import SimpleDownloader as downloader
 import CommonFunctions
+from F4mProxy import f4mProxyHelper
 
 
 
@@ -249,6 +249,15 @@ class YleAreenaAddon(xbmcUtil.ViewAddonAbstract):
 		yleFemLankLink = '?kieli=sv' if (self.DEFAULT_LANG == 'swh' or self.DEFAULT_LANG == 'swe') else ''
 		self.addVideoLink('YLE FEM', 'http://areena.yle.fi/tv/suora/fem' + yleFemLankLink, 'http://yle.fi/yleisradio/sites/default/files/styles/inline-medium/public/yle-fem.jpg')
 
+		self.addVideoLink('HD YLE TV 1', 'http://yletv-lh.akamaihd.net/z/yletv1hls_1@103188/manifest.f4m?&hdcore=3.1.0&plugin=flowplayer-3.1.0.1',
+						  'http://yle.fi/yleisradio/sites/default/files/styles/inline-medium/public/yle-tv1.jpg')
+		self.addVideoLink('HD YLE TV 2', 'http://yletv-lh.akamaihd.net/z/yletv2hls_1@103189/manifest.f4m?&hdcore=3.1.0&plugin=flowplayer-3.1.0.1',
+						  'http://yle.fi/yleisradio/sites/default/files/styles/inline-medium/public/yle-tv2.jpg')
+		self.addVideoLink('HD YLE TEEMA', 'http://yletv-lh.akamaihd.net/z/yleteemahls_1@103187/manifest.f4m?&hdcore=3.1.0&plugin=flowplayer-3.1.0.1',
+						  'http://yle.fi/yleisradio/sites/default/files/styles/inline-medium/public/yle-teema.jpg')
+		self.addVideoLink('HD YLE FEM', 'http://yletv-lh.akamaihd.net/z/ylefemfihls_1@103185/manifest.f4m?&hdcore=3.1.0&plugin=flowplayer-3.1.0.1',
+						  'http://yle.fi/yleisradio/sites/default/files/styles/inline-medium/public/yle-fem.jpg')
+
 		xbmcplugin.setContent(int(sys.argv[1]), 'episodes')
 		for i in range(0, len(items['current'])):
 			item = items['current'][i]
@@ -378,7 +387,27 @@ class YleAreenaAddon(xbmcUtil.ViewAddonAbstract):
 				if len(items['search']['results']) == self.DEFAULT_PAGE_SIZE:
 					self.addViewLink(self.NEXT, 'serie', pg + 1, args)
 
+	def playF4mLink(self, url, name, proxy=None, use_proxy_for_chunks=False, auth_string=None, streamtype='HDS', setResolved=False):
+		maxbitrate = 0
+		simpleDownloader = False
+		player = f4mProxyHelper()
+
+		if setResolved:
+			urltoplay, item = player.playF4mLink(url, name, proxy, use_proxy_for_chunks, maxbitrate, simpleDownloader, auth_string, streamtype, setResolved)
+			item.setProperty("IsPlayable", "true")
+			xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, item)
+
+		else:
+			xbmcplugin.endOfDirectory(int(sys.argv[1]), cacheToDisc=False)
+			player.playF4mLink(url, name, proxy, use_proxy_for_chunks, maxbitrate, simpleDownloader, auth_string, streamtype, setResolved)
+
+		return
+
 	def playVideo(self, link):
+		if ".f4m" in link:
+			self.playF4mLink(link, "")
+			return
+
 		resolvedVideoLink, subtitleFiles = scrapVideo(link)
 		if (resolvedVideoLink != None):
 			liz = xbmcgui.ListItem(path=resolvedVideoLink)
