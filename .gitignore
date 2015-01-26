@@ -33,3 +33,7 @@ addons_xml_generator.py
 *.sh
 .idea/*
 !.idea/codeStyleSettings.xml
+plugin.video.katsomo-1.2.8.zip
+plugin.video.riemurasia-1.0.2.zip
+plugin.video.ruutu-1.3.7.zip
+plugin.video.yleareena-1.7.2.zip
