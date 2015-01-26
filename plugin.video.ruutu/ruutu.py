@@ -145,12 +145,10 @@ def scrapPager(url):
 
 def trimFromExtraSpaces(text):
     try:
-        text = text.strip().replace('\n', '')
+        retVal = " ".join(text.split())
     except:
-        text = ""
-    while "  " in text:
-        text = text.replace('  ', ' ')
-    return text
+        retVal = ""
+    return retVal
 
 
 def scrapPagerContent(content):
@@ -161,7 +159,6 @@ def scrapPagerContent(content):
     for it in items:
         image = it.find('img').get('src') if it.find('img') is not None else ''
         link = it.select('h2 a')[0]['href']
-        xbmc.log(">>> LINK: {0}".format(it.select('h2 a')[0].string))  # NOQA
         title = trimFromExtraSpaces(it.select('h2 a')[0].string)
         if len(title) == 0:
             title = link
@@ -457,7 +454,6 @@ class RuutuAddon(xbmcUtil.ViewAddonAbstract):
         return videoLink
 
 # -----------------------------------
-
 ruutu = RuutuAddon()
 lang = ruutu.lang
 ruutu.handle()
