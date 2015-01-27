@@ -13,6 +13,7 @@ import CommonFunctions
 import xbmcutil as xbmcUtil
 from bs4 import BeautifulSoup
 
+xbmc.log(">>> Running in Python {0}".format(sys.version))
 
 dbg = True
 
@@ -90,7 +91,8 @@ def downloadVideo(url, title):
     if not os.path.exists(downloadPath):
         os.makedirs(downloadPath)
 
-    filename = "%s %s" % (''.join(c for c in title if c in valid_chars), videoUrl.split(':')[-1])
+    filename = "%s %s" % (''.join(
+        c for c in title if c in valid_chars), videoUrl.split(':')[-1])
 
     params = {"url": videoUrl, "download_path": downloadPath}
     xbmc.log(url + " " + filename + "   " + str(params))  # NOQA
@@ -115,14 +117,15 @@ def scrapSeries(url, pg=1):
                            serieId, '?page=0%2C', str(pg - 1)])
             return scrapPager(url)
         else:
-            soup = BeautifulSoup(content)
+            soup = BeautifulSoup(content, from_encoding="utf-8")
             section = soup.find(id='quicktabs-container-ruutu_series_episodes_by_season')
-            # section = soup.find(id='quicktabs-tabpage-ruutu_series_episodes_by_season-1')
+            xbmc.log(">>> SECTION: {0}".format(section))
+            # section =
+            # soup.find(id='quicktabs-tabpage-ruutu_series_episodes_by_season-1')
             items = section.find_all('div', class_='views-row grid-3')
-            xbmc.log(">>> ITEMS: {0}".format(items))
             content = ''
             for it in items:
-                content += it.prettify()
+                content += str(it)
             return scrapPagerContent(content)
         # xbmcUtil.notification('Error', 'Could not find series')
         # return None
@@ -153,7 +156,6 @@ def trimFromExtraSpaces(text):
 
 def scrapPagerContent(content):
     retList = []
-    xbmc.log(">>> CONTENT: {0}".format(content))
     soup = BeautifulSoup(content)
     items = soup.findAll('article')
     for it in items:
@@ -168,19 +170,22 @@ def scrapPagerContent(content):
         htmlSeason = it.select('.field-name-field-season')
         if len(htmlSeason) > 0:
             season = repr(htmlSeason[0])
-            season = re.compile('span>.+?([0-9]+[0-9]*?).*?</', re.DOTALL).findall(season)
+            season = re.compile(
+                'span>.+?([0-9]+[0-9]*?).*?</', re.DOTALL).findall(season)
             if len(season) > 0:
                 seasonNum = season[0]
 
         htmlEpisode = it.select('.field-name-field-episode')
         if len(htmlEpisode) > 0:
             episode = repr(htmlEpisode[0])
-            episode = re.compile('span>.+?([0-9]+[0-9]*?).*?</', re.DOTALL).findall(episode)
+            episode = re.compile(
+                'span>.+?([0-9]+[0-9]*?).*?</', re.DOTALL).findall(episode)
             if len(episode) > 0:
                 episodeNum = episode[0]
 
         selDuration = it.select('.field-name-field-duration')
-        duration = selDuration[0].string.strip() if len(selDuration) > 0 else ''
+        duration = selDuration[0].string.strip() if len(
+            selDuration) > 0 else ''
         duration = duration.replace(' min', '')
 
         selAvailability = it.select('.availability-timestamp')
@@ -190,7 +195,8 @@ def scrapPagerContent(content):
             available = '0'
 
         selDesc = it.select('.field-name-field-webdescription p')
-        desc = selDesc[0].string.strip() if len(selDesc) > 0 and selDesc[0].string is not None else '0'
+        desc = selDesc[0].string.strip() if len(
+            selDesc) > 0 and selDesc[0].string is not None else '0'
 
         selAvailabilityText = it.select('.availability-text')
         if len(selAvailabilityText) > 0 and selAvailabilityText[0].string is not None:
@@ -200,7 +206,8 @@ def scrapPagerContent(content):
         # desc += '\n\r' + availabilityText
 
         selDetails = it.select('.details .field-type-text')
-        details = selDetails[0].string.strip() if len(selDetails) > 0 and selDetails[0].string is not None else ''
+        details = selDetails[0].string.strip() if len(
+            selDetails) > 0 and selDetails[0].string is not None else ''
 
         selStartTime = it.select('.field-name-field-starttime')
         publishedTs = None
@@ -210,7 +217,8 @@ def scrapPagerContent(content):
                 try:
                     publishedTs = datetime.strptime(published, '%d.%m.%Y')
                 except TypeError:
-                    publishedTs = datetime(*(time.strptime(published, '%d.%m.%Y')[0:6]))
+                    publishedTs = datetime(*(time.strptime(
+                        published, '%d.%m.%Y')[0:6]))
         # search for duplicate
         isDuplicate = False
         for entry in retList:
@@ -259,7 +267,8 @@ def scrapPrograms():
         link = common.parseDOM(m, "a", {'href': '*'}, 'href')
         name = common.parseDOM(m, "a", {'href': '*'})
         if len(link) > 0 and "ruutuplus" not in m:
-            retLinks.append({'link': "http://www.ruutu.fi" + str(link[0]), 'name': name[0]})
+            retLinks.append({'link': "http://www.ruutu.fi" + str(
+                link[0]), 'name': name[0]})
 
     return retLinks
 
@@ -282,8 +291,10 @@ class RuutuAddon(xbmcUtil.ViewAddonAbstract):
         xbmcUtil.ViewAddonAbstract.__init__(self)
         self.REMOVE = u'[COLOR red][B]•[/B][/COLOR] %s' % self.lang(30019)
         self.FAVOURITE = '[COLOR yellow][B]•[/B][/COLOR] %s'
-        self.EXPIRES_DAYS = u'[COLOR brown]%d' + self.lang(30003) + '[/COLOR] %s'
-        self.EXPIRES_HOURS = u'[COLOR red]%d' + self.lang(30002) + '[/COLOR] %s'
+        self.EXPIRES_DAYS = u'[COLOR brown]%d' + self.lang(
+            30003) + '[/COLOR] %s'
+        self.EXPIRES_HOURS = u'[COLOR red]%d' + self.lang(
+            30002) + '[/COLOR] %s'
         self.GROUP_FORMAT = u'   [COLOR blue]%s[/COLOR]'
         self.NEXT = '[COLOR blue]   ➔  %s  ➔[/COLOR]' % self.lang(33078)
 
@@ -293,7 +304,8 @@ class RuutuAddon(xbmcUtil.ViewAddonAbstract):
         self.addHandler('programs', self.handlePrograms)
         self.favourites = {}
         self.initFavourites()
-        self.enabledDownload = self.addon.getSetting("enable-download") == 'true'
+        self.enabledDownload = self.addon.getSetting(
+            "enable-download") == 'true'
 
     def handleMain(self, pg, args):
         self.addViewLink('›› ' + self.lang(30020), 'programs', 1)
@@ -322,8 +334,10 @@ class RuutuAddon(xbmcUtil.ViewAddonAbstract):
                              'page=0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C0%2C', 'grouping': 'True'})
         for title, link in self.favourites.items():
             t = title
-            cm = [(self.createContextMenuAction(self.REMOVE, 'removeFav', {'name': t}))]
-            self.addViewLink(self.FAVOURITE % t, 'serie', 1, {'link': link, 'pg-size': 10}, cm)
+            cm = [(self.createContextMenuAction(
+                self.REMOVE, 'removeFav', {'name': t}))]
+            self.addViewLink(self.FAVOURITE % t, 'serie', 1, {
+                             'link': link, 'pg-size': 10}, cm)
 
     def initFavourites(self):
         fav = self.addon.getSetting("fav")
@@ -372,7 +386,8 @@ class RuutuAddon(xbmcUtil.ViewAddonAbstract):
                     if len(title) > 50:
                         title = title[:50] + u'…'
                 if len(item['episodeNum']) > 0 and len(item['seasonNum']) > 0:
-                    title += ' [%s#%s]' % (item['seasonNum'], item['episodeNum'])
+                    title += ' [%s#%s]' % (item[
+                                           'seasonNum'], item['episodeNum'])
 
                 av = item['available']
                 expiresInHours = int((int(av) - time.time()) / (60 * 60))
@@ -385,17 +400,19 @@ class RuutuAddon(xbmcUtil.ViewAddonAbstract):
                     title = self.EXPIRES_DAYS % (expiresInHours / 24, title)
                     availableText = '[COLOR red]%s[/COLOR]' % availableText
 
-                plot = '[B]%s[/B]\n\r%s\n\r%s' % (item['details'], item['desc'], availableText)
+                plot = '[B]%s[/B]\n\r%s\n\r%s' % (item[
+                                                  'details'], item['desc'], availableText)
 
                 episodeNum = item['episodeNum']
                 seasonNum = item['seasonNum']
                 contextMenu = []
 
                 if self.enabledDownload:
-                    contextMenu.append((self.createContextMenuAction('Download',
-                                                                     'download',
-                                                                     {'videoLink': item['link'],
-                                                                         'title': item['title']})))
+                    contextMenu.append(
+                        (self.createContextMenuAction('Download',
+                                                      'download',
+                                                      {'videoLink': item['link'],
+                                                       'title': item['title']})))
                 if item['published-ts'] is not None:
                     aired = item['published-ts'].strftime('%Y-%m-%d')
                 else:
@@ -414,7 +431,8 @@ class RuutuAddon(xbmcUtil.ViewAddonAbstract):
         if 'link' in args:
             items = scrapJSON(args['link'])
             for item in items['video_episode']:
-                link = 'http://arkisto.ruutu.fi/video?vt=video_episode&vid=' + item['video_filename'][:-4]
+                link = 'http://arkisto.ruutu.fi/video?vt=video_episode&vid=' + \
+                    item['video_filename'][:-4]
                 image = 'http://arkisto.ruutu.fi/' + item['video_preview_url']
                 self.addVideoLink(item['title'], link, image, '')
 
@@ -423,13 +441,17 @@ class RuutuAddon(xbmcUtil.ViewAddonAbstract):
         for serie in serieList:
             try:
                 title = serie['name'].encode('utf-8').replace('&#039;', "'")
-                menu = [(self.createContextMenuAction(self.FAVOURITE % self.lang(30017),
-                         'addFav', {'name': serie['name'], 'link': serie['link']}))]
+                menu = [(
+                    self.createContextMenuAction(
+                        self.FAVOURITE % self.lang(30017),
+                        'addFav', {'name': serie['name'], 'link': serie['link']}))]
                 if self.isFavourite(title):
                     title = self.FAVOURITE % title
-                    menu = [(self.createContextMenuAction(self.REMOVE, 'removeFav', {'name': serie['name']}))]
+                    menu = [(self.createContextMenuAction(
+                        self.REMOVE, 'removeFav', {'name': serie['name']}))]
 
-                self.addViewLink(title, 'serie', 1, {'link': serie['link'], 'pg-size': 1000}, menu)
+                self.addViewLink(title, 'serie', 1, {
+                                 'link': serie['link'], 'pg-size': 1000}, menu)
             except:
                 pass
 
@@ -438,12 +460,14 @@ class RuutuAddon(xbmcUtil.ViewAddonAbstract):
             self.favourites[params['name'].encode("utf-8")] = params['link']
             favStr = repr(self.favourites)
             self.addon.setSetting('fav', favStr)
-            xbmcUtil.notification(self.lang(30006), params['name'].encode("utf-8"))
+            xbmcUtil.notification(self.lang(
+                30006), params['name'].encode("utf-8"))
         elif action == 'removeFav':
             self.favourites.pop(params['name'])
             favStr = repr(self.favourites)
             self.addon.setSetting('fav', favStr)
-            xbmcUtil.notification(self.lang(30007), params['name'].encode("utf-8"))
+            xbmcUtil.notification(self.lang(
+                30007), params['name'].encode("utf-8"))
         elif action == 'download':
             downloadVideo(params['videoLink'], params['title'])
         else:
