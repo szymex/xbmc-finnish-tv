@@ -117,11 +117,8 @@ def scrapSeries(url, pg=1):
                            serieId, '?page=0%2C', str(pg - 1)])
             return scrapPager(url)
         else:
-            soup = BeautifulSoup(content, from_encoding="utf-8")
+            soup = BeautifulSoup(content, "html5lib")
             section = soup.find(id='quicktabs-container-ruutu_series_episodes_by_season')
-            xbmc.log(">>> SECTION: {0}".format(section))
-            # section =
-            # soup.find(id='quicktabs-tabpage-ruutu_series_episodes_by_season-1')
             items = section.find_all('div', class_='views-row grid-3')
             content = ''
             for it in items:
@@ -155,8 +152,9 @@ def trimFromExtraSpaces(text):
 
 
 def scrapPagerContent(content):
+    xbmc.log(">>> titleLink: {0}".format(content))
     retList = []
-    soup = BeautifulSoup(content)
+    soup = BeautifulSoup(content, "html5lib")
     items = soup.findAll('article')
     for it in items:
         image = it.find('img').get('src') if it.find('img') is not None else ''
