@@ -1,3 +1,7 @@
+1.2.99
+
+- end of support
+
 1.2.8
 
 - updated user agent

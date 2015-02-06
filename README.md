@@ -24,12 +24,6 @@ Download: [repository.finnish-tv-1.0.2.zip](https://raw.githubusercontent.com/sz
   
   Download: [plugin.video.ruutu](https://github.com/szymex/xbmc-finnish-tv/tree/master/repo/plugin.video.ruutu)
 
-* **Katsomo.fi**
-  
-  Download: [plugin.video.katsomo](https://github.com/szymex/xbmc-finnish-tv/tree/master/repo/plugin.video.katsomo)
-  
-  *Known issue: poor video quality for some videos*
-
 
 ## LICENSE
 This software is released under the [GPL 3.0 license](http://www.gnu.org/licenses/gpl-3.0.html).

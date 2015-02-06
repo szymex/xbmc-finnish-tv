@@ -39,16 +39,17 @@ class KatsomoAddon(xbmcUtil.ViewAddonAbstract):
 		self.REMOVE = u'[COLOR red][B]•[/B][/COLOR] %s' % self.lang(30019)
 
 	def handleMain(self, pg, args):
-		self.addViewLink('›› ' + lang(30020), 'programs', 1)
+		#self.addViewLink('›› ' + lang(30020), 'programs', 1)
+		self.addViewLink('[COLOR red]Can not play Katsomo videos (thanks to DRM)[/COLOR]', '', 1, {})
 		self.addViewLink('LIVE', 'live', 1, {'link': 'http://m.mtvkatsomo.fi'})
-		self.addViewLink(lang(30028), 'serie', 1, {'link': 'http://m.katsomo.fi', 'useGroups': True})
-		self.addViewLink(lang(30021), 'serie', 1, {'link': 'http://m.katsomo.fi/?treeId=33001', 'useGroups': True})
-		self.addViewLink(lang(30027), 'serie', 1, {'link': 'http://m.katsomo.fi/?treeId=33002', 'useGroups': True})
-		self.addViewLink(lang(30023), 'serie', 1, {'link': 'http://m.katsomo.fi/?treeId=33003', 'useGroups': True})
-		for title, link in self.favourites.items():
-			t = title
-			cm = [(self.createContextMenuAction(self.REMOVE, 'removeFav', {'name': t}) )]
-			self.addViewLink(self.FAVOURITE % t, 'serie', 1, {'link': link, 'pg-size': 10}, cm)
+		#self.addViewLink(lang(30028), 'serie', 1, {'link': 'http://m.katsomo.fi', 'useGroups': True})
+		#self.addViewLink(lang(30021), 'serie', 1, {'link': 'http://m.katsomo.fi/?treeId=33001', 'useGroups': True})
+		#self.addViewLink(lang(30027), 'serie', 1, {'link': 'http://m.katsomo.fi/?treeId=33002', 'useGroups': True})
+		#self.addViewLink(lang(30023), 'serie', 1, {'link': 'http://m.katsomo.fi/?treeId=33003', 'useGroups': True})
+		#for title, link in self.favourites.items():
+		#	t = title
+		#	cm = [(self.createContextMenuAction(self.REMOVE, 'removeFav', {'name': t}) )]
+		#	self.addViewLink(self.FAVOURITE % t, 'serie', 1, {'link': link, 'pg-size': 10}, cm)
 
 	def initFavourites(self):
 		fav = self.addon.getSetting("fav")

@@ -29,7 +29,6 @@ do
 	else
 		echo " new release: $i-$VERSION"
 		zip -r $REPOFILE $i -x@.gitignore > /dev/null
-        cp -v $REPOFILE .
 	fi
 	cat $i/addon.xml | grep -v "<?xml" >> ./addons.xml
 done
