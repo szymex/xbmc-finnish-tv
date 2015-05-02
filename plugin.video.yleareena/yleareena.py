@@ -179,14 +179,14 @@ class YleAreenaAddon(xbmcUtil.ViewAddonAbstract):
 			self.addon.setSetting("fav", repr(self.favSeries))
 
 	def handleMain(self, pg, args):
-		self.addViewLink('» ' + self.lang(30020), 'programs', 1, {'link': 'http://areena.yle.fi/tv/kaikki.json?jarjestys=ao'})
-		self.addViewLink(self.lang(30021), 'serie', 1, {'link': 'http://areena.yle.fi/tv/uutiset/kaikki.json?jarjestys=uusin', 'grouping': True})
-		self.addViewLink(self.lang(30022), 'live', 0, {'link': 'http://areena.yle.fi/tv/suora.json?from=0&to=24'})
-		self.addViewLink(self.lang(30023), 'serie', 1, {'link': 'http://areena.yle.fi/tv/lapset/kaikki.json?jarjestys=uusin', 'grouping': True})
-		self.addViewLink(self.lang(30024), 'serie', 1, {'link': 'http://areena.yle.fi/tv/sarjat-ja-elokuvat/kaikki.json?jarjestys=uusin', 'grouping': True})
-		self.addViewLink(self.lang(30025), 'serie', 1, {'link': 'http://areena.yle.fi/tv/viihde-ja-kulttuuri/kaikki.json?jarjestys=uusin', 'grouping': True})
-		self.addViewLink(self.lang(30026), 'serie', 1, {'link': 'http://areena.yle.fi/tv/dokumentit-ja-fakta/kaikki.json?jarjestys=uusin', 'grouping': True})
-		self.addViewLink(self.lang(30027), 'serie', 1, {'link': 'http://areena.yle.fi/tv/urheilu/kaikki.json?jarjestys=uusin', 'grouping': True})
+		self.addViewLink('» ' + self.lang(30020), 'programs', 1, {'link': 'http://areena-v3.yle.fi/tv/kaikki.json?jarjestys=ao'})
+		self.addViewLink(self.lang(30021), 'serie', 1, {'link': 'http://areena-v3.yle.fi/tv/uutiset/kaikki.json?jarjestys=uusin', 'grouping': True})
+		self.addViewLink(self.lang(30022), 'live', 0, {'link': 'http://areena-v3.yle.fi/tv/suora.json?from=0&to=24'})
+		self.addViewLink(self.lang(30023), 'serie', 1, {'link': 'http://areena-v3.yle.fi/tv/lapset/kaikki.json?jarjestys=uusin', 'grouping': True})
+		self.addViewLink(self.lang(30024), 'serie', 1, {'link': 'http://areena-v3.yle.fi/tv/sarjat-ja-elokuvat/kaikki.json?jarjestys=uusin', 'grouping': True})
+		self.addViewLink(self.lang(30025), 'serie', 1, {'link': 'http://areena-v3.yle.fi/tv/viihde-ja-kulttuuri/kaikki.json?jarjestys=uusin', 'grouping': True})
+		self.addViewLink(self.lang(30026), 'serie', 1, {'link': 'http://areena-v3.yle.fi/tv/dokumentit-ja-fakta/kaikki.json?jarjestys=uusin', 'grouping': True})
+		self.addViewLink(self.lang(30027), 'serie', 1, {'link': 'http://areena-v3.yle.fi/tv/urheilu/kaikki.json?jarjestys=uusin', 'grouping': True})
 		self.addViewLink(self.lang(30050), 'search')
 
 		for key in self.favSeries.iterkeys():
@@ -212,7 +212,7 @@ class YleAreenaAddon(xbmcUtil.ViewAddonAbstract):
 					title = serie['name']
 
 					img = serie['images']['M']
-					link = 'http://areena.yle.fi/tv/' + serie['id'] + '.json?from=0&to=24&sisalto=ohjelmat'
+					link = 'http://areena-v3.yle.fi/tv/' + serie['id'] + '.json?from=0&to=24&sisalto=ohjelmat'
 					if title in self.favSeries:
 						title = self.FAVOURITE % title
 						cxm = []
@@ -242,12 +242,12 @@ class YleAreenaAddon(xbmcUtil.ViewAddonAbstract):
 		items = readJSON(args['link'])
 
 		# Live channels
-		self.addVideoLink('YLE TV 1', 'http://areena.yle.fi/tv/suora/tv1', 'http://yle.fi/yleisradio/sites/default/files/styles/inline-medium/public/yle-tv1.jpg')
-		self.addVideoLink('YLE TV 2', 'http://areena.yle.fi/tv/suora/tv2', 'http://yle.fi/yleisradio/sites/default/files/styles/inline-medium/public/yle-tv2.jpg')
-		self.addVideoLink('YLE TEEMA', 'http://areena.yle.fi/tv/suora/teema', 'http://yle.fi/yleisradio/sites/default/files/styles/inline-medium/public/yle-teema.jpg')
+		self.addVideoLink('YLE TV 1', 'http://areena-v3.yle.fi/tv/suora/tv1', 'http://yle.fi/yleisradio/sites/default/files/styles/inline-medium/public/yle-tv1.jpg')
+		self.addVideoLink('YLE TV 2', 'http://areena-v3.yle.fi/tv/suora/tv2', 'http://yle.fi/yleisradio/sites/default/files/styles/inline-medium/public/yle-tv2.jpg')
+		self.addVideoLink('YLE TEEMA', 'http://areena-v3.yle.fi/tv/suora/teema', 'http://yle.fi/yleisradio/sites/default/files/styles/inline-medium/public/yle-teema.jpg')
 
 		yleFemLankLink = '?kieli=sv' if (self.DEFAULT_LANG == 'swh' or self.DEFAULT_LANG == 'swe') else ''
-		self.addVideoLink('YLE FEM', 'http://areena.yle.fi/tv/suora/fem' + yleFemLankLink, 'http://yle.fi/yleisradio/sites/default/files/styles/inline-medium/public/yle-fem.jpg')
+		self.addVideoLink('YLE FEM', 'http://areena-v3.yle.fi/tv/suora/fem' + yleFemLankLink, 'http://yle.fi/yleisradio/sites/default/files/styles/inline-medium/public/yle-fem.jpg')
 
 		xbmcplugin.setContent(int(sys.argv[1]), 'episodes')
 		for i in range(0, len(items['current'])):
@@ -257,7 +257,7 @@ class YleAreenaAddon(xbmcUtil.ViewAddonAbstract):
 			img = item['pubContent']['images']['orig']
 			title = u"[COLOR red]NYT[/COLOR] " + startTime + ' | ' + item['pubContent']['title']
 			plot = item['pubContent']['desc']
-			link = 'http://areena.yle.fi/tv/' + item['pubContent']['id']
+			link = 'http://areena-v3.yle.fi/tv/' + item['pubContent']['id']
 			self.addVideoLink(title, link, img, infoLabels={'plot': plot})
 		if 'upcoming' in items:
 			for days in items['upcoming']:
@@ -280,7 +280,7 @@ class YleAreenaAddon(xbmcUtil.ViewAddonAbstract):
 					img = item['pubContent']['images']['orig']
 					title = startTime + ' | ' + item['pubContent']['title']
 					plot = item['pubContent']['desc']
-					link = 'http://areena.yle.fi/tv/' + item['pubContent']['id']
+					link = 'http://areena-v3.yle.fi/tv/' + item['pubContent']['id']
 
 					self.addVideoLink(title, link, img, infoLabels={'plot': plot})
 
@@ -330,11 +330,11 @@ class YleAreenaAddon(xbmcUtil.ViewAddonAbstract):
 							xbmc.log('Could not parse ' + item['expires'], level=xbmc.LOGWARNING)
 
 					img = item['images']['M']
-					link = 'http://areena.yle.fi/tv/' + item['id']
+					link = 'http://areena-v3.yle.fi/tv/' + item['id']
 					contextMenu = [(self.lang(30018), 'XBMC.Action(Info)',)]
 					if 'series' in item:
 						serieName = item['series']['name']
-						serieLink = 'http://areena.yle.fi/tv/' + item['series']['id']
+						serieLink = 'http://areena-v3.yle.fi/tv/' + item['series']['id']
 						contextMenu.append((self.createContextMenuAction(self.FAVOURITE % self.lang(30017), 'addFav', {'name': serieName, 'link': serieLink}) ))
 						if serieName != None and not item['title'].upper().startswith(serieName.upper()):
 							title = serieName + ': ' + title
@@ -430,7 +430,7 @@ class YleAreenaAddon(xbmcUtil.ViewAddonAbstract):
 		query = keyboard.getText()
 		searches.insert(0, query)
 		settings.setSetting("searches", "\n".join(searches))
-		link = 'http://areena.yle.fi/.json?q=%s&media=video' % query
+		link = 'http://areena-v3.yle.fi/.json?q=%s&media=video' % query
 		self.handleSerie(1, {'link': link})
 
 	def handleDelsearches(self, pg, args):
@@ -443,7 +443,7 @@ class YleAreenaAddon(xbmcUtil.ViewAddonAbstract):
 		searches = settings.getSetting('searches').splitlines()
 		for s in searches:
 			self.addViewLink(self.lang(30052) + ' ' + s, 'serie', 1, \
-							 {'link': 'http://areena.yle.fi/.json?q=%s&media=video' % s})
+							 {'link': 'http://areena-v3.yle.fi/.json?q=%s&media=video' % s})
 		if (settings.getSetting("searches") != ""):
 			self.addViewLink(self.lang(30053), 'delsearches')
 		xbmcplugin.endOfDirectory(int(sys.argv[1]))

@@ -12,25 +12,6 @@
         <platform>all</platform>
     </extension>
 </addon>
-<addon id="plugin.video.katsomo"
-       name="Katsomo"
-       version="1.2.99"
-       provider-name="szymex">
-    <requires>
-        <import addon="xbmc.python" version="2.1.0"/>
-        <import addon="script.module.parsedom" version="0.9.1"/>
-    </requires>
-    <extension point="xbmc.python.pluginsource" library="katsomo.py">
-        <provides>video</provides>
-    </extension>
-    <extension point="xbmc.addon.metadata">
-        <summary>Katsomo</summary>
-        <language>fi</language>
-        <description>TV Videos from Katsomo.fi (mtv3, sub, ava)</description>
-        <platform>all</platform>
-        <nofanart>false</nofanart>
-    </extension>
-</addon>
 <addon id="plugin.video.riemurasia"
        name="Riemurasia"
        version="1.0.2"
@@ -49,6 +30,26 @@
     <platform>all</platform>
 	<nofanart>true</nofanart>
   </extension>
+</addon>
+<addon id="plugin.video.yleareena"
+       name="YLE Areena"
+       version="1.7.3"
+       provider-name="szymex">
+    <requires>
+        <import addon="xbmc.python" version="2.1.0"/>
+        <import addon="script.module.parsedom" version="0.9.1"/>
+        <import addon="script.module.simple.downloader" version="1.9.5"/>
+    </requires>
+    <extension point="xbmc.python.pluginsource" library="yleareena.py">
+    <provides>video</provides>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <summary>YLE Areena</summary>
+        <language>fi en</language>
+        <description>http://areena.yle.fi</description>
+        <platform>all</platform>
+        <nofanart>false</nofanart>
+    </extension>
 </addon>
 <addon id="plugin.video.ruutu"
        name="Ruutu.fi"
@@ -70,22 +71,21 @@
         <nofanart>false</nofanart>
     </extension>
 </addon>
-<addon id="plugin.video.yleareena"
-       name="YLE Areena"
-       version="1.7.2"
+<addon id="plugin.video.katsomo"
+       name="Katsomo"
+       version="1.2.99"
        provider-name="szymex">
     <requires>
         <import addon="xbmc.python" version="2.1.0"/>
         <import addon="script.module.parsedom" version="0.9.1"/>
-        <import addon="script.module.simple.downloader" version="1.9.5"/>
     </requires>
-    <extension point="xbmc.python.pluginsource" library="yleareena.py">
-    <provides>video</provides>
+    <extension point="xbmc.python.pluginsource" library="katsomo.py">
+        <provides>video</provides>
     </extension>
     <extension point="xbmc.addon.metadata">
-        <summary>YLE Areena</summary>
-        <language>fi en</language>
-        <description>http://areena.yle.fi</description>
+        <summary>Katsomo</summary>
+        <language>fi</language>
+        <description>TV Videos from Katsomo.fi (mtv3, sub, ava)</description>
         <platform>all</platform>
         <nofanart>false</nofanart>
     </extension>

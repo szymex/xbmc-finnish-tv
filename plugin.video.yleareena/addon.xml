@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="plugin.video.yleareena"
        name="YLE Areena"
-       version="1.7.2"
+       version="1.7.3"
        provider-name="szymex">
     <requires>
         <import addon="xbmc.python" version="2.1.0"/>

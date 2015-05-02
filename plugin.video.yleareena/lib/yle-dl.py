@@ -7,7 +7,7 @@ yle-dl - rtmpdump frontend for Yle Areena, Elävä Arkisto and YleX Areena
 Copyright (C) 2010-2013 Antti Ajanki <antti.ajanki@iki.fi>
 
 This script extracts RTMP stream information from Yle Areena
-(http://areena.yle.fi), YleX Areena (http://ylex.yle.fi/ylex-areena),
+(http://areena-v3.yle.fi), YleX Areena (http://ylex.yle.fi/ylex-areena),
 Elävä Arkisto (http://yle.fi/elavaarkisto/index.html) web pages and
 calls rtmpdump with correct parameters.
 """
@@ -32,7 +32,7 @@ from Crypto.Cipher import AES
 
 version = '2.1.0'
 
-AREENA_NG_SWF = 'http://areena.yle.fi/static/player/1.3.14/flowplayer/flowplayer.commercial-3.2.16-encrypted.swf'
+AREENA_NG_SWF = 'http://areena-v3.yle.fi/static/player/1.3.14/flowplayer/flowplayer.commercial-3.2.16-encrypted.swf'
 AREENA_NG_HTTP_HEADERS = {'User-Agent': 'yle-dl/' + version.split(' ')[0]}
 
 ARKISTO_SWF = 'http://yle.fi/elavaarkisto/flowplayer/flowplayer.commercial-3.2.7.swf?0.7134730119723827'
@@ -195,9 +195,9 @@ def downloader_factory(url):
         return ElavaArkistoDownloader()
     elif url.startswith('http://ylex.yle.fi/'):
         return YleXDownloader()
-    elif url.startswith('http://areena.yle.fi/tv/suora/'):
+    elif url.startswith('http://areena-v3.yle.fi/tv/suora/'):
         return AreenaLiveDownloader()
-    elif url.startswith('http://areena.yle.fi/') or \
+    elif url.startswith('http://areena-v3.yle.fi/') or \
             url.startswith('http://yle.fi/'):
         return AreenaNGDownloader()
     else:
@@ -291,7 +291,7 @@ def log_output_file(outputfile, done=False):
 
 class AreenaCommon:
     # Extracted from
-    # http://areena.yle.fi/static/player/1.2.8/flowplayer/flowplayer.commercial-3.2.7-encrypted.swf
+    # http://areena-v3.yle.fi/static/player/1.2.8/flowplayer/flowplayer.commercial-3.2.7-encrypted.swf
     AES_KEY = 'hjsadf89hk123ghk'
 
     def rtmp_parameters_from_papi(self, papiurl, pageurl, islive):
@@ -624,7 +624,7 @@ class AreenaNGDownloader(AreenaCommon):
         else:
             urltype = 'tv'
 
-        return 'http://areena.yle.fi/%s/%s' % (urltype, media['id'])
+        return 'http://areena-v3.yle.fi/%s/%s' % (urltype, media['id'])
 
     def download_subtitles(self, available_subtitles, preferred_lang, videofilename):
         basename = os.path.splitext(videofilename)[0]
@@ -683,8 +683,8 @@ class AreenaNGDownloader(AreenaCommon):
 ### Areena live TV ###
 #
 # This is for the real live streams
-# (http://areena.yle.fi/tv/suora/...). The old-style discrete live
-# broadcasts (http://areena.yle.fi/tv/...) are still handled by
+# (http://areena-v3.yle.fi/tv/suora/...). The old-style discrete live
+# broadcasts (http://areena-v3.yle.fi/tv/...) are still handled by
 # AreenaNGDownloader.
 
 
@@ -736,7 +736,7 @@ class AreenaLiveDownloader(AreenaCommon):
         return RD_SUCCESS
 
     def get_live_rtmp_parameters(self, url):
-        m = re.search(r'http://areena.yle.fi/tv/suora/(.+)', url)
+        m = re.search(r'http://areena-v3.yle.fi/tv/suora/(.+)', url)
         if m is None:
             return None
 
@@ -758,7 +758,7 @@ class AreenaLiveDownloader(AreenaCommon):
         return ' '.join(components)
 
     def get_live_stream_title(self, url):
-        m = re.search(r'http://areena.yle.fi/tv/suora/(.+)', url)
+        m = re.search(r'http://areena-v3.yle.fi/tv/suora/(.+)', url)
         if m:
             title = m.group(1).upper()
         else:
