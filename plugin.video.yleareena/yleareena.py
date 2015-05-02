@@ -8,6 +8,7 @@ import os
 import sys
 import inspect
 import string
+import xbmc
 
 import xbmcplugin
 import xbmcgui
@@ -58,17 +59,19 @@ except ImportError as e:
 def scrapVideo(url):
 	url = yledl.encode_url_utf8(url)
 	dl = yledl.downloader_factory(url, None).wrapped_class("rtmp")
-	sfilt = yledl.StreamFilters(True, 'all', False, sys.maxint)
+	streamFilter = yledl.StreamFilters(True, 'all', False, sys.maxint)
 	if isinstance(dl, yledl.AreenaLiveDownloader):
-		streamurl = yledl.AreenaLiveStreamUrl(url, sfilt)
+		streamUrl = yledl.AreenaLiveStreamUrl(url, streamFilter)
 		clip = None
+	elif isinstance(dl, yledl.Areena2014Downloader):
+		clip = dl.clip_for_url(url, streamFilter)
+		streamUrl = clip.streamurl
 	else:
-		playlist = dl.get_playlist(url, True)
-		clip = playlist[0]
-		streamurl = dl.stream_class_factory(clip, url, sfilt)
+		return None
 
 	enc = sys.getfilesystemencoding()
-	rtmpUrl = streamurl.to_url().encode(enc, 'replace')
+	videoUrl = streamUrl.to_url().encode(enc, 'replace')
+	xbmc.log(videoUrl)
 
 	# socks-use enum in settings:
 	# 0 = no SOCKS proxy
@@ -78,20 +81,20 @@ def scrapVideo(url):
 	if useSocks == 'no':
 		useSocks = 0
 
-	if useSocks > 0 and ( (clip != None and clip['international'] == False) or useSocks == 1):
-		rtmpUrl += " socks=%s" % settings.getSetting('socks-server')
+	if useSocks > 0 and ((clip is not None and clip['international'] is False) or useSocks == 1):
+		videoUrl += " socks=%s" % settings.getSetting('socks-server')
 
 	subtitlesFiles = []
-	if clip != None:
-		media = clip.get('media', {})
-		subtitles = media.get('subtitles', [])
+	if clip is not None:
+		# media = clip.get('media', {})
+		subtitles = clip.subtitles
 		if len(subtitles) > 0:
-			videoname = url.split('/')[-1];
+			videoname = url.split('/')[-1]
 			path = os.path.join(xbmc.translatePath(yleAreenaAddon.addon.getAddonInfo("profile")).decode("utf-8"), videoname)
 
 			for sub in subtitles:
-				lang = sub.get('lang', '')
-				url = sub.get('url', None)
+				lang = sub.language
+				url = sub.url
 				if url:
 					try:
 						subtitlefile = path + '.' + lang + '.srt'
@@ -101,7 +104,7 @@ def scrapVideo(url):
 					except IOError, exc:
 						xbmc.log(u'Failed to download subtitles from: ' + url)
 
-	return (rtmpUrl, subtitlesFiles)
+	return videoUrl, subtitlesFiles
 
 
 def downloadVideo(url, title):
@@ -181,13 +184,13 @@ class YleAreenaAddon(xbmcUtil.ViewAddonAbstract):
 
 	def handleMain(self, pg, args):
 		self.addViewLink('» ' + self.lang(30020), 'programs', 1, {'link': 'http://areena-v3.yle.fi/tv/kaikki.json?jarjestys=ao'})
-		self.addViewLink(self.lang(30021), 'serie', 1, {'link': 'http://areena-v3.yle.fi/tv/uutiset/kaikki.json?jarjestys=uusin', 'grouping': True})
+		self.addViewLink(self.lang(30021), 'serie', 1, {'link': 'http://areena.yle.fi/api/v1/programs/tv?category=uutiset&olang=fi', 'grouping': True})
 		self.addViewLink(self.lang(30022), 'live', 0, {'link': 'http://areena-v3.yle.fi/tv/suora.json?from=0&to=24'})
-		self.addViewLink(self.lang(30023), 'serie', 1, {'link': 'http://areena-v3.yle.fi/tv/lapset/kaikki.json?jarjestys=uusin', 'grouping': True})
-		self.addViewLink(self.lang(30024), 'serie', 1, {'link': 'http://areena-v3.yle.fi/tv/sarjat-ja-elokuvat/kaikki.json?jarjestys=uusin', 'grouping': True})
-		self.addViewLink(self.lang(30025), 'serie', 1, {'link': 'http://areena-v3.yle.fi/tv/viihde-ja-kulttuuri/kaikki.json?jarjestys=uusin', 'grouping': True})
-		self.addViewLink(self.lang(30026), 'serie', 1, {'link': 'http://areena-v3.yle.fi/tv/dokumentit-ja-fakta/kaikki.json?jarjestys=uusin', 'grouping': True})
-		self.addViewLink(self.lang(30027), 'serie', 1, {'link': 'http://areena-v3.yle.fi/tv/urheilu/kaikki.json?jarjestys=uusin', 'grouping': True})
+		self.addViewLink(self.lang(30023), 'serie', 1, {'link': 'http://areena.yle.fi/api/v1/programs/tv?category=lapset&olang=fi', 'grouping': True})
+		self.addViewLink(self.lang(30024), 'serie', 1, {'link': 'http://areena.yle.fi/api/v1/programs/tv?category=sarjat-ja-elokuvat&olang=fi', 'grouping': True})
+		self.addViewLink(self.lang(30025), 'serie', 1, {'link': 'http://areena.yle.fi/api/v1/programs/tv?category=viihde-ja-kulttuuri&olang=fi', 'grouping': True})
+		self.addViewLink(self.lang(30026), 'serie', 1, {'link': 'http://areena.yle.fi/api/v1/programs/tv?category=dokumentit-ja-fakta&olang=fi', 'grouping': True})
+		self.addViewLink(self.lang(30027), 'serie', 1, {'link': 'http://areena.yle.fi/api/v1/programs/tv?category=urheilu&olang=fi', 'grouping': True})
 		self.addViewLink(self.lang(30050), 'search')
 
 		for key in self.favSeries.iterkeys():
@@ -294,13 +297,12 @@ class YleAreenaAddon(xbmcUtil.ViewAddonAbstract):
 
 					self.addVideoLink(title, link, img, infoLabels={'plot': plot})
 
-	DEFAULT_PAGE_SIZE = 30
+	DEFAULT_PAGE_SIZE = 25
 
 	def getPageQuery(self, pg, pageSize=DEFAULT_PAGE_SIZE):
 		if pg > 0:
 			pgFrom = (pg - 1) * pageSize
-			pgTo = pg * pageSize
-			return '&from=%s&to=%s' % (pgFrom, pgTo)
+			return '&offset=%s&limit=%s' % (pgFrom, pageSize)
 		else:
 			return ''
 
@@ -311,48 +313,47 @@ class YleAreenaAddon(xbmcUtil.ViewAddonAbstract):
 
 		if link != '':
 			items = readJSON(link)
-			if 'search' in items:
+			if 'data' in items:
 				xbmcplugin.setContent(int(sys.argv[1]), 'episodes')
-				for item in items['search']['results']:
-					title = item['title']
+				for item in items['data']:
+					xbmc.log(item['id'])
+					title = item['itemTitle']['fi'] if 'fi' in item['itemTitle'] else item['itemTitle']['sv']
 					episodeNumber = ''
-					if 'episodeNumber' in item and int(item['episodeNumber']) < 1000:
-						episodeNumber = int(item['episodeNumber'])
-						title += ' #' + str(episodeNumber)
+
+					latestOnDemand = item['latestOnDemand']
+					startTime = latestOnDemand['startTime'].replace("+03:00", "").replace("+02:00", "")
+					endTime = latestOnDemand['endTime'].replace("+03:00", "").replace("+02:00", "") if latestOnDemand['endTime'] is not None else ''
 
 					try:
-						publishedTs = datetime.strptime(item['published'], '%Y-%m-%dT%H:%M:%S')
+						publishedTs = datetime.strptime(startTime, '%Y-%m-%dT%H:%M:%S')
 					except TypeError:
-						publishedTs = datetime(*(time.strptime(item['published'], '%Y-%m-%dT%H:%M:%S')[0:6]))
-					published = item['published'].replace('T', ' ') if 'published' in item else ''
-
-					plot = item['desc'] + '\r\n' if 'desc' in item and item['desc'] != None else ''
-					plot += '\r\n%s: %s' % (self.lang(30008), published) if published != '' else ''
+						publishedTs = datetime(*(time.strptime(startTime, '%Y-%m-%dT%H:%M:%S')[0:6]))
+					published = startTime.replace('T', ' ')
 
 					expiresInHours = -1
 					expiresText = None
-					if 'expires' in item and item['expires'] != None:
-						try:
-							expiresInHours = int((time.mktime(time.strptime(item['expires'], "%Y-%m-%dT%H:%M:%S")) - time.time()) / (60 * 60))
-							# plot += u"\n\r%s: %s" % (self.lang(30009), str(item['expires']) )
-							expiresText = item['expires'].replace('T', ' ')
-						except:
-							xbmc.log('Could not parse ' + item['expires'], level=xbmc.LOGWARNING)
+					#if 'expires' in item and item['expires'] != None:
+					try:
+						expiresInHours = int((time.mktime(time.strptime(endTime, "%Y-%m-%dT%H:%M:%S")) - time.time()) / (60 * 60))
+						# plot += u"\n\r%s: %s" % (self.lang(30009), str(item['expires']) )
+						expiresText = endTime.replace('T', ' ')
+					except:
+						xbmc.log('Could not parse ' + endTime, level=xbmc.LOGWARNING)
 
-					img = item['images']['M']
-					link = 'http://areena-v3.yle.fi/tv/' + item['id']
+					img = 'http://a1.res.cloudinary.com/kuva-api-production-eu-cld/image/upload/w_210/' + item['imageId'] + '.jpg'
+					link = 'http://areena.yle.fi/' + item['id']
 					contextMenu = [(self.lang(30018), 'XBMC.Action(Info)',)]
-					if 'series' in item:
-						serieName = item['series']['name']
-						serieLink = 'http://areena-v3.yle.fi/tv/' + item['series']['id']
+					if item['type'] == 'TVSeries':
+						serieName = item['title']['fi'] if 'fi' in item['title'] else item['title']['sv']
+						serieLink = 'http://areena.yle.fi/tv/' + item['id']
 						contextMenu.append((self.createContextMenuAction(self.FAVOURITE % self.lang(30017), 'addFav', {'name': serieName, 'link': serieLink}) ))
-						if serieName != None and not item['title'].upper().startswith(serieName.upper()):
-							title = serieName + ': ' + title
+						#if serieName != None and not item['title'].upper().startswith(serieName.upper()):
+						#	title = serieName + ': ' + title
 					if self.enabledDownload:
 						contextMenu.append((self.createContextMenuAction('Download', 'download', {'videoLink': link, 'title': title}) ))
 
 					if grouping:
-						if 'published' in item and groupName != self.formatDate(publishedTs):
+						if groupName != self.formatDate(publishedTs):
 							groupName = self.formatDate(publishedTs)
 							if groupName != self.lang(33006):
 								self.addVideoLink(self.GROUP % groupName, '', '')
@@ -364,9 +365,8 @@ class YleAreenaAddon(xbmcUtil.ViewAddonAbstract):
 						title = self.EXPIRES_DAYS % (expiresInHours / 24, title);
 						expiresText = '[COLOR red]%s[/COLOR]' % expiresText
 
-					plot = plot + u"\n\r%s: %s" % (self.lang(30009), expiresText) if expiresText != None else plot
-					plot = plot + (u"\n\r%s" % (self.lang(30013) \
-													if item['international'] else self.lang(30014)))
+					plot = u"\n\r%s: %s" % (self.lang(30009), expiresText) if expiresText is not None else ''
+					plot += u"\n\r%s" % (self.lang(30013) if item['region'] == 'World' else self.lang(30014))
 
 					try:
 						intSetting = int(self.addon.getSetting("international"))
@@ -380,12 +380,14 @@ class YleAreenaAddon(xbmcUtil.ViewAddonAbstract):
 					elif intSetting == 2 and item.get('international', False):
 						title = '[COLOR white]i [/COLOR]' + title
 
-					self.addVideoLink(title, link, img,
-									  infoLabels={'plot': plot, 'duration': str(item.get('duration', '')), 'episode': episodeNumber, 'aired': publishedTs.strftime('%Y.%m.%d'),
-												  'date': publishedTs.strftime('%d.%m.%Y')},
-									  contextMenu=contextMenu, videoStreamInfo={'duration': item['durationSec']})
+					duration = item['latestOnDemand']['media']['duration'].replace('PT', '')
 
-				if len(items['search']['results']) == self.DEFAULT_PAGE_SIZE:
+					self.addVideoLink(title, link, img,
+									  infoLabels={'plot': plot, 'duration': duration, 'episode': episodeNumber, 'aired': publishedTs.strftime('%Y.%m.%d'),
+												  'date': publishedTs.strftime('%d.%m.%Y')},
+									  contextMenu=contextMenu, videoStreamInfo={'duration': duration })
+
+				if items['meta']['offset'] + items['meta']['limit'] < items['meta']['count']:
 					self.addViewLink(self.NEXT, 'serie', pg + 1, args)
 
 	def playF4mLink(self, url, name, proxy=None, use_proxy_for_chunks=False, auth_string=None, streamtype='HDS', setResolved=False):
